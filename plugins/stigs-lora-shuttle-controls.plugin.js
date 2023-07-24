@@ -1,6 +1,6 @@
 /**
  * Lora Shuttle Controls
- * v.2.4, last updated: 15/07/2023
+ * v.2.5, last updated: 24/07/2023
  * By The Stig
  * 
  * 
@@ -11,15 +11,15 @@
 
 (function() { "use strict"
 
-	const VERSION = "2.4";
+	const VERSION = "2.5";
 	const ID_PREFIX = "TheStig-Lora Shuttle Controls";
 	console.log('%s The Stig - Lora Shuttle Controls Version: %s', ID_PREFIX, VERSION);
 	
 	var LoraStepSize = 0.1;			// Change this as you need to from Minimum 0.1 to Maximum 0.99
 	
-	var LoraUserStart = 0;		// Change this as required
+	var LoraUserStart = 0.0;		// Change this as required
 	var LoraUserEnd = 1.0;			// Change this as required
-	var LoraUserStepSize = 0.1;	// Change this as required
+	var LoraUserStepSize = 0.2;		// Change this as required
 	
 	var LoraInputFlag = true;
 	
@@ -97,7 +97,7 @@
 
     const LoRaFavButton = document.createElement('button');
     LoRaFavButton.id = `${ID_PREFIX}-webcamButton`;
-    LoRaFavButton.innerHTML = `LoRa Fav Values`;
+    LoRaFavButton.innerHTML = `Set LoRa Grid`;
     LoRaFavButton.title = `V${VERSION}`;
     LoRaButtonsContainer.appendChild(LoRaFavButton);
 	
@@ -137,10 +137,6 @@
 	
 	
 	function setLoRaFav() {
-		//console.log('LoRa Fav Value clicked');
-		//console.log('Start: ' + LoraUserStart);
-		//console.log('End: ' + LoraUserEnd);
-		//console.log('Stepsize: ' + LoraUserStepSize);
 		var LoRaInput1 = 0;
 		var LoRaInput2 = 0;
 		var LoRaInput3 = 0;
@@ -154,6 +150,12 @@
 		if (typeof LoRaInput1 === 'string') {
 			LoRaInput1 = parseFloat(LoRaInput1);
 		}		
+		if (isNaN(LoRaInput1)) {
+			console.log('Cannot proceed, LoRa Start Value is not a number');
+			showToast('Cannot proceed, LoRa Start Value is not a number');
+			LoRaInput1 = LoraUserStart;
+			return;
+		}
 		LoraUserStart = LoRaInput1;
 		
 		switch (LoraInputFlag) {
@@ -165,11 +167,18 @@
 				}
 				break;
 			case false:
-				if (typeof LoRaInput2 === 'string') {
+				if (typeof LoRaInput2 == 'string') {
 					LoRaInput2 = parseFloat(LoRaInput2);
 				}
 				LoraUserEnd = LoRaInput2;
 				break;
+		}
+
+		if (isNaN(LoRaInput2)) {
+			console.log('Cannot proceed, LoRa End Value is not a number');
+			showToast('Cannot proceed, LoRa End Value is not a number');
+			LoRaInput2 = LoraUserEnd;
+			return;
 		}
 		LoraUserEnd = LoRaInput2;
 		
@@ -180,6 +189,7 @@
 					LoraInputFlag = false;
 					LoRaInput3 = LoraUserStepSize;
 				}
+				break;
 			case false:
 				if (typeof LoRaInput3 === 'string') {
 					LoRaInput3 = parseFloat(LoRaInput3);
@@ -187,18 +197,13 @@
 				LoraUserStepSize = LoRaInput3;
 				break;
 		}
+		if (isNaN(LoRaInput3)) {
+			console.log('Cannot proceed, LoRa Step Value is not a number');
+			showToast('Cannot proceed, LoRa Step Value is not a number');
+			LoRaInput3 = LoraUserStepSize;
+			return;
+		}
 		LoraUserStepSize = LoRaInput3;
-		
-		
-		//switch (LoraInputFlag) {
-		//	case true:
-				
-				//lora_alpha_slider.value=(LoraUserStart*100);
-				//lora_alpha_0.value=parseFloat(LoraUserStart);
-				//document.getElementById("makeImage").click();
-		//	case false:
-		//		break;
-		//}
 		
 	}
 
@@ -275,15 +280,6 @@
 				}
 						
 			}
-	
-		if (newSetVal <-2) {
-			newSetVal = -2;
-		}
-		if (newSetVal >2) {
-			newSetVal = 2;
-		}
-		//console.log('LoraModel: ' + LoraModel);
-		//console.log('LoraValue: ' + (newSetVal));
 
 		switch (LoraModel) {
 			case "None":
@@ -516,7 +512,66 @@
 	}
 
 	function onLoraGrid6(origRequest,image) {
+		if (typeof LoraUserStepSize === 'string') {
+			LoraUserStepSize = parseFloat(LoraUserStepSize);
+		}
+		switch (LoraFlag) {
+			case false:
+				break;
+			default:
+				console.log('Starting grid 6');
+				var loraStartGrid=LoraUserStart;
+				if (typeof loraStartGrid === 'string') {
+					loraStartGrid = parseFloat(loraStartGrid);
+				}
+				var loraEndGrid = LoraUserEnd;
+				if (typeof loraEndGrid === 'string') {
+					loraEndGrid = parseFloat(loraEndGrid);
+				}
+				var loraLoopVal = 0;
+				var loraTempVal = loraStartGrid;
+				
+				console.log('Start: ' + loraStartGrid);
+				console.log('Finish: ' + loraEndGrid);
+				console.log('Step: ' + LoraUserStepSize);
+				if (isNaN(loraStartGrid)) {
+					console.log('Cannot proceed, Start is not a number');
+					showToast('Cannot proceed, Start is not a number')
+					return;
+				}
+				if (isNaN(loraEndGrid)) {
+					console.log('Cannot proceed, End is not a number');
+					showToast('Cannot proceed, End is not a number')
+					return;
+				}
+				if (isNaN(LoraUserStepSize)) {
+					console.log('Cannot proceed, Step Size is not a number');
+					showToast('Cannot proceed, Step Size is not a number')
+					return;
+				}
+				
+
+				if (typeof LoraUserStepSize === 'string') {
+					LoraUserStepSize = parseFloat(LoraUserStepSize);
+				}
+				if (typeof loraTempVal === 'string') {
+					loraTempVal = parseFloat(loraTempVal);
+				}
 		
+				while (loraLoopVal <= 100) {
+					if (inRange,loraTempVal,LoraUserStart,LoraUserEnd) {
+						modifyLora(loraTempVal,0,origRequest);
+						
+					}
+					loraLoopVal++;
+					loraTempVal = loraTempVal + LoraUserStepSize;
+					//console.log(LoraUserStart,loraTempVal,loraEndGrid);
+					if (loraTempVal > loraEndGrid) {
+						console.log('Reached end of loop');
+						break;
+					}
+				}
+			}
 	}
 
 	
