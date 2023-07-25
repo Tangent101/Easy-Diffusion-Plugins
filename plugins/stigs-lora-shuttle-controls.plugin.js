@@ -1,6 +1,6 @@
 /**
  * Lora Shuttle Controls
- * v.2.5, last updated: 24/07/2023
+ * v.2.6, last updated: 25/07/2023
  * By The Stig
  * 
  * 
@@ -11,7 +11,7 @@
 
 (function() { "use strict"
 
-	const VERSION = "2.5";
+	const VERSION = "2.6";
 	const ID_PREFIX = "TheStig-Lora Shuttle Controls";
 	console.log('%s The Stig - Lora Shuttle Controls Version: %s', ID_PREFIX, VERSION);
 	
@@ -22,6 +22,14 @@
 	var LoraUserStepSize = 0.2;		// Change this as required
 	
 	var LoraInputFlag = true;
+	
+	var LoraCurrent = null;
+	var LoraSelected = 1;
+	var tempLoRa = [];
+	var tempLoRaPath = [];
+	var LoRaCount = 0;
+	var tempLoRaValue = [];
+	var dummyLoRa = null;
 	
 	
 	
@@ -46,8 +54,9 @@
 		LoraButton8: 'fa-solid fa-border-none'				// Grid #1 LoRa Value 0 to LoRa Value 1
 	};
 		
+	// { html: '<span class="loraadjust-label1" style="background-color:transparent;background: rgba(0,0,0,0.5)">LoRa:</span>', type: 'label', on_click: onLoraAdjustClick},
 	PLUGINS['IMAGE_INFO_BUTTONS'].push([
-		{ html: '<span class="loraadjust-label1" style="background-color:transparent;background: rgba(0,0,0,0.5)">LoRa:</span>', type: 'label', on_click: onLoraAdjustClick},
+		{ html: '<span class="LoraAdjust-Label1" id="LoraControlButton" title = "Select Lora" style="background-color:transparent;background: rgba(0,0,0,0.5)">LoRa #1</span>', type: 'button', on_click: onLoraAdjustClick},
 		{ html: '<div title = "Set LoRa value to Minimum"><i class="' + LoraSettings1.LoraButton1 + '"></i></div>', on_click: onLoraMin},
 		{ html: '<div title = "Set LoRa value to -1"><i class="' + LoraSettings1.LoraButton2 + '"></i></div>', on_click: onLoraMidMinus},
 		{ html: '<div title = "Decrease LoRa value by step size"><i class="' + LoraSettings1.LoraButton3 + '"></i></div>', on_click: onLoraMinus},
@@ -103,6 +112,7 @@
 	
 	LoRaFavButton.addEventListener('click', getStartNewTaskHandler());
 	
+	//processLoRa();
 
 	function getStartNewTaskHandler() {
         return async function(event) {
@@ -207,10 +217,88 @@
 		
 	}
 
-	
+	function processLoRa() {
+		const myStringArray = $('[id^="lora_model_"]');
+		const result = [...myStringArray].map(section => $(section).attr('id'))
+		console.log('Matches: ' + result);
 		
-	function onLoraAdjustClick() {
-		console.log('*** Lora Adjust ***');
+		tempLoRa = [];
+		tempLoRaPath = [];
+		LoRaCount = 0;
+		tempLoRaValue = [];
+		console.log('Here');
+		dummyLoRa = document.getElementById('lora_model_0').value;
+		console.log(dummyLoRa);
+		switch (dummyLoRa) {
+			case "null":
+				document.getElementById('LoraControlButton').setAttribute('title','Undefined');
+				break;
+			case "None":
+				console.log('Here 2');
+				//document.getElementById('LoraControlButton').setAttribute('title','Undefined');
+				break;
+			default:
+				document.getElementById('LoraControlButton').setAttribute('title',dummyLoRa);
+				break;
+		}
+		
+		//tempLoRa = (origRequest.use_lora_model instanceof Array) ? origRequest.use_lora_model : [ origRequest.use_lora_model ];
+		//tempLoRaPath = (origRequest.use_lora_model instanceof Array) ? origRequest.use_lora_model : [ origRequest.use_lora_model ];
+		//tempLoRaValue = (origRequest.lora_alpha instanceof Array) ? origRequest.lora_alpha : [ origRequest.lora_alpha ];
+		//LoRaCount = (tempLoRa.length);
+		//LoraCurrent = document.getElementById("LoraControlButton");
+		//document.getElementById('LoraControlButton').setAttribute('title',tempLoRa[LoraSelected-1]);
+		//LoraCurrent.innerHTML = "Lora #" + LoraSelected.toString();
+		
+	}
+		
+	function onLoraAdjustClick(origRequest) {
+		//console.log('Req: ' + JSON.stringify(origRequest));
+		
+		
+		//const LoRaCollection = document.getElementsByClassName("model_name model-selector");
+		//var stringWithHtmlTobeSavedInTextArea="";
+		//var i = 0;
+		//var dummyLoRa=Array.from(LoRaCollection);
+		//var dummyLoRa = Array.prototype.slice.call(LoRaCollection);
+		//var text = "";
+		//for (i = 0; i < LoRaCollection.length ; i++){
+		//	text = LoRaCollection.item(i).outerHTML;
+		//	console.log('Text: ' + text);
+		//}
+
+
+		
+		
+		
+		tempLoRa = [];
+		tempLoRaPath = [];
+		LoRaCount = 0;
+		tempLoRaValue = [];
+		
+		tempLoRa = (origRequest.use_lora_model instanceof Array) ? origRequest.use_lora_model : [ origRequest.use_lora_model ];
+		tempLoRaPath = (origRequest.use_lora_model instanceof Array) ? origRequest.use_lora_model : [ origRequest.use_lora_model ];
+		tempLoRaValue = (origRequest.lora_alpha instanceof Array) ? origRequest.lora_alpha : [ origRequest.lora_alpha ];
+		
+		//console.log('tempLoRa: ' + tempLoRa);
+		//console.log('LoRaCount: ' + tempLoRa.length);
+		LoRaCount = (tempLoRa.length);
+  
+		LoraCurrent = document.getElementById("LoraControlButton");
+		LoraSelected ++;
+		if (LoraSelected > LoRaCount) {
+			LoraSelected = 1;
+		}
+		//console.log('Array: ' + tempLoRa[LoraSelected-1]);
+		
+		//console.log('LoRa: ' + tempLoRa[LoraSelected-1]);
+		//console.log('Value: ' + tempLoRaValue[LoraSelected-1]);
+		document.getElementById('LoraControlButton').setAttribute('title',tempLoRa[LoraSelected-1]);
+		LoraCurrent.innerHTML = "Lora #" + LoraSelected.toString();
+		
+		//var LoraBox = document.getElementById('lora_model_0');
+		//var amount = LoraBox.getAttribute('data-path');
+		//console.log('Attribs: ' + amount);
 	}
 	
 	function modifyLora(newLoraVal,adjLoraVal,origRequest) {
@@ -220,13 +308,15 @@
 		for(var property in origRequest) {
 			//console.log(property + "=" + origRequest[property]);
 		}
+		//console.log('Current: ' + LoraSelected);
 		
 
 		//console.log('LoraValue: ' + LoraValue);
 		
 		if (typeof LoraValue === 'object') {
 			//console.log('LoraValue is an Array');
-			var passedLoraValue=parseFloat(LoraValue[0]).toFixed(2);
+			//var passedLoraValue=parseFloat(LoraValue[0]).toFixed(2);
+			var passedLoraValue=parseFloat(LoraValue[LoraSelected-1]).toFixed(2);
 		}
 		
 
@@ -265,8 +355,8 @@
 				var newSetVal = (currentLoraVal + (adjLoraVal));
 				switch (isNaN(newSetVal)) {
 					case true:
-						console.log('currentLoraVal: ' + currentLoraVal);
-						console.log('adjLoraVal: ' + adjLoraVal);
+						//console.log('currentLoraVal: ' + currentLoraVal);
+						//console.log('adjLoraVal: ' + adjLoraVal);
 						break;
 					default:
 						LoraFlag=true;
@@ -297,9 +387,20 @@
 						console.log('Error, NewVal is not a number');
 						break;
 					default:
-						origRequest.lora_alpha = parseFloat(newSetVal);
+						//origRequest.lora_alpha = parseFloat(newSetVal);
+						switch (typeof(origRequest.lora_alpha)) {
+							case "object":
+								origRequest.lora_alpha[LoraSelected-1] = parseFloat(newSetVal);
+								break;
+							default:
+								origRequest.lora_alpha = parseFloat(newSetVal);
+								break;
+						}
 						//lora_alpha_slider.value=(origRequest.lora_alpha*100);
-						lora_alpha_0.value=parseFloat(newSetVal);
+						document.getElementById("lora_alpha_"+(LoraSelected-1)).value = parseFloat(newSetVal);
+						//this["lora_alpha_"+(LoraSelected-1)].value=parseFloat(newSetVal);
+						//lora_alpha_0.value=parseFloat(newSetVal);
+						//console.log('Req: ' + JSON.stringify(origRequest));
 						document.getElementById("makeImage").click();
 						break;
 				}
