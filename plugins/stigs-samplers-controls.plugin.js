@@ -1,6 +1,6 @@
 /**
  * Samplers Shuttle Controls
- * v.1.1, last updated: 28/06/2023
+ * v.1.2, last updated: 27/07/2023
  * By The Stig
  * 
  * 
@@ -11,36 +11,65 @@
 
 (function() { "use strict"
 
-	const VERSION = "1.1";
+	const VERSION = "1.2";
 	const ID_PREFIX = "TheStig-Samplers Controls";
 	console.log('%s The Stig - Samplers Controls Version: %s', ID_PREFIX, VERSION);
 	
 	var samplerSelected = document.getElementById("sampler_name").value;
 	var FirstSampler = 0;
 	var currentSampler = 0;
+	var samplerStyle = null;
 	
 	var samplerList = document.querySelectorAll('#sampler_name option');
+	//console.log('Samplers: ' + samplerList);
+	//for (let i = 0; i < samplerList.length; i++) {
+	//	console.log('Sampler: ' + (samplerList[i].value));
+	//	samplerStyle = (samplerList[i].style.display);
+	//	console.log('Style: ' + samplerStyle);
+	//}
+	
 	var samplerStatus = null;
 	var allSamplers = [];
 	var disabledSamplers = [];
 	var availableSamplers = [];
 	
-	samplerList.forEach((samplerOption) => {
-		samplerStatus = (samplerOption.disabled);
-		//allSamplers.push(samplerOption.value);
-		disabledSamplers.push(samplerStatus);
-		switch (samplerStatus) {
-			case true:
-				break;
-			case false:
-				allSamplers.push(samplerOption.value);
-				availableSamplers.push(samplerOption.value);
+	//samplerList.forEach((samplerOption) => {
+	//	samplerStatus = (samplerOption.disabled);
+	//	allSamplers.push(samplerOption.value);
+	//	disabledSamplers.push(samplerStatus);
+	//	switch (samplerStatus) {
+	//		case true:
+	//			break;
+	//		case false:
+	//			allSamplers.push(samplerOption.value);
+	//			availableSamplers.push(samplerOption.value);
+	//			break;
+	//		default:
+	//			break;
+	//	}
+	//});
+	
+	for (let i = 0; i < samplerList.length; i++) {
+		//console.log('Samplers: ' + samplerList);
+		samplerStyle = (samplerList[i].style.display);
+		switch (samplerStyle) {
+			case 'none':
+				console.log('Ignoring Sampler: ' +  samplerList[i].value);
 				break;
 			default:
+				//console.log('Pushing: ' +  samplerList[i].value);
+				allSamplers.push(samplerList[i].value);
+				availableSamplers.push(samplerList[i].value);
 				break;
 		}
-	});
+	}
+			
 		
+		
+	
+	
+	console.log('All Samplers: ' + allSamplers);
+	console.log('Available: ' +  availableSamplers);
 	var SamplerSettings = {
 		SamplerButton1: 'fa-solid fa-fast-backward', 			// First
 		SamplerButton2: 'fa-solid fa-angle-left', 				// Previous
