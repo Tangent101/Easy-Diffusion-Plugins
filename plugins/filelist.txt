@@ -3,3 +3,4 @@ Lora Controls
 Model Controls
 Sampler Controls
 Hypernetwork Controls
+Sequence to Control Net
