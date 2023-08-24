@@ -32,8 +32,8 @@
 	var dummyLoRa = null;
 	
 	
-	
-	var LoraCurrentValue = lora_alpha_0.value;
+	//var LoraCurrentValue = lora_alpha_0.value;
+	var LoraCurrentValue = 0.5;
 	var LoraFlag=false;
 	let qryTestDiffusers = (document.querySelector("#test_diffusers").value).trim();
 	let qryBetaChannel = (document.querySelector("#use_beta_channel").value).trim();
@@ -302,8 +302,15 @@
 	}
 	
 	function modifyLora(newLoraVal,adjLoraVal,origRequest) {
-		var LoraModel=document.getElementById("lora_model_0").value;
+		const taskTemplate = getCurrentUserRequest();
+		//console.log('Task: ' + JSON.stringify(taskTemplate));
+		
+		
+		
+		//var LoraModel=document.getElementById("lora_model_0").value;
+		var LoraModel=document.getElementById("lora_0").value;
 		var LoraValue=origRequest.lora_alpha;
+		//console.log('Start Lora: ' + LoraValue);
 		
 		for(var property in origRequest) {
 			//console.log(property + "=" + origRequest[property]);
@@ -396,12 +403,39 @@
 								origRequest.lora_alpha = parseFloat(newSetVal);
 								break;
 						}
+						//console.log("Selected LoRa: "+(LoraSelected-1));
+						//console.log('New Value: ' + parseFloat(newSetVal));
 						//lora_alpha_slider.value=(origRequest.lora_alpha*100);
-						document.getElementById("lora_alpha_"+(LoraSelected-1)).value = parseFloat(newSetVal);
+						try {
+							//document.getElementById("lora_alpha_"+(LoraSelected-1)).value = parseFloat(newSetVal);
+							//origRequest.lora_alpha[LoraSelected-1] = parseFloat(newSetVal);
+							//taskTemplate.reqBody.lora_alpha[LoraSelected-1]  = parseFloat(newSetVal).toString();
+							var tempModel = document.getElementsByClassName("model_entry");
+							//for (var i = 0; i < tempModel.length; i++) {
+								//console.log(tempModel.item(i));
+							//}
+							//let tempmodelWeight = tempModel.item(LoraSelected-1).querySelector(".model_weight").value;
+							//console.log(tempmodelWeight);
+							//tempModel[LoraSelected-1].model_weight=0.69;
+							tempModel.item(LoraSelected-1).querySelector(".model_weight").value = parseFloat(newSetVal);
+
+							
+						}
+						catch (err) {
+							var txtError = err.message;
+							txtError = txtError +  "\n\nHas the Image Settings Panel been altered" + "\ni.e. Have you removed a LoRa?";
+							alert(txtError);
+							console.log('Error: ' + err);
+						}
+						//LoraSelected = 1;
 						//this["lora_alpha_"+(LoraSelected-1)].value=parseFloat(newSetVal);
 						//lora_alpha_0.value=parseFloat(newSetVal);
 						//console.log('Req: ' + JSON.stringify(origRequest));
 						document.getElementById("makeImage").click();
+						//var newTaskRequests = getPrompts().map((prompt) => Object.assign({}, taskTemplate, {
+						//	reqBody: Object.assign({ prompt: prompt }, taskTemplate.reqBody)
+						//}))
+						//newTaskRequests.forEach(createTask);
 						break;
 				}
 				break;
