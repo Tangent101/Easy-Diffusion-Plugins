@@ -1,6 +1,6 @@
 /**
  * Image Utilities
- * v.1.11, last updated: 21/07/2023
+ * v.1.12, last updated: 03/09/2023
  * By The Stig
  * 
  * 
@@ -11,7 +11,7 @@
 
 (function() { "use strict"
 
-	const VERSION = "1.11";
+	const VERSION = "1.12";
 	const ID_PREFIX = "TheStig-Image Utilities";
 	console.log('%s The Stig - Image Utilities Version: %s', ID_PREFIX, VERSION);
 	
@@ -462,7 +462,7 @@
 		}
 		switch (imgLora) {
 			case 'undefined':
-				console.log('LoRa was undefined');
+				//console.log('LoRa was undefined');
 				imgLoraModel = 'Undefined';
 				imgLora = 'N/A';
 				break;
@@ -509,7 +509,23 @@
 				imgHyper=origRequest.hypernetwork_strength;
 				break;
 		}
+		
+		var imgCNet = origRequest.control_filter_to_apply;
+		//console.log('CNet: ' + origRequest.control_filter_to_apply);
+		switch (imgCNet) {
+			case 'undefined':
+				imgCNet = 'No';
+				break;
+			default:
+				imgCNet = origRequest.control_filter_to_apply;
+				break;
+		}
 			
+			
+			
+
+
+		
 		var LoraAlphaValue = imgLora; 		//origRequest.lora_alpha;
 		//console.log('Hype: ' + imgHyper);
 		var checkWidth = image.naturalWidth;
@@ -589,7 +605,7 @@
 						context.beginPath();
 						//context.rect(0,ch-80, cw,80);
 						context.rect(0,bh1,cw,bh2);
-						context.fillStyle = 'white';
+						context.fillStyle = 'black';
 						context.fill();
 						context.lineWidth = 7;
 						context.strokeStyle = 'black';
@@ -604,16 +620,17 @@
 						
 		
 						// Add text info to the rectangle
-						context.fillStyle = 'blue';
+						context.fillStyle = 'white';
 						context.font = '16px serif';
 						context.fillText('Model: ' + imgModel, 20, bh1+20);
 						context.fillText('Sampler: ' + imgSampler, 320, bh1+20);
 						context.fillText('IS: ' + imgInfSteps, 20, bh1+40);
 						context.fillText('GS: ' + imgGuideStr, 80, bh1+40);
-						context.fillText('Clip Skip: ' + imgClipSkip, 160, bh1+60);
-						context.fillText('Tile: ' + imgTiled, 320, bh1+60);
+						context.fillText('Clip Skip: ' + imgClipSkip, 20, bh1+60);
+						context.fillText('Tile: ' + imgTiled, 160, bh1+60);
+						context.fillText('CNet: ' + imgCNet, 320, bh1+60);
 						context.fillText('Seed: ' + imgSeed, 320,bh1+40);
-						context.fillText('Hype: ' + imgHyper, 20, bh1+60);
+						//context.fillText('Hype: ' + imgHyper, 20, bh1+60);
 						//context.fillText('Lora: ' + imgFirstLoraModel, 160, bh1+60);
 						//context.fillText('Value: ' + imgFirstLoraValue, 320, bh1+60);
 						context.fillText('Random Seed: ' + imgRandomSeed,160, bh1+40);
@@ -764,6 +781,7 @@
 				break;
 			default:
 				//console.log('No tiling selected');
+				alert('Cannot tile this image - Seamless Tiling has not been set for this image.');
 				break;
 		}
 			
