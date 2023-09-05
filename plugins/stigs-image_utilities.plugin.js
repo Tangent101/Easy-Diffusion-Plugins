@@ -406,11 +406,25 @@
 		var imgFirstLoraValue='Nil';
 		var imgVAE = origRequest.use_vae_model;
 		var imgTempVal = 'Undefined';
+		var subDirPos = null;
+		var checkModelName = null;
+		var checkLoRaName = null;
 
 
 		
 		//console.log(origRequest);
 		
+		checkModelName = imgModel.includes("/");
+		switch (checkModelName) {
+			case true:	
+				//console.log('Found sub Directory');
+				subDirPos = imgModel.lastIndexOf('/');
+				imgModel= imgModel.substr(subDirPos+1);
+				break;
+			default:
+				//console.log('No sub Directory found')
+				break;
+		}
 
 		
 		switch (origRequest.used_random_seed) {
@@ -660,6 +674,22 @@
 							var ypos = ch - 20;
 							for (const [key, value] of Object.entries(imgLoraModel)) {
 								tempStr = imgLoraModel[(imgLoraCount - tempCount)];
+								checkLoRaName = tempStr.includes("/");
+								switch (checkLoRaName) {
+									case true:	
+										//console.log('LoRa Found sub Directory');
+										subDirPos = tempStr.lastIndexOf('/');
+										tempStr= tempStr.substr(subDirPos+1);
+										break;
+									default:
+										//console.log('No sub Directory found')
+										break;
+								}
+								
+								
+								
+								
+								
 								if (tempStr.length > 30) {
 									tempStr=tempStr.slice(0,30) + '....';
 								}
