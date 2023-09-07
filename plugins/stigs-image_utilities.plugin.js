@@ -475,9 +475,13 @@
 			imgLora = 'undefined';
 		}
 		switch (imgLora) {
+			case undefined:
+				imgLoraModel = 'Not Used';
+				imgLora = 'N/A';
+				break;
 			case 'undefined':
 				//console.log('LoRa was undefined');
-				imgLoraModel = 'Undefined';
+				imgLoraModel = 'Not Used';
 				imgLora = 'N/A';
 				break;
 			case '0':
@@ -527,6 +531,9 @@
 		var imgCNet = origRequest.control_filter_to_apply;
 		//console.log('CNet: ' + origRequest.control_filter_to_apply);
 		switch (imgCNet) {
+			case undefined:
+				imgCNet = 'Not Used';
+				break;
 			case 'undefined':
 				imgCNet = 'No';
 				break;
@@ -624,8 +631,8 @@
 						context.lineWidth = 7;
 						context.strokeStyle = 'black';
 						context.stroke();
-						if (imgModel.length > 25) {
-							imgModel = imgModel.slice(0,25) + '...';
+						if (imgModel.length > 30) {
+							imgModel = imgModel.slice(0,30) + '...';
 						}
 						
 						if (imgSampler.length > 15) {
@@ -656,8 +663,8 @@
 							var ypos = ch - 20;
 							tempStr = imgLoraModel;
 							var tempWeight = imgLora;
-							if (tempStr.length > 30) {
-								tempStr=tempStr.slice(0,30) + '....';
+							if (tempStr.length > 25) {
+								tempStr=tempStr.slice(0,25) + '....';
 							}
 							context.fillText('Lora #' + tempCount + ':', xpos, ypos);
 							context.fillText(tempStr, xpos+60, ypos);
@@ -690,8 +697,8 @@
 								
 								
 								
-								if (tempStr.length > 30) {
-									tempStr=tempStr.slice(0,30) + '....';
+								if (tempStr.length > 25) {
+									tempStr=tempStr.slice(0,25) + '....';
 								}
 								context.fillText('Lora #' + ((imgLoraCount - tempCount)+1) + ':', xpos, ypos);
 								context.fillText(tempStr, xpos+60, ypos);
