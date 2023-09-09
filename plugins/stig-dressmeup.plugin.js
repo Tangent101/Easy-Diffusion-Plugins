@@ -14,8 +14,15 @@
     console.log('%s Embed Metadata Version: %s', ID_PREFIX, VERSION);
 	
 	var UpperItem = [];
+	var UpperItemColor = [];
+	var UpperItemMaterial = [];
+	
 	var LowerItem = [];
+	var LowerItemColor = [];
+	var LowerItemMaterial = [];
+
 	var FootwearItem = [];
+	
 	var HeadwearItem = [];
 		
 	injectLoaderCSS();
@@ -139,7 +146,24 @@
               "Wrap cardigan",
               "Wrap front blouse",
               "Wrap top" ]
+		UpperItemColor = ["White",
+			"Black",
+			"Red",
+			"Blue",
+			"Green",
+			"Yellow",
+			"Pink",
+			"Purple",
+			"Multicolored" ]
+		UpperItemMaterial = ["Carboard",
+			"Cotton",
+			"Paper",
+			"Satin",
+			"Silk",
+			"Tin Foil",
+			"Velvet" ]
 	}
+	
 	function createLowerItems() {
 		LowerItem = ["A-line culottes",
               "A-line shorts",
@@ -242,7 +266,23 @@
               "Wrap-around skirt",
               "Wrap-front culottes",
               "Wrap-front skirt",
-              "Wrap-style pants"];
+              "Wrap-style pants"]
+		LowerItemColor = ["White",
+			"Black",
+			"Red",
+			"Blue",
+			"Green",
+			"Yellow",
+			"Pink",
+			"Purple",
+			"Multicolored" ]
+		LowerItemMaterial = ["Carboard",
+			"Cotton",
+			"Paper",
+			"Satin",
+			"Silk",
+			"Tin Foil",
+			"Velvet" ]
 	}
 	function createFootwearItems() {
 		FootwearItem = ["Ankle boots",
@@ -356,11 +396,30 @@
 					
 					<tr><td><label for="upperBody_input">Upper Body:</label>
 					<select id="upperBody_input" name="upperBody_input onchange = "selectOption()">
-					<option>None</option></select></td></tr>
+					<option>None</option></select></td>
+					
+					<tr><td><label for="upperBody_color">Color:</label>
+					<select id="upperBody_color" name="upperBody_color onchange = "selectOption()">
+					<option>None</option></select></td>
+					
+					<tr><td><label for="upperBody_material">Material:</label>
+					<select id="upperBody_material" name="upperBody_material onchange = "selectOption()">
+					<option>None</option></select></td>
+					</tr>
 					
 					<tr><td><label for="lowerBody_input">Lower Body:</label>
 					<select id="lowerBody_input" name="lowerBody_input onchange = "selectOption()">
-					<option>None</option></select></td></tr>
+					<option>None</option></select></td>
+					
+					<tr><td><label for="lowerBody_color">Color:</label>
+					<select id="lowerBody_color" name="lowerBody_color onchange = "selectOption()">
+					<option>None</option></select></td>
+					
+					<tr><td><label for="lowerBody_material">Material:</label>
+					<select id="lowerBody_material" name="lowerBody_material onchange = "selectOption()">
+					<option>None</option></select></td>
+					
+					</tr>
 					
 					<tr><td><label for="Footwear_input">Foot wear:</label>
 					<select id="Footwear_input" name="Footwear_input onchange = "selectOption()">
@@ -368,10 +427,10 @@
 					
 					</tbody></table>
 					<br>
-					<button type="button" id="setRandomItems">Set Random items of clothes</button>
-					<br>
+					<button type="button" id="setRandomItems">Choose a Random Outfit</button>
+					<p></p>
 					<button type="button" id="setWardrobe">Wear these items of clothes</button>
-					<br>
+					<p></p>
 					</div>`;
 		DressMeUpSettings.innerHTML = tempHTML;
 		var editorSettings = document.getElementById('editor-settings');
@@ -386,6 +445,22 @@
 			//console.log(clothingItem);
 		})
 		
+		UpperItemColor.forEach((clothingItem) => {
+			var x = document.getElementById("upperBody_color"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+			//console.log(clothingItem);
+		})
+		
+		UpperItemMaterial.forEach((clothingItem) => {
+			var x = document.getElementById("upperBody_material"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+			//console.log(clothingItem);
+		})
+		
 		LowerItem.forEach((clothingItem) => {
 			var x = document.getElementById("lowerBody_input"); 
 			var option = document.createElement("option");
@@ -393,6 +468,24 @@
 			x.add(option);
 			//console.log(clothingItem);
 		})
+		
+		LowerItemColor.forEach((clothingItem) => {
+			var x = document.getElementById("lowerBody_color"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+			//console.log(clothingItem);
+		})
+		
+		LowerItemMaterial.forEach((clothingItem) => {
+			var x = document.getElementById("lowerBody_material"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+			//console.log(clothingItem);
+		})
+		
+		
 		
 		FootwearItem.forEach((clothingItem) => {
 			var x = document.getElementById("Footwear_input"); 
@@ -420,17 +513,40 @@
 		
 		console.log(promptField.value);
 		var upperItemofClothing = upperBody_input.value;
+		var upperItemofClothingColor = upperBody_color.value;
+		var upperItemofClothingMaterial = upperBody_material.value;
+		
 		var lowerItemofClothing = lowerBody_input.value;
+		var lowerItemofClothingColor = lowerBody_color.value;
+		var lowerItemofClothingMaterial = lowerBody_material.value;
+		
+		
 		var footwearClothing = Footwear_input.value;
 		var headwearClothing = Headwear_input.value;
-		var additionalPrompt = ' wearing ';
+		
+		var additionalPrompt = ' wearing';
 		var changeFlag = false;
 		
 		switch (upperItemofClothing) {
 			case 'None':
 				break;
 			default:
-				additionalPrompt = additionalPrompt + upperItemofClothing + ',';
+				switch (upperItemofClothingColor) {
+					case 'None':
+						break;
+					default:
+						additionalPrompt = additionalPrompt + ' ' + upperItemofClothingColor;
+						break;
+				}
+				additionalPrompt = additionalPrompt + ' ' + upperItemofClothing;
+				switch (upperItemofClothingMaterial) {
+					case 'None':
+						break;
+					default:
+						additionalPrompt = additionalPrompt + ' made of ' + upperItemofClothingMaterial;
+						break;
+				}
+				additionalPrompt = additionalPrompt + ',';
 				changeFlag = true;
 				break;
 		}
@@ -439,7 +555,23 @@
 			case 'None':
 				break;
 			default:
-				additionalPrompt = additionalPrompt + lowerItemofClothing + ',';
+				switch (lowerItemofClothingColor) {
+					case 'None':
+						break;
+					default:
+						additionalPrompt = additionalPrompt + ' ' + lowerItemofClothingColor;
+						break;
+				}
+				additionalPrompt = additionalPrompt + ' ' + lowerItemofClothing;
+				switch (lowerItemofClothingMaterial) {
+					case 'None':
+						break;
+					default:
+						additionalPrompt = additionalPrompt + ' made of ' + lowerItemofClothingMaterial;
+						break;
+				}
+			
+				additionalPrompt = additionalPrompt + ',';
 				changeFlag = true;
 				break;
 		}
@@ -476,17 +608,37 @@
 	function setRandomItems() {
 		console.log('Random items');
 		var lenUpperItem = UpperItem.length;
+		var lenUpperItemColor = UpperItemColor.length;
+		var lenUpperItemMaterial = UpperItemMaterial.length;
+		
 		var lenLowerItem = LowerItem.length;
+		var lenLowerItemColor = LowerItemColor.length;
+		var lenLowerItemMaterial = LowerItemMaterial.length;
+		
 		var lenFootwearItem = FootwearItem.length;
 		var lenHeadwearItem = HeadwearItem.length;
 		
 		var randomUpperItem = Math.floor(Math.random() * lenUpperItem);
+		var randomUpperItemColor = Math.floor(Math.random() * lenUpperItemColor);
+		var randomUpperItemMaterial = Math.floor(Math.random() * lenUpperItemMaterial);
+		
+		
 		var randomLowerItem = Math.floor(Math.random() * lenLowerItem);
+		var randomLowerItemColor = Math.floor(Math.random() * lenLowerItemColor);
+		var randomLowerItemMaterial = Math.floor(Math.random() * lenLowerItemMaterial);
+		
+		
 		var randomFootwearItem = Math.floor(Math.random() * lenFootwearItem);
 		var randomHeadwearItem = Math.floor(Math.random() * lenHeadwearItem);
 
 		document.getElementById ("upperBody_input").value = UpperItem[randomUpperItem];
+		document.getElementById ("upperBody_color").value = UpperItemColor[randomUpperItemColor];
+		document.getElementById ("upperBody_material").value = UpperItemMaterial[randomUpperItemMaterial];
+		
 		document.getElementById ("lowerBody_input").value = LowerItem[randomLowerItem];
+		document.getElementById ("lowerBody_color").value = LowerItemColor[randomLowerItemColor];
+		document.getElementById ("lowerBody_material").value = LowerItemMaterial[randomLowerItemMaterial];
+		
 		document.getElementById ("Footwear_input").value = FootwearItem[randomFootwearItem];
 		document.getElementById ("Headwear_input").value = HeadwearItem[randomHeadwearItem];
 		
