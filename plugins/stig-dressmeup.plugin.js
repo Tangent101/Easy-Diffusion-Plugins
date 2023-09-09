@@ -1,9 +1,9 @@
 /**
  * Dress Me Up
- * v.1.1, last updated: 08/09/2023
+ * v.1.1, last updated: 09/09/2023
  * By The Stig
  * 
- * 
+ * Thanks for the additional input by PlushBanshee
  *
  * Free to use with the CMDR2 Stable Diffusion UI.
  *  
@@ -37,11 +37,14 @@
               "Asymmetric top",
               "Balloon sleeve blouse",
               "Bell sleeve top",
+			  "Bikini top",
               "Blazer",
               "Blouse",
               "Bodysuit",
+			  "Bomber jacket",
               "Bow back blouse",
               "Bow tie blouse",
+			  "Bra",
               "Bustier",
               "Button-down shirt",
               "Camisole",
@@ -84,8 +87,10 @@
               "Mock neck top",
               "Off-the-shoulder top",
               "One-shoulder top",
+			  "Opened jacket",
               "Oversized button-down shirt",
               "Oversized hoodie",
+			  "Oversized shirt",
               "Oversized sweater",
               "Peasant blouse",
               "Peplum top",
@@ -111,6 +116,7 @@
               "Sheer blouse",
               "Silk blouse",
               "Sleeveless blouse",
+			  "Slip Dress",
               "Smocked top",
               "Strappy camisole",
               "Striped blouse",
@@ -141,6 +147,7 @@
               "Bell-bottom jumpsuit",
               "Bell-bottom pants",
               "Bermuda shorts",
+			  "Bikini bottoms",
               "Bootcut pants",
               "Boyfriend jeans",
               "Capri leggings",
@@ -158,6 +165,7 @@
               "Culotte skirt",
               "Culottes",
               "Denim culottes",
+			  "Denim jeans",
               "Denim paperbag shorts",
               "Denim shorts",
               "Denim skirt",
@@ -194,6 +202,7 @@
               "Paperbag waist pants",
               "Paperbag waist shorts",
               "Paperbag waist skirt",
+			  "Panties",
               "Pencil pants",
               "Pencil skirt",
               "Pleated culottes",
@@ -205,6 +214,7 @@
               "Pleated wide-leg trousers",
               "Pleather leggings",
               "Pleather leggings",
+			  "Ripped jeans",
               "Ruffle detail shorts",
               "Ruffle hem skirt",
               "Ruffle trim skor",
@@ -218,6 +228,7 @@
               "Skort (skirt with built-in shorts)",
               "Straight-leg cropped jeans",
               "Straight-leg pants",
+			  "Striped panties",
               "Tailored trousers",
               "Tiered maxi skirt",
               "Trousers",
@@ -240,6 +251,7 @@
               "Boat shoes",
               "Boots",
               "Chelsea boots",
+			  "Combat boots",
               "Espadrilles",
               "Flats",
               "Flip-flops",
@@ -247,6 +259,7 @@
               "Heels",
               "High-top sneakers",
               "Hiking boots",
+			  "Kneehighs",
               "Kitten heels",
               "Lace-up boots",
               "Loafers",
@@ -262,7 +275,10 @@
               "Slingback pumps",
               "Slip-on sneakers",
               "Sneakers",
+			  "Socks",
               "Stilettos",
+			  "Striped thighhighs",
+			  "Thighhighs",
               "Wedges"];
 	}
 	function createHeadwearItems() {
@@ -274,6 +290,7 @@
               "Bowler hat",
               "Bucket hat",
               "Cap",
+			  "Cigarette",
               "Cloche hat",
               "Cloche with a veil",
               "Cowboy hat",
@@ -296,6 +313,7 @@
               "Hairband",
               "Hairpins with decorative jewels",
               "Halo headband",
+			  "Hair scrunchie",
               "Hatpin",
               "Headband",
               "Headscarf",
@@ -307,6 +325,7 @@
               "Sailor hat",
               "Sinamay hat",
               "Straw hat",
+			  "Sunglasses",
               "Sun hat",
               "Sun visor",
               "Tiara",
@@ -314,6 +333,7 @@
               "Turban",
               "Turban headband",
               "Veil",
+			  "VR headset",
               "Wide-brimmed hat"];
 	}
 		
@@ -347,6 +367,8 @@
 					<option>None</option></select></td></tr>
 					
 					</tbody></table>
+					<br>
+					<button type="button" id="setRandomItems">Set Random items of clothes</button>
 					<br>
 					<button type="button" id="setWardrobe">Wear these items of clothes</button>
 					<br>
@@ -389,6 +411,7 @@
 		})
 		
 		document.getElementById ("setWardrobe").addEventListener ("click", setItems, false);
+		document.getElementById ("setRandomItems").addEventListener ("click", setRandomItems, false);
 			
 		
 	}
@@ -440,7 +463,6 @@
 		}
 		
 		
-		
 		switch (changeFlag) {
 			case false:
 				break;
@@ -450,6 +472,26 @@
 		}
 		
 	}
+	
+	function setRandomItems() {
+		console.log('Random items');
+		var lenUpperItem = UpperItem.length;
+		var lenLowerItem = LowerItem.length;
+		var lenFootwearItem = FootwearItem.length;
+		var lenHeadwearItem = HeadwearItem.length;
+		
+		var randomUpperItem = Math.floor(Math.random() * lenUpperItem);
+		var randomLowerItem = Math.floor(Math.random() * lenLowerItem);
+		var randomFootwearItem = Math.floor(Math.random() * lenFootwearItem);
+		var randomHeadwearItem = Math.floor(Math.random() * lenHeadwearItem);
+
+		document.getElementById ("upperBody_input").value = UpperItem[randomUpperItem];
+		document.getElementById ("lowerBody_input").value = LowerItem[randomLowerItem];
+		document.getElementById ("Footwear_input").value = FootwearItem[randomFootwearItem];
+		document.getElementById ("Headwear_input").value = HeadwearItem[randomHeadwearItem];
+		
+	}
+	
 
 
 
