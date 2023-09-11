@@ -15,6 +15,12 @@
     const ID_PREFIX = "TheStig-DressMeUp-plugin";
     console.log('%s Embed Metadata Version: %s', ID_PREFIX, VERSION);
 	
+	var wardrobeName = "Default Wardrobe";
+	var designerName = "The Stig";
+	
+	var defaultColors = [];
+	var defaultMaterials = [];
+	
 	var UpperItem = [];
 	var UpperItemColor = [];
 	var UpperItemMaterial = [];
@@ -28,6 +34,8 @@
 	var HeadwearItem = [];
 		
 	injectLoaderCSS();
+	createColors();
+	createMaterials();
 	createUpperItems();
 	createLowerItems();
 	createFootwearItems();
@@ -40,6 +48,54 @@
 	function injectLoaderCSS() {
 		console.log('** Inject CSS **');
 	}
+	
+	function createColors() {
+		defaultColors = [
+			"Black",
+			"Blue",
+			"Glitter",
+			"Green",
+			"Holographic",
+			"Iridescent",
+			"Metallic",
+			"Multicolored",
+			"Neon", 
+			"Pastel",
+			"Pink",
+			"Prismatic",
+			"Psychedelic",
+			"Purple",
+			"Red",
+			"Shiny",
+			"Translucent",
+			"Transparent",
+			"White",
+			"Yellow"
+		]
+	}
+	
+	function createMaterials() {
+		defaultMaterials = [
+			"Cotton",
+			"Crochet",
+			"Embroidered",
+			"Fishnet",
+			"Lace",
+			"Latex",
+			"Leather",
+			"Microfiber",
+			"Microfibre",
+			"PVC",
+			"Paper",
+			"Printed",
+			"Satin",
+			"Silk",
+			"Tin Foil",
+			"Velvet",
+			"Vinyl"
+		]
+	}
+	
 	
 	function createUpperItems() {
 		UpperItem = [ 
@@ -151,42 +207,9 @@
 			"Wrap top"
 			]
 			
-		UpperItemColor = [
-			"White",
-			"Black",
-			"Red",
-			"Blue",
-			"Green",
-			"Yellow",
-			"Pink",
-			"Purple",
-			"Multicolored",
-			"Neon", 
-			"Psychedelic",
-			"Pastel",
-			"Transparent",
-			"Translucent",
-			"Glitter",
-			"Holographic",
-			"Iridescent",
-			"Metallic",
-			"Prismatic",
-			"Shiny"
-			]
+		UpperItemColor = defaultColors;
 			
-		UpperItemMaterial = [
-			"Cotton",
-			"Lace",
-			"Latex",
-			"Leather",
-			"Paper",
-			"PVC",
-			"Satin",
-			"Silk",
-			"Tin Foil",
-			"Velvet",
-			"Vinyl"
-			]
+		UpperItemMaterial = defaultMaterials;
 	}
 	
 	function createLowerItems() {
@@ -294,42 +317,12 @@
 			"Wrap-front skirt",
 			"Wrap-style pants"
 			 ]
-		LowerItemColor = [
-			"White",
-			"Black",
-			"Red",
-			"Blue",
-			"Green",
-			"Yellow",
-			"Pink",
-			"Purple",
-			"Multicolored",
-			"Neon", 
-			"Psychedelic",
-			"Pastel",
-			"Transparent",
-			"Translucent",
-			"Glitter",
-			"Holographic",
-			"Iridescent",
-			"Metallic",
-			"Prismatic",
-			"Shiny"
-			]
-		LowerItemMaterial = [
-			"Cotton",
-			"Lace",
-			"Latex",
-			"Leather",
-			"Paper",
-			"PVC",
-			"Satin",
-			"Silk",
-			"Tin Foil",
-			"Velvet",
-			"Vinyl"
-			]
+			 
+		LowerItemColor = defaultColors;
+		
+		LowerItemMaterial = defaultMaterials;
 	}
+	
 	function createFootwearItems() {
 		FootwearItem = [
 			"Ankle boots",
@@ -436,11 +429,14 @@
 		DressMeUpSettings.classList.add('panel-box');
 		let tempHTML = `<h4 class="collapsible `+openCheck+`">Dress Me Up Settings <i id="reset-dmu-settings" class="fa-solid fa-arrow-rotate-left section-button"><span class="simple-tooltip top-left">Dress Me Up Settings</span></i></h4>
 			<div id="dmu-settings-entries" class="collapsible-content" style="display: block;margin-top:15px;">
-				<button type="button" id="importWardrobe">Import a Wardrobe</button>
-				<button type="button" id="exportWardrobe">Export a Wardrobe</button>
+				<p></p>
+				<input type="file" id="selectFiles" "value="Import" /><br />
+				<p></p>
+				<button type="button" id="importWardrobe">Import Wardrobe</button>
+				<p></p>
 				<p></p>
 				<table><tbody>
-					<tr><td><b class="settings-subheader">Default Wardrobe</b></td></tr>
+					<tr><td><b id="wardrobeHeader" class="settings-subheader">Options</b></td></tr>
 					
 					<tr><td><label for="Headwear_input">Head wear:</label>
 					<select id="Headwear_input" name="Headwear_input onchange = "selectOption()">
@@ -558,7 +554,8 @@
 		document.getElementById ("setWardrobe").addEventListener ("click", setItems, false);
 		document.getElementById ("setRandomItems").addEventListener ("click", setRandomItems, false);
 		document.getElementById ("importWardrobe").addEventListener ("click", importWardrobe, false);
-		document.getElementById ("exportWardrobe").addEventListener ("click", exportWardrobe, false);
+		document.getElementById ("wardrobeHeader").innerHTML = wardrobeName;
+
 	}
 	
 	function setItems() {
@@ -697,7 +694,52 @@
 	
 	function importWardrobe() {
 		console.log('Importing Wardrobe');
-		alert('Apologies but the Import Wardrobe routine is still under construction.');
+		//alert('Apologies but the Import Wardrobe routine is still under construction.');
+		var files = document.getElementById('selectFiles').files;
+		//console.log(files);
+		if (files.length <= 0) {
+			return false;
+		}
+		var fr = new FileReader();
+  
+		fr.onload = function(e) { 
+			//console.log(e);
+			var result = JSON.parse(e.target.result);
+			var formatted = JSON.stringify(result, null, 2);
+			//console.log('Text: ' + result.wardrobeID);
+			//console.log('Text: ' + result.creatorID);
+			//console.log(document.getElementById('wardrobeHeader').value);
+			document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + result.wardrobeID;
+			UpperItem = [];
+			document.getElementById('upperBody_input').innerText = null;
+			result.UpperBodyItems.forEach((clothingItem) => {
+				UpperItem.push(clothingItem);
+				var x = document.getElementById("upperBody_input");
+				var option = document.createElement("option");
+				option.text = clothingItem;
+				x.add(option);
+				
+
+			})
+			LowerItem = [];
+			document.getElementById('lowerBody_input').innerText = null;
+			result.LowerBodyItems.forEach((clothingItem) => {
+				LowerItem.push(clothingItem);
+				var x = document.getElementById("lowerBody_input");
+				var option = document.createElement("option");
+				option.text = clothingItem;
+				x.add(option);
+			})
+			
+				
+			
+			
+			
+		}
+  
+		fr.readAsText(files.item(0));
+		
+
 	}
 	
 	function exportWardrobe() {
