@@ -430,48 +430,61 @@
 		let tempHTML = `<h4 class="collapsible `+openCheck+`">Dress Me Up Settings <i id="reset-dmu-settings" class="fa-solid fa-arrow-rotate-left section-button"><span class="simple-tooltip top-left">Dress Me Up Settings</span></i></h4>
 			<div id="dmu-settings-entries" class="collapsible-content" style="display: block;margin-top:15px;">
 				<p></p>
-				<input type="file" id="selectFiles" "value="Import" /><br />
+				<button style="display:block;width:120px; height:30px;" onclick="document.getElementById('selectFiles').click()">Import Wardrobe</button>
+				<input type='file' id="selectFiles" style="display:none" onchange="document.getElementById('importWardrobe').click()">
 				<p></p>
-				<button type="button" id="importWardrobe">Import Wardrobe</button>
+				<button style="display:none" type="button" id="importWardrobe">Import Wardrobe</button>
 				<p></p>
 				<p></p>
 				<table><tbody>
 					<tr><td><b id="wardrobeHeader" class="settings-subheader">Options</b></td></tr>
 					
-					<tr><td><label for="Headwear_input">Head wear:</label>
+					<tr><td>
+					<button type="button" id=lockHeadwear" <i class="fas fa-unlock-alt"></i></button>
+					<label for="Headwear_input">Head wear:</label>
 					<select id="Headwear_input" name="Headwear_input onchange = "selectOption()">
-					<option>None</option></select></td></tr>
+					<option>None</option></select>
+					</td></tr>
 					
-					<tr><td><label for="upperBody_input">Upper Body:</label>
+					<tr><td>
+					<button type="button" id=lockUpper" <i class="fas fa-unlock-alt"></i></button>
+					<label for="upperBody_input">Upper Body:</label>
 					<select id="upperBody_input" name="upperBody_input onchange = "selectOption()">
-					<option>None</option></select></td>
+					<option>None</option></select>
+					</td>
 					
-					<tr><td><label for="upperBody_color">Color:</label>
-					<select id="upperBody_color" name="upperBody_color onchange = "selectOption()">
-					<option>None</option></select></td>
-					
-					<tr><td><label for="upperBody_material">Material:</label>
+					<tr><td>
+					<label for="upperBody_material">Material:</label>
 					<select id="upperBody_material" name="upperBody_material onchange = "selectOption()">
-					<option>None</option></select></td>
+					<option>None</option></select>
+					<label for="upperBody_color">Color:</label>
+					<select id="upperBody_color" name="upperBody_color onchange = "selectOption()">
+					<option>None</option></select>
+					</td>
 					</tr>
 					
-					<tr><td><label for="lowerBody_input">Lower Body:</label>
+					<tr><td>
+					<button type="button" id=lockLower" <i class="fas fa-unlock-alt"></i></button>
+					<label for="lowerBody_input">Lower Body:</label>
 					<select id="lowerBody_input" name="lowerBody_input onchange = "selectOption()">
-					<option>None</option></select></td>
-					
-					<tr><td><label for="lowerBody_color">Color:</label>
-					<select id="lowerBody_color" name="lowerBody_color onchange = "selectOption()">
-					<option>None</option></select></td>
+					<option>None</option></select>
+					</td>
 					
 					<tr><td><label for="lowerBody_material">Material:</label>
 					<select id="lowerBody_material" name="lowerBody_material onchange = "selectOption()">
-					<option>None</option></select></td>
-					
+					<option>None</option></select>
+					<label for="lowerBody_color">Color:</label>
+					<select id="lowerBody_color" name="lowerBody_color onchange = "selectOption()">
+					<option>None</option></select>
+					</td>
 					</tr>
 					
-					<tr><td><label for="Footwear_input">Foot wear:</label>
+					<tr><td>
+					<button type="button" id=lockFootwear" <i class="fas fa-unlock-alt"></i></button>
+					<label for="Footwear_input">Foot wear:</label>
 					<select id="Footwear_input" name="Footwear_input onchange = "selectOption()">
-					<option>None</option></select></td></tr>
+					<option>None</option></select>
+					</td></tr>
 					
 					</tbody></table>
 					<br>
@@ -554,6 +567,8 @@
 		document.getElementById ("setWardrobe").addEventListener ("click", setItems, false);
 		document.getElementById ("setRandomItems").addEventListener ("click", setRandomItems, false);
 		document.getElementById ("importWardrobe").addEventListener ("click", importWardrobe, false);
+		document.getElementById ("selectFiles").addEventListener ("onchange", importWardrobe,false);
+		
 		document.getElementById ("wardrobeHeader").innerHTML = wardrobeName;
 
 	}
@@ -694,9 +709,10 @@
 	
 	function importWardrobe() {
 		console.log('Importing Wardrobe');
+		//document.getElementById("selectFiles").click();
 		//alert('Apologies but the Import Wardrobe routine is still under construction.');
 		var files = document.getElementById('selectFiles').files;
-		//console.log(files);
+		console.log(files);
 		if (files.length <= 0) {
 			return false;
 		}
@@ -746,6 +762,10 @@
 		console.log('Exporting Wardrobe');
 		alert('Apologies but the Export Wardrobe routine is still under construction.');
 	}
+	
+	function inform(){
+       console.log('Filename has been changed');
+    }
 	
 
 
