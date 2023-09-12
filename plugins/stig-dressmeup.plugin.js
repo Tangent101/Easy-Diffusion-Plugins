@@ -24,14 +24,18 @@
 	var UpperItem = [];
 	var UpperItemColor = [];
 	var UpperItemMaterial = [];
+	var statusUpper = false;
 	
 	var LowerItem = [];
 	var LowerItemColor = [];
 	var LowerItemMaterial = [];
+	var statusLower = false;
 
 	var FootwearItem = [];
+	var statusFootwear = false;
 	
 	var HeadwearItem = [];
+	var statusHeadwear = false;
 		
 	injectLoaderCSS();
 	createColors();
@@ -440,14 +444,14 @@
 					<tr><td><b id="wardrobeHeader" class="settings-subheader">Options</b></td></tr>
 					
 					<tr><td>
-					<button type="button" id=lockHeadwear" <i class="fas fa-unlock-alt"></i></button>
+					<button type="button" id="lockHeadwear" <i class="fas fa-unlock-alt"></i></button>
 					<label for="Headwear_input">Head wear:</label>
 					<select id="Headwear_input" name="Headwear_input onchange = "selectOption()">
 					<option>None</option></select>
 					</td></tr>
 					
 					<tr><td>
-					<button type="button" id=lockUpper" <i class="fas fa-unlock-alt"></i></button>
+					<button type="button" id="lockUpper" <i class="fas fa-unlock-alt"></i></button>
 					<label for="upperBody_input">Upper Body:</label>
 					<select id="upperBody_input" name="upperBody_input onchange = "selectOption()">
 					<option>None</option></select>
@@ -464,7 +468,7 @@
 					</tr>
 					
 					<tr><td>
-					<button type="button" id=lockLower" <i class="fas fa-unlock-alt"></i></button>
+					<button type="button" id="lockLower" <i class="fas fa-unlock-alt"></i></button>
 					<label for="lowerBody_input">Lower Body:</label>
 					<select id="lowerBody_input" name="lowerBody_input onchange = "selectOption()">
 					<option>None</option></select>
@@ -480,7 +484,7 @@
 					</tr>
 					
 					<tr><td>
-					<button type="button" id=lockFootwear" <i class="fas fa-unlock-alt"></i></button>
+					<button type="button" id="lockFootwear" <i class="fas fa-unlock-alt"></i></button>
 					<label for="Footwear_input">Foot wear:</label>
 					<select id="Footwear_input" name="Footwear_input onchange = "selectOption()">
 					<option>None</option></select>
@@ -567,6 +571,12 @@
 		document.getElementById ("setWardrobe").addEventListener ("click", setItems, false);
 		document.getElementById ("setRandomItems").addEventListener ("click", setRandomItems, false);
 		document.getElementById ("importWardrobe").addEventListener ("click", importWardrobe, false);
+		document.getElementById ("lockHeadwear").addEventListener ("click", lockHeadwear, false);
+		document.getElementById ("lockUpper").addEventListener ("click", lockUpper, false);
+		document.getElementById ("lockLower").addEventListener ("click", lockLower, false);
+		document.getElementById ("lockFootwear").addEventListener ("click", lockFootwear, false);
+		
+		
 		document.getElementById ("selectFiles").addEventListener ("onchange", importWardrobe,false);
 		
 		document.getElementById ("wardrobeHeader").innerHTML = wardrobeName;
@@ -669,7 +679,6 @@
 	}
 	
 	function setRandomItems() {
-		console.log('Random items');
 		var lenUpperItem = UpperItem.length;
 		var lenUpperItemColor = UpperItemColor.length;
 		var lenUpperItemMaterial = UpperItemMaterial.length;
@@ -693,70 +702,104 @@
 		
 		var randomFootwearItem = Math.floor(Math.random() * lenFootwearItem);
 		var randomHeadwearItem = Math.floor(Math.random() * lenHeadwearItem);
-
-		document.getElementById ("upperBody_input").value = UpperItem[randomUpperItem];
-		document.getElementById ("upperBody_color").value = UpperItemColor[randomUpperItemColor];
-		document.getElementById ("upperBody_material").value = UpperItemMaterial[randomUpperItemMaterial];
 		
-		document.getElementById ("lowerBody_input").value = LowerItem[randomLowerItem];
-		document.getElementById ("lowerBody_color").value = LowerItemColor[randomLowerItemColor];
-		document.getElementById ("lowerBody_material").value = LowerItemMaterial[randomLowerItemMaterial];
+		switch (statusUpper) {
+			case true:
+				break;
+			case false:
+				document.getElementById ("upperBody_input").value = UpperItem[randomUpperItem];
+				document.getElementById ("upperBody_color").value = UpperItemColor[randomUpperItemColor];
+				document.getElementById ("upperBody_material").value = UpperItemMaterial[randomUpperItemMaterial];
+				break;
+		}
 		
-		document.getElementById ("Footwear_input").value = FootwearItem[randomFootwearItem];
-		document.getElementById ("Headwear_input").value = HeadwearItem[randomHeadwearItem];
+		switch (statusLower) {
+			case true:
+				break;
+			case false:
+				document.getElementById ("lowerBody_input").value = LowerItem[randomLowerItem];
+				document.getElementById ("lowerBody_color").value = LowerItemColor[randomLowerItemColor];
+				document.getElementById ("lowerBody_material").value = LowerItemMaterial[randomLowerItemMaterial];
+				break;
+		}
+		switch (statusFootwear) {
+			case true:
+				break;
+			case false:
+				document.getElementById ("Footwear_input").value = FootwearItem[randomFootwearItem];
+				break;
+		}
+		switch (statusHeadwear) {
+			case true:
+				break;
+			case false:
+				document.getElementById ("Headwear_input").value = HeadwearItem[randomHeadwearItem];
+				break;
+		}
 		
 	}
 	
 	function importWardrobe() {
 		console.log('Importing Wardrobe');
-		//document.getElementById("selectFiles").click();
-		//alert('Apologies but the Import Wardrobe routine is still under construction.');
 		var files = document.getElementById('selectFiles').files;
 		console.log(files);
 		if (files.length <= 0) {
 			return false;
 		}
+		createNewUpper();
+		createNewLower();
+		resetLocks();
 		var fr = new FileReader();
   
 		fr.onload = function(e) { 
-			//console.log(e);
 			var result = JSON.parse(e.target.result);
 			var formatted = JSON.stringify(result, null, 2);
-			//console.log('Text: ' + result.wardrobeID);
-			//console.log('Text: ' + result.creatorID);
-			//console.log(document.getElementById('wardrobeHeader').value);
 			document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + result.wardrobeID;
-			UpperItem = [];
-			document.getElementById('upperBody_input').innerText = null;
+			//UpperItem = [];
+			//document.getElementById('upperBody_input').innerText = null;
 			result.UpperBodyItems.forEach((clothingItem) => {
 				UpperItem.push(clothingItem);
 				var x = document.getElementById("upperBody_input");
 				var option = document.createElement("option");
 				option.text = clothingItem;
 				x.add(option);
-				
-
 			})
-			LowerItem = [];
-			document.getElementById('lowerBody_input').innerText = null;
+			
+			//LowerItem = [];
+			//document.getElementById('lowerBody_input').innerText = null;
 			result.LowerBodyItems.forEach((clothingItem) => {
 				LowerItem.push(clothingItem);
 				var x = document.getElementById("lowerBody_input");
 				var option = document.createElement("option");
 				option.text = clothingItem;
 				x.add(option);
-			})
-			
-				
-			
-			
-			
+			})			
 		}
-  
 		fr.readAsText(files.item(0));
-		
-
 	}
+	
+	function createNewUpper() {
+		//console.log('Creating entry');
+		UpperItem = [];
+		document.getElementById('upperBody_input').innerText = null;
+		var x = document.getElementById("upperBody_input");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+	}
+	
+	function createNewLower() {
+		console.log('Creating New Lower entry');
+		LowerItem = [];
+		document.getElementById('lowerBody_input').innerText = null;
+		var x = document.getElementById("lowerBody_input");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+	}
+	
+	
+	
 	
 	function exportWardrobe() {
 		console.log('Exporting Wardrobe');
@@ -766,6 +809,89 @@
 	function inform(){
        console.log('Filename has been changed');
     }
+	function lockHeadwear() {
+		switch (statusHeadwear) {
+			case false:
+				statusHeadwear = true;
+				document.getElementById("Headwear_input").disabled = true;  
+				document.getElementById ("lockHeadwear").setAttribute("class","fas fa-key");
+				break;
+			case true:
+				statusHeadwear = false;
+				document.getElementById("Headwear_input").disabled = false;
+				document.getElementById ("lockHeadwear").setAttribute("class","fas fa-unlock-alt");
+				break;
+		}
+	}
+	
+	function lockUpper() {
+		switch (statusUpper) {
+			case false:
+				statusUpper = true;
+				document.getElementById("upperBody_input").disabled = true; 
+				document.getElementById("upperBody_material").disabled = true; 
+				document.getElementById("upperBody_color").disabled = true;
+				document.getElementById ("lockUpper").setAttribute("class","fas fa-key");
+				break;
+			case true:
+				statusUpper = false;
+				document.getElementById("upperBody_input").disabled = false;
+				document.getElementById("upperBody_material").disabled = false; 
+				document.getElementById("upperBody_color").disabled = false;
+				document.getElementById ("lockUpper").setAttribute("class","fas fa-unlock-alt");
+				break;
+		}
+	}
+	
+	function lockLower() {
+		switch (statusLower) {
+			case false:
+				statusLower = true;
+				document.getElementById("lowerBody_input").disabled = true; 
+				document.getElementById("lowerBody_material").disabled = true; 
+				document.getElementById("lowerBody_color").disabled = true;
+				document.getElementById ("lockLower").setAttribute("class","fas fa-key");
+				break;
+			case true:
+				statusLower = false;
+				document.getElementById("lowerBody_input").disabled = false;
+				document.getElementById("lowerBody_material").disabled = false; 
+				document.getElementById("lowerBody_color").disabled = false;
+				document.getElementById ("lockLower").setAttribute("class","fas fa-unlock-alt");
+				break;
+		}
+	}
+	
+	function lockFootwear() {
+		switch (statusFootwear) {
+			case false:
+				statusFootwear = true;
+				document.getElementById("Footwear_input").disabled = true; 
+				document.getElementById ("lockFootwear").setAttribute("class","fas fa-key");
+				break;
+			case true:
+				statusFootwear = false;
+				document.getElementById("Footwear_input").disabled = false;
+				document.getElementById ("lockFootwear").setAttribute("class","fas fa-unlock-alt");
+				break;
+		}
+	}
+	
+	function resetLocks() {
+		//console.log('Resetting Locks');
+		statusUpper = true;
+		statusLower = true;
+		statusFootwear = true;
+		statusHeadwear = true;
+		lockUpper();
+		lockLower();
+		lockFootwear();
+		lockHeadwear();		
+	}
+	
+	
+	
+	
 	
 
 
