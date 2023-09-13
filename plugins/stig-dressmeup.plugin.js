@@ -1,11 +1,12 @@
 /**
  * Dress Me Up
- * v.1.1, last updated: 09/09/2023
+ * v.1.1, last updated: 13/09/2023
  * By The Stig
  * 
  * Thanks for the additional input by the following:
  * PlushBanshee, Scriven, Yushaw12
- * who's help has been really appreciated
+ * and anyone else that has assisted.
+ * Your help has been really appreciated
  *
  * Free to use with the CMDR2 Stable Diffusion UI.
  *  
@@ -661,7 +662,7 @@
 			case 'None':
 				break;
 			default:
-				additionalPrompt = additionalPrompt + footwearClothing + ',';
+				additionalPrompt = additionalPrompt + ' ' + footwearClothing + ',';
 				changeFlag = true;
 				break;
 		}
@@ -670,7 +671,7 @@
 			case 'None':
 				break;
 			default:
-				additionalPrompt = additionalPrompt + headwearClothing + ',';
+				additionalPrompt = additionalPrompt + ' ' + headwearClothing + ',';
 				changeFlag = true;
 				break;
 		}
