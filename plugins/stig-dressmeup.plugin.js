@@ -1,12 +1,16 @@
 /**
  * Dress Me Up
- * v.1.1, last updated: 13/09/2023
+ * v.1.1, last updated: 14/09/2023
  * By The Stig
  * 
  * Thanks for the additional input by the following:
  * PlushBanshee, Scriven, Yushaw12
  * and anyone else that has assisted.
  * Your help has been really appreciated
+ *
+ * Change Log
+ * 14/09/2023 Added Option to change Footwear Material and Color
+ * 14/09/2023 Added Option to change Headwear Material and Color
  *
  * Free to use with the CMDR2 Stable Diffusion UI.
  *  
@@ -33,9 +37,13 @@
 	var statusLower = false;
 
 	var FootwearItem = [];
+	var FootwearItemColor = [];
+	var FootwearItemMaterial = [];
 	var statusFootwear = false;
 	
 	var HeadwearItem = [];
+	var HeadwearItemColor = [];
+	var HeadwearItemMaterial = [];
 	var statusHeadwear = false;
 		
 	injectLoaderCSS();
@@ -366,7 +374,11 @@
 			"Thighhighs",
 			"Wedges"
 			]
+		FootwearItemColor = defaultColors;
+					
+		FootwearItemMaterial = defaultMaterials;
 	}
+	
 	function createHeadwearItems() {
 		HeadwearItem = [
 			"Bandana",
@@ -423,6 +435,9 @@
 			"VR headset",
 			"Wide-brimmed hat"
 			]
+		HeadwearItemColor = defaultColors;
+			
+		HeadwearItemMaterial = defaultMaterials;
 	}
 		
 	function addDressMeUpSettings() {
@@ -446,7 +461,15 @@
 					<p></P>
 					<button type="button" id="lockHeadwear" <i class="fas fa-unlock-alt"></i></button>
 					<label for="Headwear_input">Head wear:</label>
-					<select id="Headwear_input" name="Headwear_input onchange = "selectOption()">
+					<select id="Headwear_input" name="Headwear_input" onchange = "selectOption()">
+					<option>None</option></select>
+					</td>
+					<tr><td>
+					<label for="Headwear_material">Material:</label>
+					<select id="Headwear_material" name="Headwear_material" onchange = "selectOption()">
+					<option>None</option></select>
+					<label for="Headwear_color">Color:</label>
+					<select id="Headwear_color" name="Headwear_color" onchange = "selectOption()">
 					<option>None</option></select>
 					<p></P>
 					</td>
@@ -456,16 +479,16 @@
 					
 					<button type="button" id="lockUpper" <i class="fas fa-unlock-alt"></i></button>
 					<label for="upperBody_input">Upper Body:</label>
-					<select id="upperBody_input" name="upperBody_input onchange = "selectOption()">
+					<select id="upperBody_input" name="upperBody_input" onchange = "selectOption()">
 					<option>None</option></select>
 					</td>
 					
 					<tr><td>
 					<label for="upperBody_material">Material:</label>
-					<select id="upperBody_material" name="upperBody_material onchange = "selectOption()">
+					<select id="upperBody_material" name="upperBody_material" onchange = "selectOption()">
 					<option>None</option></select>
 					<label for="upperBody_color">Color:</label>
-					<select id="upperBody_color" name="upperBody_color onchange = "selectOption()">
+					<select id="upperBody_color" name="upperBody_color" onchange = "selectOption()">
 					<option>None</option></select>
 					<p></P>
 					</td>
@@ -475,15 +498,15 @@
 					
 					<button type="button" id="lockLower" <i class="fas fa-unlock-alt"></i></button>
 					<label for="lowerBody_input">Lower Body:</label>
-					<select id="lowerBody_input" name="lowerBody_input onchange = "selectOption()">
+					<select id="lowerBody_input" name="lowerBody_input" onchange = "selectOption()">
 					<option>None</option></select>
 					</td>
 					
 					<tr><td><label for="lowerBody_material">Material:</label>
-					<select id="lowerBody_material" name="lowerBody_material onchange = "selectOption()">
+					<select id="lowerBody_material" name="lowerBody_material" onchange = "selectOption()">
 					<option>None</option></select>
 					<label for="lowerBody_color">Color:</label>
-					<select id="lowerBody_color" name="lowerBody_color onchange = "selectOption()">
+					<select id="lowerBody_color" name="lowerBody_color" onchange = "selectOption()">
 					<option>None</option></select>
 					<p></P>
 					</td>
@@ -492,7 +515,15 @@
 					<tr><td>
 					<button type="button" id="lockFootwear" <i class="fas fa-unlock-alt"></i></button>
 					<label for="Footwear_input">Foot wear:</label>
-					<select id="Footwear_input" name="Footwear_input onchange = "selectOption()">
+					<select id="Footwear_input" name="Footwear_input" onchange = "selectOption()">
+					<option>None</option></select>
+					</td>
+					
+					<tr><td><label for="Footwear_material">Material:</label>
+					<select id="Footwear_material" name="Footwear_material" onchange = "selectOption()">
+					<option>None</option></select>
+					<label for="Footwear_color">Color:</label>
+					<select id="Footwear_color" name="Footwear_color" onchange = "selectOption()">
 					<option>None</option></select>
 					<p></P>
 					<hr>
@@ -569,8 +600,42 @@
 			//console.log(clothingItem);
 		})
 		
+		FootwearItemColor.forEach((clothingItem) => {
+			var x = document.getElementById("Footwear_color"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+			//console.log(clothingItem);
+		})
+		
+		FootwearItemMaterial.forEach((clothingItem) => {
+			var x = document.getElementById("Footwear_material"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+			//console.log(clothingItem);
+		})
+		
+		
+		
 		HeadwearItem.forEach((clothingItem) => {
 			var x = document.getElementById("Headwear_input"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+			//console.log(clothingItem);
+		})
+		
+		HeadwearItemColor.forEach((clothingItem) => {
+			var x = document.getElementById("Headwear_color"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+			//console.log(clothingItem);
+		})
+		
+		HeadwearItemMaterial.forEach((clothingItem) => {
+			var x = document.getElementById("Headwear_material"); 
 			var option = document.createElement("option");
 			option.text = clothingItem;
 			x.add(option);
@@ -604,7 +669,12 @@
 		
 		
 		var footwearClothing = Footwear_input.value;
+		var footwearClothingColor = Footwear_color.value;
+		var footwearClothingMaterial = Footwear_material.value;
+		
 		var headwearClothing = Headwear_input.value;
+		var headwearClothingColor = Headwear_color.value;
+		var headwearClothingMaterial = Headwear_material.value;
 		
 		var additionalPrompt = ' wearing';
 		var changeFlag = false;
@@ -662,7 +732,22 @@
 			case 'None':
 				break;
 			default:
-				additionalPrompt = additionalPrompt + ' ' + footwearClothing + ',';
+				switch (footwearClothingColor) {
+						case 'None':
+							break;
+						default:
+							additionalPrompt = additionalPrompt + ' ' + footwearClothingColor;
+							break;
+				}
+				additionalPrompt = additionalPrompt + ' ' + footwearClothing;
+				switch (footwearClothingMaterial) {
+					case 'None':
+						break;
+					default:
+						additionalPrompt = additionalPrompt + ' made of ' + footwearClothingMaterial;
+						break;
+				}
+				additionalPrompt = additionalPrompt + ',';
 				changeFlag = true;
 				break;
 		}
@@ -671,7 +756,22 @@
 			case 'None':
 				break;
 			default:
-				additionalPrompt = additionalPrompt + ' ' + headwearClothing + ',';
+				switch (headwearClothingColor) {
+						case 'None':
+							break;
+						default:
+							additionalPrompt = additionalPrompt + ' ' + headwearClothingColor;
+							break;
+				}
+				additionalPrompt = additionalPrompt + ' ' + headwearClothing;
+				switch (headwearClothingMaterial) {
+					case 'None':
+						break;
+					default:
+						additionalPrompt = additionalPrompt + ' made of ' + headwearClothingMaterial;
+						break;
+				}
+				additionalPrompt = additionalPrompt + ',';
 				changeFlag = true;
 				break;
 		}
@@ -697,7 +797,12 @@
 		var lenLowerItemMaterial = LowerItemMaterial.length;
 		
 		var lenFootwearItem = FootwearItem.length;
+		var lenFootwearItemColor = FootwearItemColor.length;
+		var lenFootwearItemMaterial = FootwearItemMaterial.length;
+		
 		var lenHeadwearItem = HeadwearItem.length;
+		var lenHeadwearItemColor = HeadwearItemColor.length;
+		var lenHeadwearItemMaterial = HeadwearItemMaterial.length;
 		
 		var randomUpperItem = Math.floor(Math.random() * lenUpperItem);
 		var randomUpperItemColor = Math.floor(Math.random() * lenUpperItemColor);
@@ -710,7 +815,13 @@
 		
 		
 		var randomFootwearItem = Math.floor(Math.random() * lenFootwearItem);
+		var randomFootwearItemColor = Math.floor(Math.random() * lenFootwearItemColor);
+		var randomFootwearItemMaterial = Math.floor(Math.random() * lenFootwearItemMaterial);
+		
 		var randomHeadwearItem = Math.floor(Math.random() * lenHeadwearItem);
+		var randomHeadwearItemColor = Math.floor(Math.random() * lenHeadwearItemColor);
+		var randomHeadwearItemMaterial = Math.floor(Math.random() * lenHeadwearItemMaterial);
+		
 		
 		switch (statusUpper) {
 			case true:
@@ -736,6 +847,8 @@
 				break;
 			case false:
 				document.getElementById ("Footwear_input").value = FootwearItem[randomFootwearItem];
+				document.getElementById ("Footwear_color").value = FootwearItemColor[randomFootwearItemColor];
+				document.getElementById ("Footwear_material").value = FootwearItemMaterial[randomFootwearItemMaterial];
 				break;
 		}
 		switch (statusHeadwear) {
@@ -743,6 +856,8 @@
 				break;
 			case false:
 				document.getElementById ("Headwear_input").value = HeadwearItem[randomHeadwearItem];
+				document.getElementById ("Headwear_color").value = HeadwearItemColor[randomHeadwearItemColor];
+				document.getElementById ("Headwear_material").value = HeadwearItemMaterial[randomHeadwearItemMaterial];
 				break;
 		}
 		
@@ -822,12 +937,16 @@
 		switch (statusHeadwear) {
 			case false:
 				statusHeadwear = true;
-				document.getElementById("Headwear_input").disabled = true;  
+				document.getElementById("Headwear_input").disabled = true; 
+				document.getElementById("Headwear_material").disabled = true; 	
+				document.getElementById("Headwear_color").disabled = true;
 				document.getElementById ("lockHeadwear").setAttribute("class","fas fa-key");
 				break;
 			case true:
 				statusHeadwear = false;
 				document.getElementById("Headwear_input").disabled = false;
+				document.getElementById("Headwear_material").disabled = false; 
+				document.getElementById("Headwear_color").disabled = false;
 				document.getElementById ("lockHeadwear").setAttribute("class","fas fa-unlock-alt");
 				break;
 		}
@@ -876,11 +995,15 @@
 			case false:
 				statusFootwear = true;
 				document.getElementById("Footwear_input").disabled = true; 
+				document.getElementById("Footwear_material").disabled = true; 
+				document.getElementById("Footwear_color").disabled = true;
 				document.getElementById ("lockFootwear").setAttribute("class","fas fa-key");
 				break;
 			case true:
 				statusFootwear = false;
 				document.getElementById("Footwear_input").disabled = false;
+				document.getElementById("Footwear_material").disabled = false; 
+				document.getElementById("Footwear_color").disabled = false;
 				document.getElementById ("lockFootwear").setAttribute("class","fas fa-unlock-alt");
 				break;
 		}
