@@ -9,6 +9,7 @@
  * Your help has been really appreciated
  *
  * Change Log
+ * 14/09/2023 Added Reset to Default Wardrobe
  * 14/09/2023 Added Accessories
  * 14/09/2023 Added Option to change Footwear Material and Color
  * 14/09/2023 Added Option to change Headwear Material and Color
@@ -449,7 +450,26 @@
 			"Newspaper",
 			"Carrot",
 			"Handbag",
-			"Cigarette"
+			"Cigarette",
+			"Groceries",
+			"Briefcase",
+			"Magical Staff",
+			"Laptop",
+			"Computer Mouse",
+			"Bowling Ball",
+			"Football",
+			"Tennis Raquet",
+			"ID Card",
+			"Banana",
+			"Drink",
+			"iPad",
+			"Mobile Phone",
+			"Telephone",
+			"HotDog",
+			"Bic Mac",
+			"Boombox",
+			"Cocktail",
+			"Violin"
 			]
 		AccessoryItemColor = defaultColors;		
 		AccessoryItemMaterial = defaultMaterials;
@@ -463,11 +483,17 @@
 		var DressMeUpSettings = document.createElement('div');
 		DressMeUpSettings.id = 'DressMeUp-settings';
 		DressMeUpSettings.classList.add('panel-box');
-		let tempHTML = `<h4 class="collapsible `+openCheck+`">Dress Me Up Settings <i id="reset-dmu-settings" class="fa-solid fa-arrow-rotate-left section-button"><span class="simple-tooltip top-left">Dress Me Up Settings</span></i></h4>
+		
+		//<h4 class="collapsible `+openCheck+`">Dress Me Up Settings <i id="reset-dmu-settings" class="fa-solid fa-arrow-rotate-left section-button"><span class="simple-tooltip top-left">Reset to Default Wardrobe</span></i></h4>
+		
+		
+		let tempHTML = `
+			<h4 class="collapsible `+ openCheck +`">Dress Me Up Settings</h4>
 			<div id="dmu-settings-entries" class="collapsible-content" style="display: block;margin-top:15px;">
 				<button style="display:block;width:120px; height:30px;" onclick="document.getElementById('selectFiles').click()">Import Wardrobe</button>
 				<input type='file' id="selectFiles" style="display:none" onchange="document.getElementById('importWardrobe').click()">
 				<button style="display:none" type="button" id="importWardrobe">Import Wardrobe</button>
+				<button type="button" id="setDefaultWardrobe">Reset to Default Wardrobe</button>
 				<p></p>
 
 				<table><tbody>
@@ -669,8 +695,24 @@
 			x.add(option);
 		})
 		
+		AccessoryItemColor.forEach((clothingItem) => {
+			var x = document.getElementById("Accessory_color"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
+		
+		AccessoryItemMaterial.forEach((clothingItem) => {
+			var x = document.getElementById("Accessory_material"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
 		
 		
+		//document.querySelector('#reset-dmu-settings').addEventListener('click', resetWardrobe);
+		
+		document.getElementById ("setDefaultWardrobe").addEventListener ("click", resetWardrobe, false);
 		document.getElementById ("setWardrobe").addEventListener ("click", setItems, false);
 		document.getElementById ("setRandomItems").addEventListener ("click", setRandomItems, false);
 		document.getElementById ("importWardrobe").addEventListener ("click", importWardrobe, false);
@@ -679,6 +721,7 @@
 		document.getElementById ("lockLower").addEventListener ("click", lockLower, false);
 		document.getElementById ("lockFootwear").addEventListener ("click", lockFootwear, false);
 		document.getElementById ("lockAccessory").addEventListener ("click", lockAccessory, false);
+		
 		
 		
 		document.getElementById ("selectFiles").addEventListener ("onchange", importWardrobe,false);
@@ -870,6 +913,165 @@
 		
 	}
 	
+	function resetWardrobe(){
+		console.log('Resetting Wardrobe');
+		wardrobeName = "Default Wardrobe";
+		designerName = "The Stig";
+	
+		defaultColors = [];
+		defaultMaterials = [];
+	
+		UpperItem = [];
+		UpperItemColor = [];
+		UpperItemMaterial = [];
+		statusUpper = false;
+	
+		LowerItem = [];
+		LowerItemColor = [];
+		LowerItemMaterial = [];
+		statusLower = false;
+
+		FootwearItem = [];
+		FootwearItemColor = [];
+		FootwearItemMaterial = [];
+		statusFootwear = false;
+	
+		HeadwearItem = [];
+		HeadwearItemColor = [];
+		HeadwearItemMaterial = [];
+		statusHeadwear = false;
+	
+		AccessoryItem = [];
+		AccessoryItemColor = [];
+		AccessoryItemMaterial = [];
+		statusAccessory = false;
+
+		createColors();
+		createMaterials();
+		createNewUpper();
+		createNewLower();
+		createNewHeadwear();
+		createNewFootwear();
+		createNewAccessories();
+		
+		createUpperItems();
+		createLowerItems();
+		createFootwearItems();
+		createHeadwearItems();
+		createAccessoryItems();
+		
+		resetLocks();
+		
+		document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + wardrobeName;
+	
+		UpperItem.forEach((clothingItem) => {
+			var x = document.getElementById("upperBody_input"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
+		
+		UpperItemColor.forEach((clothingItem) => {
+			var x = document.getElementById("upperBody_color"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
+		
+		UpperItemMaterial.forEach((clothingItem) => {
+			var x = document.getElementById("upperBody_material"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
+		
+		LowerItem.forEach((clothingItem) => {
+			var x = document.getElementById("lowerBody_input"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
+		
+		LowerItemColor.forEach((clothingItem) => {
+			var x = document.getElementById("lowerBody_color"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
+		
+		LowerItemMaterial.forEach((clothingItem) => {
+			var x = document.getElementById("lowerBody_material"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
+				
+		FootwearItem.forEach((clothingItem) => {
+			var x = document.getElementById("Footwear_input"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
+		
+		FootwearItemColor.forEach((clothingItem) => {
+			var x = document.getElementById("Footwear_color"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
+		
+		FootwearItemMaterial.forEach((clothingItem) => {
+			var x = document.getElementById("Footwear_material"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})		
+		
+		HeadwearItem.forEach((clothingItem) => {
+			var x = document.getElementById("Headwear_input"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
+		
+		HeadwearItemColor.forEach((clothingItem) => {
+			var x = document.getElementById("Headwear_color"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
+		
+		HeadwearItemMaterial.forEach((clothingItem) => {
+			var x = document.getElementById("Headwear_material"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
+		
+		AccessoryItem.forEach((clothingItem) => {
+			var x = document.getElementById("Accessory_input"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
+		
+		AccessoryItemColor.forEach((clothingItem) => {
+			var x = document.getElementById("Accessory_color"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
+		
+		AccessoryItemMaterial.forEach((clothingItem) => {
+			var x = document.getElementById("Accessory_material"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
+		
+	
+	}
+	
 	function setRandomItems() {
 		var lenUpperItem = UpperItem.length;
 		var lenUpperItemColor = UpperItemColor.length;
@@ -886,6 +1088,12 @@
 		var lenHeadwearItem = HeadwearItem.length;
 		var lenHeadwearItemColor = HeadwearItemColor.length;
 		var lenHeadwearItemMaterial = HeadwearItemMaterial.length;
+		
+		var lenAccessoryItem = AccessoryItem.length;
+		var lenAccessoryItemColor = AccessoryItemColor.length;
+		var lenAccessoryItemMaterial = AccessoryItemMaterial.length;
+		
+		
 		
 		var randomUpperItem = Math.floor(Math.random() * lenUpperItem);
 		var randomUpperItemColor = Math.floor(Math.random() * lenUpperItemColor);
@@ -904,6 +1112,12 @@
 		var randomHeadwearItem = Math.floor(Math.random() * lenHeadwearItem);
 		var randomHeadwearItemColor = Math.floor(Math.random() * lenHeadwearItemColor);
 		var randomHeadwearItemMaterial = Math.floor(Math.random() * lenHeadwearItemMaterial);
+		
+		var randomAccessoryItem = Math.floor(Math.random() * lenAccessoryItem);
+		var randomAccessoryItemColor = Math.floor(Math.random() * lenAccessoryItemColor);
+		var randomAccessoryItemMaterial = Math.floor(Math.random() * lenAccessoryItemMaterial);
+		
+		
 		
 		
 		switch (statusUpper) {
@@ -941,6 +1155,15 @@
 				document.getElementById ("Headwear_input").value = HeadwearItem[randomHeadwearItem];
 				document.getElementById ("Headwear_color").value = HeadwearItemColor[randomHeadwearItemColor];
 				document.getElementById ("Headwear_material").value = HeadwearItemMaterial[randomHeadwearItemMaterial];
+				break;
+		}
+		switch (statusAccessory) {
+			case true:
+				break;
+			case false:
+				document.getElementById ("Accessory_input").value = AccessoryItem[randomAccessoryItem];
+				document.getElementById ("Accessory_color").value = AccessoryItemColor[randomAccessoryItemColor];
+				document.getElementById ("Accessory_material").value = AccessoryItemMaterial[randomAccessoryItemMaterial];
 				break;
 		}
 		
@@ -1037,7 +1260,6 @@
 	}
 	
 	function createNewUpper() {
-		//console.log('Creating entry');
 		UpperItem = [];
 		document.getElementById('upperBody_input').innerText = null;
 		var x = document.getElementById("upperBody_input");
@@ -1047,10 +1269,36 @@
 	}
 	
 	function createNewLower() {
-		//console.log('Creating New Lower entry');
 		LowerItem = [];
 		document.getElementById('lowerBody_input').innerText = null;
 		var x = document.getElementById("lowerBody_input");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+	}
+	
+	function createNewHeadwear() {
+		HeadwearItem = [];
+		document.getElementById('Headwear_input').innerText = null;
+		var x = document.getElementById("Headwear_input");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+	}
+	
+	function createNewFootwear() {
+		FootwearItem = [];
+		document.getElementById('Footwear_input').innerText = null;
+		var x = document.getElementById("Footwear_input");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+	}
+	
+	function createNewAccessories() {
+		AccessoryItem = [];
+		document.getElementById('Accessory_input').innerText = null;
+		var x = document.getElementById("Accessory_input");
 		var option = document.createElement("option");
 		option.text = "None";
 		x.add(option);
