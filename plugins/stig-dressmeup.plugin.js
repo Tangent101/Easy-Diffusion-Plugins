@@ -9,6 +9,7 @@
  * Your help has been really appreciated
  *
  * Change Log
+ * 14/09/2023 Added Accessories
  * 14/09/2023 Added Option to change Footwear Material and Color
  * 14/09/2023 Added Option to change Headwear Material and Color
  *
@@ -45,6 +46,13 @@
 	var HeadwearItemColor = [];
 	var HeadwearItemMaterial = [];
 	var statusHeadwear = false;
+	
+	var AccessoryItem = [];
+	var AccessoryItemColor = [];
+	var AccessoryItemMaterial = [];
+	var statusAccessory = false;
+	
+	
 		
 	injectLoaderCSS();
 	createColors();
@@ -53,6 +61,7 @@
 	createLowerItems();
 	createFootwearItems();
 	createHeadwearItems();
+	createAccessoryItems();
 	
 	
 	addDressMeUpSettings();
@@ -220,8 +229,7 @@
 			"Wrap top"
 			]
 			
-		UpperItemColor = defaultColors;
-			
+		UpperItemColor = defaultColors;		
 		UpperItemMaterial = defaultMaterials;
 	}
 	
@@ -331,8 +339,7 @@
 			"Wrap-style pants"
 			 ]
 			 
-		LowerItemColor = defaultColors;
-		
+		LowerItemColor = defaultColors;	
 		LowerItemMaterial = defaultMaterials;
 	}
 	
@@ -374,8 +381,7 @@
 			"Thighhighs",
 			"Wedges"
 			]
-		FootwearItemColor = defaultColors;
-					
+		FootwearItemColor = defaultColors;				
 		FootwearItemMaterial = defaultMaterials;
 	}
 	
@@ -389,7 +395,6 @@
 			"Bowler hat",
 			"Bucket hat",
 			"Cap",
-			"Cigarette",
 			"Cloche hat",
 			"Cloche with a veil",
 			"Cowboy hat",
@@ -435,10 +440,21 @@
 			"VR headset",
 			"Wide-brimmed hat"
 			]
-		HeadwearItemColor = defaultColors;
-			
+		HeadwearItemColor = defaultColors;		
 		HeadwearItemMaterial = defaultMaterials;
 	}
+	
+	function createAccessoryItems() {
+		AccessoryItem = [
+			"Newspaper",
+			"Carrot",
+			"Handbag",
+			"Cigarette"
+			]
+		AccessoryItemColor = defaultColors;		
+		AccessoryItemMaterial = defaultMaterials;
+	}
+		
 		
 	function addDressMeUpSettings() {
 		console.log('Add DressMeUp Settings');
@@ -461,15 +477,15 @@
 					<p></P>
 					<button type="button" id="lockHeadwear" <i class="fas fa-unlock-alt"></i></button>
 					<label for="Headwear_input">Head wear:</label>
-					<select id="Headwear_input" name="Headwear_input" onchange = "selectOption()">
+					<select id="Headwear_input" name="Headwear_input onchange = "selectOption()">
 					<option>None</option></select>
 					</td>
 					<tr><td>
 					<label for="Headwear_material">Material:</label>
-					<select id="Headwear_material" name="Headwear_material" onchange = "selectOption()">
+					<select id="Headwear_material" name="Headwear_material onchange = "selectOption()">
 					<option>None</option></select>
 					<label for="Headwear_color">Color:</label>
-					<select id="Headwear_color" name="Headwear_color" onchange = "selectOption()">
+					<select id="Headwear_color" name="Headwear_color onchange = "selectOption()">
 					<option>None</option></select>
 					<p></P>
 					</td>
@@ -479,16 +495,16 @@
 					
 					<button type="button" id="lockUpper" <i class="fas fa-unlock-alt"></i></button>
 					<label for="upperBody_input">Upper Body:</label>
-					<select id="upperBody_input" name="upperBody_input" onchange = "selectOption()">
+					<select id="upperBody_input" name="upperBody_input onchange = "selectOption()">
 					<option>None</option></select>
 					</td>
 					
 					<tr><td>
 					<label for="upperBody_material">Material:</label>
-					<select id="upperBody_material" name="upperBody_material" onchange = "selectOption()">
+					<select id="upperBody_material" name="upperBody_material onchange = "selectOption()">
 					<option>None</option></select>
 					<label for="upperBody_color">Color:</label>
-					<select id="upperBody_color" name="upperBody_color" onchange = "selectOption()">
+					<select id="upperBody_color" name="upperBody_color onchange = "selectOption()">
 					<option>None</option></select>
 					<p></P>
 					</td>
@@ -498,15 +514,15 @@
 					
 					<button type="button" id="lockLower" <i class="fas fa-unlock-alt"></i></button>
 					<label for="lowerBody_input">Lower Body:</label>
-					<select id="lowerBody_input" name="lowerBody_input" onchange = "selectOption()">
+					<select id="lowerBody_input" name="lowerBody_input onchange = "selectOption()">
 					<option>None</option></select>
 					</td>
 					
 					<tr><td><label for="lowerBody_material">Material:</label>
-					<select id="lowerBody_material" name="lowerBody_material" onchange = "selectOption()">
+					<select id="lowerBody_material" name="lowerBody_material onchange = "selectOption()">
 					<option>None</option></select>
 					<label for="lowerBody_color">Color:</label>
-					<select id="lowerBody_color" name="lowerBody_color" onchange = "selectOption()">
+					<select id="lowerBody_color" name="lowerBody_color onchange = "selectOption()">
 					<option>None</option></select>
 					<p></P>
 					</td>
@@ -515,19 +531,39 @@
 					<tr><td>
 					<button type="button" id="lockFootwear" <i class="fas fa-unlock-alt"></i></button>
 					<label for="Footwear_input">Foot wear:</label>
-					<select id="Footwear_input" name="Footwear_input" onchange = "selectOption()">
+					<select id="Footwear_input" name="Footwear_input onchange = "selectOption()">
 					<option>None</option></select>
 					</td>
 					
 					<tr><td><label for="Footwear_material">Material:</label>
-					<select id="Footwear_material" name="Footwear_material" onchange = "selectOption()">
+					<select id="Footwear_material" name="Footwear_material onchange = "selectOption()">
 					<option>None</option></select>
 					<label for="Footwear_color">Color:</label>
-					<select id="Footwear_color" name="Footwear_color" onchange = "selectOption()">
+					<select id="Footwear_color" name="Footwear_color onchange = "selectOption()">
 					<option>None</option></select>
 					<p></P>
+					</td>
+					</tr>
+					
+					<tr><td>
+					<button type="button" id="lockAccessory" <i class="fas fa-unlock-alt"></i></button>
+					<label for="Accessory_input">Accessory:</label>
+					<select id="Accessory_input" name="Accessory_input onchange = "selectOption()">
+					<option>None</option></select>
+					</td>
+					
+					<tr><td><label for="Accessory_material">Material:</label>
+					<select id="Accessory_material" name="Accessory_material onchange = "selectOption()">
+					<option>None</option></select>
+					<label for="Accessory_color">Color:</label>
+					<select id="Accessory_color" name="Accessory_color onchange = "selectOption()">
+					<option>None</option></select>
+					<p></P>
+					
 					<hr>
 					</td></tr>
+					
+					
 		
 					</tbody></table>
 					
@@ -547,7 +583,6 @@
 			var option = document.createElement("option");
 			option.text = clothingItem;
 			x.add(option);
-			//console.log(clothingItem);
 		})
 		
 		UpperItemColor.forEach((clothingItem) => {
@@ -555,7 +590,6 @@
 			var option = document.createElement("option");
 			option.text = clothingItem;
 			x.add(option);
-			//console.log(clothingItem);
 		})
 		
 		UpperItemMaterial.forEach((clothingItem) => {
@@ -563,7 +597,6 @@
 			var option = document.createElement("option");
 			option.text = clothingItem;
 			x.add(option);
-			//console.log(clothingItem);
 		})
 		
 		LowerItem.forEach((clothingItem) => {
@@ -571,7 +604,6 @@
 			var option = document.createElement("option");
 			option.text = clothingItem;
 			x.add(option);
-			//console.log(clothingItem);
 		})
 		
 		LowerItemColor.forEach((clothingItem) => {
@@ -579,7 +611,6 @@
 			var option = document.createElement("option");
 			option.text = clothingItem;
 			x.add(option);
-			//console.log(clothingItem);
 		})
 		
 		LowerItemMaterial.forEach((clothingItem) => {
@@ -587,17 +618,13 @@
 			var option = document.createElement("option");
 			option.text = clothingItem;
 			x.add(option);
-			//console.log(clothingItem);
 		})
-		
-		
-		
+				
 		FootwearItem.forEach((clothingItem) => {
 			var x = document.getElementById("Footwear_input"); 
 			var option = document.createElement("option");
 			option.text = clothingItem;
 			x.add(option);
-			//console.log(clothingItem);
 		})
 		
 		FootwearItemColor.forEach((clothingItem) => {
@@ -605,7 +632,6 @@
 			var option = document.createElement("option");
 			option.text = clothingItem;
 			x.add(option);
-			//console.log(clothingItem);
 		})
 		
 		FootwearItemMaterial.forEach((clothingItem) => {
@@ -613,17 +639,13 @@
 			var option = document.createElement("option");
 			option.text = clothingItem;
 			x.add(option);
-			//console.log(clothingItem);
-		})
-		
-		
+		})		
 		
 		HeadwearItem.forEach((clothingItem) => {
 			var x = document.getElementById("Headwear_input"); 
 			var option = document.createElement("option");
 			option.text = clothingItem;
 			x.add(option);
-			//console.log(clothingItem);
 		})
 		
 		HeadwearItemColor.forEach((clothingItem) => {
@@ -631,7 +653,6 @@
 			var option = document.createElement("option");
 			option.text = clothingItem;
 			x.add(option);
-			//console.log(clothingItem);
 		})
 		
 		HeadwearItemMaterial.forEach((clothingItem) => {
@@ -639,8 +660,16 @@
 			var option = document.createElement("option");
 			option.text = clothingItem;
 			x.add(option);
-			//console.log(clothingItem);
 		})
+		
+		AccessoryItem.forEach((clothingItem) => {
+			var x = document.getElementById("Accessory_input"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
+		
+		
 		
 		document.getElementById ("setWardrobe").addEventListener ("click", setItems, false);
 		document.getElementById ("setRandomItems").addEventListener ("click", setRandomItems, false);
@@ -649,6 +678,7 @@
 		document.getElementById ("lockUpper").addEventListener ("click", lockUpper, false);
 		document.getElementById ("lockLower").addEventListener ("click", lockLower, false);
 		document.getElementById ("lockFootwear").addEventListener ("click", lockFootwear, false);
+		document.getElementById ("lockAccessory").addEventListener ("click", lockAccessory, false);
 		
 		
 		document.getElementById ("selectFiles").addEventListener ("onchange", importWardrobe,false);
@@ -676,7 +706,12 @@
 		var headwearClothingColor = Headwear_color.value;
 		var headwearClothingMaterial = Headwear_material.value;
 		
+		var AccessoryClothing = Accessory_input.value;
+		var AccessoryClothingColor = Accessory_color.value;
+		var AccessoryClothingMaterial = Accessory_material.value;
+		
 		var additionalPrompt = ' wearing';
+		var AccessoryPrompt = 'holding';
 		var changeFlag = false;
 		
 		switch (upperItemofClothing) {
@@ -776,6 +811,54 @@
 				break;
 		}
 		
+		switch (AccessoryClothing) {
+			case 'None':
+				break;
+			default:
+				switch (changeFlag) {
+					case false:
+						additionalPrompt = ' ' + AccessoryPrompt;
+						switch (AccessoryClothingColor) {
+							case 'None':
+								break;
+							default:
+								additionalPrompt = additionalPrompt + ' ' + AccessoryClothingColor;
+								break;
+						}
+						additionalPrompt = additionalPrompt + ' ' + AccessoryClothing;
+						switch (AccessoryClothingMaterial) {
+							case 'None':
+								break;
+							default:
+								additionalPrompt = additionalPrompt + ' made of ' + AccessoryClothingMaterial;
+								break;
+						}
+						additionalPrompt = additionalPrompt + ',';
+						changeFlag = true;
+						break;
+					case true:
+						additionalPrompt = additionalPrompt + ' ' + AccessoryPrompt;
+						switch (AccessoryClothingColor) {
+							case 'None':
+								break;
+							default:
+								additionalPrompt = additionalPrompt + ' ' + AccessoryClothingColor;
+								break;
+						}
+						additionalPrompt = additionalPrompt + ' ' + AccessoryClothing;
+						switch (AccessoryClothingMaterial) {
+							case 'None':
+								break;
+							default:
+								additionalPrompt = additionalPrompt + ' made of ' + AccessoryClothingMaterial;
+								break;
+						}
+						additionalPrompt = additionalPrompt + ',';
+						changeFlag = true;
+						break;
+				}
+		}
+		
 		
 		switch (changeFlag) {
 			case false:
@@ -870,34 +953,85 @@
 		if (files.length <= 0) {
 			return false;
 		}
-		createNewUpper();
-		createNewLower();
-		resetLocks();
+		//createNewUpper();
+		//createNewLower();
+		//resetLocks();
 		var fr = new FileReader();
   
 		fr.onload = function(e) { 
 			var result = JSON.parse(e.target.result);
 			var formatted = JSON.stringify(result, null, 2);
 			document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + result.wardrobeID;
-			//UpperItem = [];
-			//document.getElementById('upperBody_input').innerText = null;
-			result.UpperBodyItems.forEach((clothingItem) => {
-				UpperItem.push(clothingItem);
-				var x = document.getElementById("upperBody_input");
-				var option = document.createElement("option");
-				option.text = clothingItem;
-				x.add(option);
-			})
+			switch (formatted.includes("UpperBodyItems")) {
+				case true:
+					console.log("Upper Items Imported");
+					createNewUpper();
+					resetLocks();
+					result.UpperBodyItems.forEach((clothingItem) => {
+						UpperItem.push(clothingItem);
+						var x = document.getElementById("upperBody_input");
+						var option = document.createElement("option");
+						option.text = clothingItem;
+						x.add(option);
+					})
+					break;
+				case false:
+					console.log("Upper Items Not Found");
+					break;
+			}
 			
-			//LowerItem = [];
-			//document.getElementById('lowerBody_input').innerText = null;
-			result.LowerBodyItems.forEach((clothingItem) => {
-				LowerItem.push(clothingItem);
-				var x = document.getElementById("lowerBody_input");
-				var option = document.createElement("option");
-				option.text = clothingItem;
-				x.add(option);
-			})			
+			switch (formatted.includes("LowerBodyItems")) {
+				case true:
+					console.log("Lower Items Imported");
+					createNewLower();
+					resetLocks();
+					result.LowerBodyItems.forEach((clothingItem) => {
+					LowerItem.push(clothingItem);
+					var x = document.getElementById("lowerBody_input");
+					var option = document.createElement("option");
+					option.text = clothingItem;
+					x.add(option);
+				})
+				break;
+				case false:
+					console.log("Lower Items Not Found");
+					break;
+			}
+			
+			switch (formatted.includes("HeadwearItems")) {
+				case true:
+					console.log("Headwear Items Imported");
+					break;
+				case false:
+					console.log("Headwear Items Not Found");
+			}
+			
+			switch (formatted.includes("FootwearItems")) {
+				case true:
+					console.log("Footwear Items Imported");
+					break;
+				case false:
+					console.log("Footwear Items Not Found");
+			}
+			
+				
+			
+			//result.UpperBodyItems.forEach((clothingItem) => {
+			//	UpperItem.push(clothingItem);
+			//	var x = document.getElementById("upperBody_input");
+			//	var option = document.createElement("option");
+			//	option.text = clothingItem;
+			//	x.add(option);
+			//})
+			
+			
+			//result.LowerBodyItems.forEach((clothingItem) => {
+			//	LowerItem.push(clothingItem);
+			//	var x = document.getElementById("lowerBody_input");
+			//	var option = document.createElement("option");
+			//	option.text = clothingItem;
+			//	x.add(option);
+			//})			
 		}
 		fr.readAsText(files.item(0));
 	}
@@ -913,7 +1047,7 @@
 	}
 	
 	function createNewLower() {
-		console.log('Creating New Lower entry');
+		//console.log('Creating New Lower entry');
 		LowerItem = [];
 		document.getElementById('lowerBody_input').innerText = null;
 		var x = document.getElementById("lowerBody_input");
@@ -921,18 +1055,7 @@
 		option.text = "None";
 		x.add(option);
 	}
-	
-	
-	
-	
-	function exportWardrobe() {
-		console.log('Exporting Wardrobe');
-		alert('Apologies but the Export Wardrobe routine is still under construction.');
-	}
-	
-	function inform(){
-       console.log('Filename has been changed');
-    }
+
 	function lockHeadwear() {
 		switch (statusHeadwear) {
 			case false:
@@ -1009,16 +1132,38 @@
 		}
 	}
 	
+	function lockAccessory() {
+		switch (statusAccessory) {
+			case false:
+				statusAccessory = true;
+				document.getElementById("Accessory_input").disabled = true; 
+				document.getElementById("Accessory_material").disabled = true; 
+				document.getElementById("Accessory_color").disabled = true;
+				document.getElementById ("lockAccessory").setAttribute("class","fas fa-key");
+				break;
+			case true:
+				statusAccessory = false;
+				document.getElementById("Accessory_input").disabled = false;
+				document.getElementById("Accessory_material").disabled = false; 
+				document.getElementById("Accessory_color").disabled = false;
+				document.getElementById ("lockAccessory").setAttribute("class","fas fa-unlock-alt");
+				break;
+		}
+	}
+	
+	
 	function resetLocks() {
 		//console.log('Resetting Locks');
 		statusUpper = true;
 		statusLower = true;
 		statusFootwear = true;
 		statusHeadwear = true;
+		statusAccessory = true;
 		lockUpper();
 		lockLower();
 		lockFootwear();
-		lockHeadwear();		
+		lockHeadwear();	
+		lockAccessory()		
 	}
 	
 	
