@@ -9,6 +9,8 @@
  * Your help has been really appreciated
  *
  * Change Log
+ * 15/09/2023 Added Extra Materials
+ * 15/09/2023 Added Extra Colors
  * 14/09/2023 Added Reset to Default Wardrobe
  * 14/09/2023 Added Accessories
  * 14/09/2023 Added Option to change Footwear Material and Color
