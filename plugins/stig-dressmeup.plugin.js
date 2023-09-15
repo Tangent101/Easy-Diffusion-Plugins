@@ -1,6 +1,6 @@
 /**
  * Dress Me Up
- * v.1.1, last updated: 14/09/2023
+ * v.1.1, last updated: 15/09/2023
  * By The Stig
  * 
  * Thanks for the additional input by the following:
