@@ -9,6 +9,7 @@
  * Your help has been really appreciated
  *
  * Change Log
+ * 18/09/2023 Added Option to switch between loaded wardrobes
  * 15/09/2023 Added Extra Materials
  * 15/09/2023 Added Extra Colors
  * 14/09/2023 Added Reset to Default Wardrobe
@@ -23,6 +24,21 @@
     const VERSION = "1.1";
     const ID_PREFIX = "TheStig-DressMeUp-plugin";
     console.log('%s Embed Metadata Version: %s', ID_PREFIX, VERSION);
+		
+	var alertMessage = 'Some Text';
+	
+	var WardrobeList = [];
+	var WardrobeDescr = [];
+	var WardrobeCount = 0;
+	var loadedWardrobe = [];
+	var globalWardrobe = []; // [[],[],[],[],[],[],[]];
+	var globWardrobe = {ItemWardrobe:"Unknown", Itemcreator:"Unknown", Itemtype:"Unknown",ItemName:"Unknown"};
+	var dummyWardrobe = [];
+	var wardrobeFlag = false;
+	var writeFlag = false;
+	var currWardrobe = null;
+	
+	
 	
 	var wardrobeName = "Default Wardrobe";
 	var designerName = "The Stig";
@@ -54,8 +70,6 @@
 	var AccessoryItemColor = [];
 	var AccessoryItemMaterial = [];
 	var statusAccessory = false;
-	
-	
 		
 	injectLoaderCSS();
 	createColors();
@@ -65,13 +79,42 @@
 	createFootwearItems();
 	createHeadwearItems();
 	createAccessoryItems();
+	createWardrobeList();
+	//createGlobalWardrobe();
 	
 	
 	addDressMeUpSettings();
 	
+	createGlobalWardrobe();
+	
 	
 	function injectLoaderCSS() {
 		console.log('** Inject CSS **');
+		const style = document.createElement('style');
+		style.textContent = `
+			.inputWidth {
+				width:280px;
+				min-width: 280px;
+				max-width: 280px ;
+				overflow: hidden;
+			}
+			.materialWidth {
+				width:120px;
+				min-width: 120px;
+				max-width: 120px ;
+				overflow: hidden;
+			}
+			.colorWidth {
+				width:120px;
+				min-width: 120px;
+				max-width: 120px ;
+				overflow: hidden;
+			}
+			.txtBox {
+				resize: none;
+			}
+		`;
+		document.head.appendChild(style);
 	}
 	
 	function createColors() {
@@ -548,7 +591,6 @@
 		]
 	}
 	
-	
 	function createUpperItems() {
 		UpperItem = [ 
 			"Asymmetric hem top",
@@ -895,7 +937,7 @@
 			"Mobile Phone",
 			"Telephone",
 			"HotDog",
-			"Bic Mac",
+			"Big Mac",
 			"Boombox",
 			"Cocktail",
 			"Violin"
@@ -903,7 +945,6 @@
 		AccessoryItemColor = defaultColors;		
 		AccessoryItemMaterial = defaultMaterials;
 	}
-		
 		
 	function addDressMeUpSettings() {
 		console.log('Add DressMeUp Settings');
@@ -922,7 +963,16 @@
 				<button style="display:block;width:120px; height:30px;" onclick="document.getElementById('selectFiles').click()">Import Wardrobe</button>
 				<input type='file' id="selectFiles" style="display:none" onchange="document.getElementById('importWardrobe').click()">
 				<button style="display:none" type="button" id="importWardrobe">Import Wardrobe</button>
-				<button type="button" id="setDefaultWardrobe">Reset to Default Wardrobe</button>
+				<!--<button type="button" id="setDefaultWardrobe">Reset to Default Wardrobe</button>-->
+				<p></p>
+				<!--
+				-->
+				<label for="selectedWardobe">Select Wardrobe:</label>
+				<select id="selectedWardobe" name="selectedWardobe onchange = "selectOption()">
+				<option>All Wardrobes</option></select>
+				<br><br>
+				<label for="wardrobe_info">Wardrobe Description:</label>
+				<textarea readonly class="txtBox" id="wardrobe_info" name="wardrobe_info" rows="2" cols="50">Contains all loaded items</textarea>
 				<p></p>
 
 				<table><tbody>
@@ -932,15 +982,15 @@
 					<p></P>
 					<button type="button" id="lockHeadwear" <i class="fas fa-unlock-alt"></i></button>
 					<label for="Headwear_input">Head wear:</label>
-					<select id="Headwear_input" name="Headwear_input onchange = "selectOption()">
+					<select id="Headwear_input" class="inputWidth" name="Headwear_input onchange = "selectOption()">
 					<option>None</option></select>
 					</td>
 					<tr><td>
 					<label for="Headwear_material">Material:</label>
-					<select id="Headwear_material" name="Headwear_material onchange = "selectOption()">
+					<select id="Headwear_material" class="materialWidth" name="Headwear_material onchange = "selectOption()">
 					<option>None</option></select>
 					<label for="Headwear_color">Color:</label>
-					<select id="Headwear_color" name="Headwear_color onchange = "selectOption()">
+					<select id="Headwear_color" class="colorWidth" name="Headwear_color onchange = "selectOption()">
 					<option>None</option></select>
 					<p></P>
 					</td>
@@ -950,16 +1000,16 @@
 					
 					<button type="button" id="lockUpper" <i class="fas fa-unlock-alt"></i></button>
 					<label for="upperBody_input">Upper Body:</label>
-					<select id="upperBody_input" name="upperBody_input onchange = "selectOption()">
+					<select id="upperBody_input" class="inputWidth" name="upperBody_input onchange = "selectOption()">
 					<option>None</option></select>
 					</td>
 					
 					<tr><td>
 					<label for="upperBody_material">Material:</label>
-					<select id="upperBody_material" name="upperBody_material onchange = "selectOption()">
+					<select id="upperBody_material" class="materialWidth" name="upperBody_material onchange = "selectOption()">
 					<option>None</option></select>
 					<label for="upperBody_color">Color:</label>
-					<select id="upperBody_color" name="upperBody_color onchange = "selectOption()">
+					<select id="upperBody_color" class="colorWidth" name="upperBody_color onchange = "selectOption()">
 					<option>None</option></select>
 					<p></P>
 					</td>
@@ -969,15 +1019,15 @@
 					
 					<button type="button" id="lockLower" <i class="fas fa-unlock-alt"></i></button>
 					<label for="lowerBody_input">Lower Body:</label>
-					<select id="lowerBody_input" name="lowerBody_input onchange = "selectOption()">
+					<select id="lowerBody_input" class="inputWidth" name="lowerBody_input onchange = "selectOption()">
 					<option>None</option></select>
 					</td>
 					
 					<tr><td><label for="lowerBody_material">Material:</label>
-					<select id="lowerBody_material" name="lowerBody_material onchange = "selectOption()">
+					<select id="lowerBody_material" class="materialWidth" name="lowerBody_material onchange = "selectOption()">
 					<option>None</option></select>
 					<label for="lowerBody_color">Color:</label>
-					<select id="lowerBody_color" name="lowerBody_color onchange = "selectOption()">
+					<select id="lowerBody_color" class="colorWidth" name="lowerBody_color onchange = "selectOption()">
 					<option>None</option></select>
 					<p></P>
 					</td>
@@ -986,15 +1036,15 @@
 					<tr><td>
 					<button type="button" id="lockFootwear" <i class="fas fa-unlock-alt"></i></button>
 					<label for="Footwear_input">Foot wear:</label>
-					<select id="Footwear_input" name="Footwear_input onchange = "selectOption()">
+					<select id="Footwear_input" class="inputWidth" name="Footwear_input onchange = "selectOption()">
 					<option>None</option></select>
 					</td>
 					
 					<tr><td><label for="Footwear_material">Material:</label>
-					<select id="Footwear_material" name="Footwear_material onchange = "selectOption()">
+					<select id="Footwear_material" class="materialWidth" name="Footwear_material onchange = "selectOption()">
 					<option>None</option></select>
 					<label for="Footwear_color">Color:</label>
-					<select id="Footwear_color" name="Footwear_color onchange = "selectOption()">
+					<select id="Footwear_color" class="colorWidth" name="Footwear_color onchange = "selectOption()">
 					<option>None</option></select>
 					<p></P>
 					</td>
@@ -1003,15 +1053,15 @@
 					<tr><td>
 					<button type="button" id="lockAccessory" <i class="fas fa-unlock-alt"></i></button>
 					<label for="Accessory_input">Accessory:</label>
-					<select id="Accessory_input" name="Accessory_input onchange = "selectOption()">
+					<select id="Accessory_input" class="inputWidth" name="Accessory_input onchange = "selectOption()">
 					<option>None</option></select>
 					</td>
 					
 					<tr><td><label for="Accessory_material">Material:</label>
-					<select id="Accessory_material" name="Accessory_material onchange = "selectOption()">
+					<select id="Accessory_material" class="materialWidth" name="Accessory_material onchange = "selectOption()">
 					<option>None</option></select>
 					<label for="Accessory_color">Color:</label>
-					<select id="Accessory_color" name="Accessory_color onchange = "selectOption()">
+					<select id="Accessory_color" class="colorWidth" name="Accessory_color onchange = "selectOption()">
 					<option>None</option></select>
 					<p></P>
 					
@@ -1032,6 +1082,13 @@
 		var editorSettings = document.getElementById('editor-settings');
 		editorSettings.parentNode.insertBefore(DressMeUpSettings, editorSettings.nextSibling);
 		createCollapsibles(DressMeUpSettings);
+		
+		WardrobeList.forEach((clothingItem) => {
+			var x = document.getElementById("selectedWardobe"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
 		
 		UpperItem.forEach((clothingItem) => {
 			var x = document.getElementById("upperBody_input"); 
@@ -1140,11 +1197,12 @@
 		
 		
 		//document.querySelector('#reset-dmu-settings').addEventListener('click', resetWardrobe);
-		
-		document.getElementById ("setDefaultWardrobe").addEventListener ("click", resetWardrobe, false);
+		document.getElementById ("selectedWardobe").addEventListener ("click", selectWardrobe, false);
+		//document.getElementById ("setDefaultWardrobe").addEventListener ("click", resetWardrobe, false); No Longer required
 		document.getElementById ("setWardrobe").addEventListener ("click", setItems, false);
 		document.getElementById ("setRandomItems").addEventListener ("click", setRandomItems, false);
-		document.getElementById ("importWardrobe").addEventListener ("click", importWardrobe, false);
+		document.getElementById ("importWardrobe").addEventListener ("click", getWardrobe, false);
+		//document.getElementById ("importWardrobe").addEventListener ("click", importWardrobe, false);
 		document.getElementById ("lockHeadwear").addEventListener ("click", lockHeadwear, false);
 		document.getElementById ("lockUpper").addEventListener ("click", lockUpper, false);
 		document.getElementById ("lockLower").addEventListener ("click", lockLower, false);
@@ -1152,15 +1210,221 @@
 		document.getElementById ("lockAccessory").addEventListener ("click", lockAccessory, false);
 		
 		
-		
-		document.getElementById ("selectFiles").addEventListener ("onchange", importWardrobe,false);
+		//document.getElementById ("selectedWardobe").addEventListener ("onchange", selectWardrobe,false);
+		//document.getElementById ("selectFiles").addEventListener ("onchange", importWardrobe,false);
+		document.getElementById ("selectFiles").addEventListener ("onchange", getWardrobe,false);
 		
 		document.getElementById ("wardrobeHeader").innerHTML = wardrobeName;
+		//document.getElementById ("wardrobe_info").innerHTML = WardrobeDescr[1];
 
 	}
+	function createWardrobeList() {
+		//WardrobeList.push("All Wardobes");
+		WardrobeDescr.push = ["All Loaded Wardrobes"];
+		WardrobeList.push(wardrobeName);
+		WardrobeDescr.push = [wardrobeName + ' created by ' + designerName];
+		//console.log('>>> Description <<< ' + WardrobeDescr[0]);
+	}
+	
+	function selectWardrobe() {
+		switch (selectedWardobe.value) {
+			case currWardrobe:
+				//console.log('Existing Wardrobe selected');
+				return;
+				break;
+			case "All Wardrobes" :
+				//console.log('All Wardrobes selected');
+				break;
+			case "Default Wardrobe":
+				//console.log('Default Wardrobe selected');
+				break;
+			default:
+				//console.log('A User defined Wardrobe selected');
+				//console.log(globalWardrobe);
+				break;
+		}
+		currWardrobe = document.getElementById ("selectedWardobe").value;
+		dummyWardrobe = [];
+		writeFlag = false;
+		for (let i = 0; i < globalWardrobe.length; i++) {
+			switch (currWardrobe) {
+				case "All Wardrobes" :
+					writeFlag = true;
+					//console.log('I should write all items');
+					break;
+				case "Default Wardrobe" :
+					//console.log('Its the default');
+					writeFlag = true;
+					break;
+				case globalWardrobe[i] :
+					//console.log('Wardrobe: ' + currWardrobe);
+					writeFlag = true;
+					break;
+			}	
+			switch (writeFlag) {
+				case false:
+					break;
+				case true:
+					dummyWardrobe.push(globalWardrobe[i]);
+					dummyWardrobe.push(globalWardrobe[i+1]);
+					dummyWardrobe.push(globalWardrobe[i+2]);
+					dummyWardrobe.push(globalWardrobe[i+3]);
+					break;
+			}
+			i++; // creatorID
+			i++; // Item type
+			i++; // Item Name
+		}
+		//console.log(dummyWardrobe);
+		switch (writeFlag) {
+			case false:
+				break;
+			case true:
+				createNewUpper();
+				createNewLower();
+				createNewHeadwear();
+				createNewFootwear();
+				createNewAccessories();
+				switch (currWardrobe) {
+					case "All Wardrobes" :
+						for (let i = 0; i < dummyWardrobe.length; i++) {
+							//console.log('Ward: ' + dummyWardrobe[i]);
+							switch (dummyWardrobe[i+2]) {
+								case 'UpperItem' :
+									var x = document.getElementById("upperBody_input"); 
+									var option = document.createElement("option");
+									option.text = dummyWardrobe[i+3];
+									x.add(option);
+									UpperItem.push(dummyWardrobe[i+3]);
+									//console.log('Added Upper Item');
+									break;
+								case 'LowerItem' :
+									var x = document.getElementById("lowerBody_input"); 
+									var option = document.createElement("option");
+									option.text = dummyWardrobe[i+3];
+									x.add(option);
+									LowerItem.push(dummyWardrobe[i+3]);
+									//console.log('Added Lower Item');
+									break;
+								case 'HeadwearItem' :
+									var x = document.getElementById("Headwear_input"); 
+									var option = document.createElement("option");
+									option.text = dummyWardrobe[i+3];
+									x.add(option);
+									HeadwearItem.push(dummyWardrobe[i+3]);
+									//console.log('Added Headwear');
+									break;
+								case 'FootwearItem' :
+									var x = document.getElementById("Footwear_input"); 
+									var option = document.createElement("option");
+									option.text = dummyWardrobe[i+3];
+									x.add(option);
+									FootwearItem.push(dummyWardrobe[i+3]);
+									//console.log('Added Footwear');
+									break;
+								case 'AccessoryItem' :
+									var x = document.getElementById("Accessory_input"); 
+									var option = document.createElement("option");
+									option.text = dummyWardrobe[i+3];
+									x.add(option);
+									AccessoryItem.push(dummyWardrobe[i+3]);
+									//console.log('Added Accessory');
+									break;
+							}
+						i++;
+						i++;
+						i++;
+						}
+						document.getElementById ("wardrobe_info").value = 'All Available Wardrobes';
+						document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: All Available Wardrobes';
+						return;
+					default:
+						break;
+				}
+
+				for (let i = 0; i < dummyWardrobe.length; i++) {
+					//console.log('Ward: ' + dummyWardrobe[i]);
+					switch (dummyWardrobe[i]) {
+						case currWardrobe:
+							document.getElementById ("wardrobe_info").value = dummyWardrobe[i]+ ' created by ' + dummyWardrobe[i+1];
+							document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + dummyWardrobe[i];
+							switch (dummyWardrobe[i+2]) {
+								case 'UpperItem' :
+									var x = document.getElementById("upperBody_input"); 
+									var option = document.createElement("option");
+									option.text = dummyWardrobe[i+3];
+									x.add(option);
+									UpperItem.push(dummyWardrobe[i+3]);
+									//console.log('Added Upper Item');
+									break;
+								case 'LowerItem' :
+									var x = document.getElementById("lowerBody_input"); 
+									var option = document.createElement("option");
+									option.text = dummyWardrobe[i+3];
+									x.add(option);
+									LowerItem.push(dummyWardrobe[i+3]);
+									//console.log('Added Lower Item');
+									break;
+								case 'HeadwearItem' :
+									var x = document.getElementById("Headwear_input"); 
+									var option = document.createElement("option");
+									option.text = dummyWardrobe[i+3];
+									x.add(option);
+									HeadwearItem.push(dummyWardrobe[i+3]);
+									//console.log('Added Headwear');
+									break;
+								case 'FootwearItem' :
+									var x = document.getElementById("Footwear_input"); 
+									var option = document.createElement("option");
+									option.text = dummyWardrobe[i+3];
+									x.add(option);
+									FootwearItem.push(dummyWardrobe[i+3]);
+									//console.log('Added Footwear');
+									break;
+								case 'AccessoryItem' :
+									var x = document.getElementById("Accessory_input"); 
+									var option = document.createElement("option");
+									option.text = dummyWardrobe[i+3];
+									x.add(option);
+									AccessoryItem.push(dummyWardrobe[i+3]);
+									//console.log('Added Accessory');
+									break;
+							}
+							break;
+					}
+					i++;
+					i++;
+					i++;
+				}
+		}	
+	}
+	
+	function createGlobalWardrobe() {
+		
+		UpperItem.forEach((clothingItem) => {
+			globalWardrobe.push(wardrobeName,designerName,'UpperItem',clothingItem);
+		})
+		LowerItem.forEach((clothingItem) => {
+			globalWardrobe.push(wardrobeName,designerName,'LowerItem',clothingItem);
+		})
+		HeadwearItem.forEach((clothingItem) => {
+			globalWardrobe.push(wardrobeName,designerName,'HeadwearItem',clothingItem);
+		})
+		FootwearItem.forEach((clothingItem) => {
+			globalWardrobe.push(wardrobeName,designerName,'FootwearItem',clothingItem);
+		})
+		AccessoryItem.forEach((clothingItem) => {
+			globalWardrobe.push(wardrobeName,designerName,'AccessoryItem',clothingItem);
+		})
+		currWardrobe = wardrobeName;
+		document.getElementById ("selectedWardobe").value = currWardrobe;
+		console.log('Dropdown: ' + selectedWardobe.value );
+		console.log(globalWardrobe);
+
+    }
+	
 	
 	function setItems() {
-		//console.log(promptField.value);
 		var upperItemofClothing = upperBody_input.value;
 		var upperItemofClothingColor = upperBody_color.value;
 		var upperItemofClothingMaterial = upperBody_material.value;
@@ -1546,16 +1810,22 @@
 		var randomAccessoryItemColor = Math.floor(Math.random() * lenAccessoryItemColor);
 		var randomAccessoryItemMaterial = Math.floor(Math.random() * lenAccessoryItemMaterial);
 		
-		
-		
-		
 		switch (statusUpper) {
 			case true:
 				break;
 			case false:
-				document.getElementById ("upperBody_input").value = UpperItem[randomUpperItem];
-				document.getElementById ("upperBody_color").value = UpperItemColor[randomUpperItemColor];
+				switch (UpperItem[randomUpperItem]) {
+					case undefined:
+						document.getElementById ("upperBody_input").value = 'None';
+						document.getElementById ("upperBody_color").value =  'None';
+						document.getElementById ("upperBody_material").value =  'None';
+						break;
+					default:
+						document.getElementById ("upperBody_input").value = UpperItem[randomUpperItem];
+						document.getElementById ("upperBody_color").value = UpperItemColor[randomUpperItemColor];
 				document.getElementById ("upperBody_material").value = UpperItemMaterial[randomUpperItemMaterial];
+						break;
+				}
 				break;
 		}
 		
@@ -1563,63 +1833,131 @@
 			case true:
 				break;
 			case false:
-				document.getElementById ("lowerBody_input").value = LowerItem[randomLowerItem];
-				document.getElementById ("lowerBody_color").value = LowerItemColor[randomLowerItemColor];
-				document.getElementById ("lowerBody_material").value = LowerItemMaterial[randomLowerItemMaterial];
+			switch (LowerItem[randomLowerItem]) {
+					case undefined:
+						document.getElementById ("lowerBody_input").value = 'None';
+						document.getElementById ("lowerBody_color").value = 'None';
+						document.getElementById ("lowerBody_material").value = 'None';
+						break;
+					default:
+						document.getElementById ("lowerBody_input").value = LowerItem[randomLowerItem];
+						document.getElementById ("lowerBody_color").value = LowerItemColor[randomLowerItemColor];
+						document.getElementById ("lowerBody_material").value = LowerItemMaterial[randomLowerItemMaterial];
+						break;
+				}
 				break;
 		}
 		switch (statusFootwear) {
 			case true:
 				break;
 			case false:
-				document.getElementById ("Footwear_input").value = FootwearItem[randomFootwearItem];
-				document.getElementById ("Footwear_color").value = FootwearItemColor[randomFootwearItemColor];
-				document.getElementById ("Footwear_material").value = FootwearItemMaterial[randomFootwearItemMaterial];
+			switch (FootwearItem[randomFootwearItem]) {
+					case undefined:
+						document.getElementById ("Footwear_input").value = 'None';
+						document.getElementById ("Footwear_color").value = 'None';
+						document.getElementById ("Footwear_material").value = 'None';
+						break;
+					default:
+						document.getElementById ("Footwear_input").value = FootwearItem[randomFootwearItem];
+						document.getElementById ("Footwear_color").value = FootwearItemColor[randomFootwearItemColor];
+						document.getElementById ("Footwear_material").value = FootwearItemMaterial[randomFootwearItemMaterial];
+						break;
+				}
 				break;
 		}
 		switch (statusHeadwear) {
 			case true:
 				break;
 			case false:
-				document.getElementById ("Headwear_input").value = HeadwearItem[randomHeadwearItem];
-				document.getElementById ("Headwear_color").value = HeadwearItemColor[randomHeadwearItemColor];
-				document.getElementById ("Headwear_material").value = HeadwearItemMaterial[randomHeadwearItemMaterial];
+			switch (HeadwearItem[randomHeadwearItem]) {
+					case undefined:
+						document.getElementById ("Headwear_input").value = 'None';
+						document.getElementById ("Headwear_color").value = 'None';
+						document.getElementById ("Headwear_material").value = 'None';
+						break;
+					default:
+						document.getElementById ("Headwear_input").value = HeadwearItem[randomHeadwearItem];
+						document.getElementById ("Headwear_color").value = HeadwearItemColor[randomHeadwearItemColor];
+						document.getElementById ("Headwear_material").value = HeadwearItemMaterial[randomHeadwearItemMaterial];
+						break;
+				}
 				break;
 		}
 		switch (statusAccessory) {
 			case true:
 				break;
 			case false:
-				document.getElementById ("Accessory_input").value = AccessoryItem[randomAccessoryItem];
-				document.getElementById ("Accessory_color").value = AccessoryItemColor[randomAccessoryItemColor];
-				document.getElementById ("Accessory_material").value = AccessoryItemMaterial[randomAccessoryItemMaterial];
+			switch (AccessoryItem[randomAccessoryItem]) {
+					case undefined:
+						document.getElementById ("Accessory_input").value = 'None';
+						document.getElementById ("Accessory_color").value = 'None';
+						document.getElementById ("Accessory_material").value = 'None';
+						break;
+					default:
+						document.getElementById ("Accessory_input").value = AccessoryItem[randomAccessoryItem];
+						document.getElementById ("Accessory_color").value = AccessoryItemColor[randomAccessoryItemColor];
+						document.getElementById ("Accessory_material").value = AccessoryItemMaterial[randomAccessoryItemMaterial];
+						break;
+				}
+				//console.log('Acc: ' + AccessoryItem[randomAccessoryItem]);
 				break;
 		}
 		
 	}
 	
+	function getWardrobe() {
+		console.log('Getting Wardrobe');
+		importWardrobe();
+	}
+	
+	
 	function importWardrobe() {
-		console.log('Importing Wardrobe');
+		wardrobeFlag = false;
 		var files = document.getElementById('selectFiles').files;
-		console.log(files);
 		if (files.length <= 0) {
 			return false;
 		}
-		//createNewUpper();
-		//createNewLower();
-		//resetLocks();
 		var fr = new FileReader();
   
 		fr.onload = function(e) { 
 			var result = JSON.parse(e.target.result);
 			var formatted = JSON.stringify(result, null, 2);
 			document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + result.wardrobeID;
+			wardrobeName = result.wardrobeID;
+			designerName = result.creatorID;
+			
+			switch (WardrobeList.includes(result.wardrobeID)) {
+				case true:
+					document.getElementById ("wardrobe_info").value = result.wardrobeID + ' created by ' + result.creatorID;
+					document.getElementById("selectedWardobe").value = result.wardrobeID;
+					alertMessage = "Please Note that a Wardrobe with this name has already been imported and will be replaced";
+					alert(alertMessage);
+					break;
+				case false:
+					WardrobeList.push(result.wardrobeID);
+					var x = document.getElementById("selectedWardobe");
+					var option = document.createElement("option");
+					option.text = result.wardrobeID;
+					x.add(option);
+					WardrobeDescr.push = [result.wardrobeID + ' created by ' + result.creatorID];
+					document.getElementById ("wardrobe_info").value = result.wardrobeID + ' created by ' + result.creatorID;
+					document.getElementById("selectedWardobe").value = result.wardrobeID;
+					break;
+			}
+			
 			switch (formatted.includes("UpperBodyItems")) {
 				case true:
-					console.log("Upper Items Imported");
 					createNewUpper();
 					resetLocks();
 					result.UpperBodyItems.forEach((clothingItem) => {
+						switch (globalWardrobe[3].includes(clothingItem)) {
+							case true:
+								console.log('Skipping ' + clothingItem);
+								break;
+							case false:
+								globalWardrobe.push(wardrobeName,designerName,'UpperItem',clothingItem);
+							break;
+						}
 						UpperItem.push(clothingItem);
 						var x = document.getElementById("upperBody_input");
 						var option = document.createElement("option");
@@ -1628,65 +1966,82 @@
 					})
 					break;
 				case false:
-					console.log("Upper Items Not Found");
 					break;
 			}
 			
 			switch (formatted.includes("LowerBodyItems")) {
 				case true:
-					console.log("Lower Items Imported");
 					createNewLower();
 					resetLocks();
 					result.LowerBodyItems.forEach((clothingItem) => {
-					LowerItem.push(clothingItem);
-					var x = document.getElementById("lowerBody_input");
-					var option = document.createElement("option");
-					option.text = clothingItem;
-					x.add(option);
-				})
-				break;
+						globalWardrobe.push(wardrobeName,designerName,'LowerItem',clothingItem);
+						LowerItem.push(clothingItem);
+						var x = document.getElementById("lowerBody_input");
+						var option = document.createElement("option");
+						option.text = clothingItem;
+						x.add(option);
+					})
+					break;
 				case false:
-					console.log("Lower Items Not Found");
 					break;
 			}
 			
 			switch (formatted.includes("HeadwearItems")) {
 				case true:
-					console.log("Headwear Items Imported");
+					createNewHeadwear();
+					resetLocks();
+					result.HeadwearItems.forEach((clothingItem) => {
+						globalWardrobe.push(wardrobeName,designerName,'HeadwearItem',clothingItem);
+						LowerItem.push(clothingItem);
+						var x = document.getElementById("Headwear_input");
+						var option = document.createElement("option");
+						option.text = clothingItem;
+						x.add(option);
+					})
 					break;
 				case false:
-					console.log("Headwear Items Not Found");
+					break;
 			}
 			
 			switch (formatted.includes("FootwearItems")) {
 				case true:
-					console.log("Footwear Items Imported");
+					createNewHeadwear();
+					resetLocks();
+					result.FootwearItems.forEach((clothingItem) => {
+						globalWardrobe.push(wardrobeName,designerName,'FootwearItem',clothingItem);
+						FootwearItem.push(clothingItem);
+						var x = document.getElementById("Footwear_input");
+						var option = document.createElement("option");
+						option.text = clothingItem;
+						x.add(option);
+					})
 					break;
 				case false:
-					console.log("Footwear Items Not Found");
+					break;
 			}
 			
-				
-			
-			//result.UpperBodyItems.forEach((clothingItem) => {
-			//	UpperItem.push(clothingItem);
-			//	var x = document.getElementById("upperBody_input");
-			//	var option = document.createElement("option");
-			//	option.text = clothingItem;
-			//	x.add(option);
-			//})
-			
-			
-			//result.LowerBodyItems.forEach((clothingItem) => {
-			//	LowerItem.push(clothingItem);
-			//	var x = document.getElementById("lowerBody_input");
-			//	var option = document.createElement("option");
-			//	option.text = clothingItem;
-			//	x.add(option);
-			//})			
+			switch (formatted.includes("AccesoryItems")) {
+				case true:
+					createNewAccessories();
+					resetLocks();
+					result.AccesoryItems.forEach((clothingItem) => {
+						globalWardrobe.push(wardrobeName,designerName,'AccessoryItem',clothingItem);
+						AccessoryItem.push(clothingItem);
+						var x = document.getElementById("Accessory_input");
+						var option = document.createElement("option");
+						option.text = clothingItem;
+						x.add(option);
+					})
+					break;
+				case false:
+					break;
+			}
 		}
 		fr.readAsText(files.item(0));
+		wardrobeFlag = true;
+		currWardrobe = document.getElementById ("selectedWardobe").value;
 	}
+	
 	
 	function createNewUpper() {
 		UpperItem = [];
@@ -1842,7 +2197,6 @@
 		lockHeadwear();	
 		lockAccessory()		
 	}
-	
 	
 	
 	
