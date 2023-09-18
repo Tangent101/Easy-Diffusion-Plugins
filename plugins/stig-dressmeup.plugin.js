@@ -1,6 +1,6 @@
 /**
  * Dress Me Up
- * v.1.1, last updated: 15/09/2023
+ * v.1.1, last updated: 18/09/2023
  * By The Stig
  * 
  * Thanks for the additional input by the following:
@@ -9,6 +9,7 @@
  * Your help has been really appreciated
  *
  * Change Log
+ * 18/09/2023 Added item count
  * 18/09/2023 Added Option to switch between loaded wardrobes
  * 15/09/2023 Added Extra Materials
  * 15/09/2023 Added Extra Colors
@@ -37,6 +38,8 @@
 	var wardrobeFlag = false;
 	var writeFlag = false;
 	var currWardrobe = null;
+	var itemExists = false;
+	var itemCount = 0;
 	
 	
 	
@@ -1285,69 +1288,117 @@
 				createNewHeadwear();
 				createNewFootwear();
 				createNewAccessories();
+				itemCount = 0;
 				switch (currWardrobe) {
 					case "All Wardrobes" :
 						for (let i = 0; i < dummyWardrobe.length; i++) {
-							//console.log('Ward: ' + dummyWardrobe[i]);
 							switch (dummyWardrobe[i+2]) {
 								case 'UpperItem' :
-									var x = document.getElementById("upperBody_input"); 
-									var option = document.createElement("option");
-									option.text = dummyWardrobe[i+3];
-									x.add(option);
 									UpperItem.push(dummyWardrobe[i+3]);
-									//console.log('Added Upper Item');
 									break;
 								case 'LowerItem' :
-									var x = document.getElementById("lowerBody_input"); 
-									var option = document.createElement("option");
-									option.text = dummyWardrobe[i+3];
-									x.add(option);
 									LowerItem.push(dummyWardrobe[i+3]);
-									//console.log('Added Lower Item');
 									break;
 								case 'HeadwearItem' :
-									var x = document.getElementById("Headwear_input"); 
-									var option = document.createElement("option");
-									option.text = dummyWardrobe[i+3];
-									x.add(option);
 									HeadwearItem.push(dummyWardrobe[i+3]);
-									//console.log('Added Headwear');
 									break;
 								case 'FootwearItem' :
-									var x = document.getElementById("Footwear_input"); 
-									var option = document.createElement("option");
-									option.text = dummyWardrobe[i+3];
-									x.add(option);
 									FootwearItem.push(dummyWardrobe[i+3]);
-									//console.log('Added Footwear');
 									break;
 								case 'AccessoryItem' :
-									var x = document.getElementById("Accessory_input"); 
-									var option = document.createElement("option");
-									option.text = dummyWardrobe[i+3];
-									x.add(option);
 									AccessoryItem.push(dummyWardrobe[i+3]);
-									//console.log('Added Accessory');
 									break;
 							}
 						i++;
 						i++;
 						i++;
 						}
+						switch (UpperItem.length) {
+							case 0:
+								break;
+							default:
+								UpperItem.sort();
+								UpperItem.forEach((clothingItem) => {
+								var x = document.getElementById("upperBody_input"); 
+								var option = document.createElement("option");
+								option.text = clothingItem;
+								x.add(option);
+								itemCount ++;
+								})
+						}
+						
+						switch (LowerItem.length) {
+							case 0:
+								break;
+							default:
+								LowerItem.sort();
+								LowerItem.forEach((clothingItem) => {
+								var x = document.getElementById("lowerBody_input"); 
+								var option = document.createElement("option");
+								option.text = clothingItem;
+								x.add(option);
+								itemCount ++;
+								})
+						}
+						
+						switch (HeadwearItem.length) {
+							case 0:
+								break;
+							default:
+								HeadwearItem.sort();
+								HeadwearItem.forEach((clothingItem) => {
+								var x = document.getElementById("Headwear_input"); 
+								var option = document.createElement("option");
+								option.text = clothingItem;
+								x.add(option);
+								itemCount ++;
+								})
+						}
+						
+						switch (FootwearItem.length) {
+							case 0:
+								break;
+							default:
+								FootwearItem.sort();
+								FootwearItem.forEach((clothingItem) => {
+								var x = document.getElementById("Footwear_input"); 
+								var option = document.createElement("option");
+								option.text = clothingItem;
+								x.add(option);
+								itemCount ++;
+								})
+						}
+						
+						switch (AccessoryItem.length) {
+							case 0:
+								break;
+							default:
+								AccessoryItem.sort();
+								AccessoryItem.forEach((clothingItem) => {
+								var x = document.getElementById("Accessory_input"); 
+								var option = document.createElement("option");
+								option.text = clothingItem;
+								x.add(option);
+								itemCount ++;
+								})
+						}
+						
+							
 						document.getElementById ("wardrobe_info").value = 'All Available Wardrobes';
-						document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: All Available Wardrobes';
+						document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: All Available Wardrobes<br>Number of items: ' + itemCount;
 						return;
 					default:
 						break;
 				}
+				
+				itemCount = 0;
 
 				for (let i = 0; i < dummyWardrobe.length; i++) {
 					//console.log('Ward: ' + dummyWardrobe[i]);
 					switch (dummyWardrobe[i]) {
 						case currWardrobe:
-							document.getElementById ("wardrobe_info").value = dummyWardrobe[i]+ ' created by ' + dummyWardrobe[i+1];
-							document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + dummyWardrobe[i];
+							//document.getElementById ("wardrobe_info").value = dummyWardrobe[i]+ ' created by ' + dummyWardrobe[i+1];
+							//document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + dummyWardrobe[i];
 							switch (dummyWardrobe[i+2]) {
 								case 'UpperItem' :
 									var x = document.getElementById("upperBody_input"); 
@@ -1355,6 +1406,7 @@
 									option.text = dummyWardrobe[i+3];
 									x.add(option);
 									UpperItem.push(dummyWardrobe[i+3]);
+									itemCount ++;
 									//console.log('Added Upper Item');
 									break;
 								case 'LowerItem' :
@@ -1363,6 +1415,7 @@
 									option.text = dummyWardrobe[i+3];
 									x.add(option);
 									LowerItem.push(dummyWardrobe[i+3]);
+									itemCount ++;
 									//console.log('Added Lower Item');
 									break;
 								case 'HeadwearItem' :
@@ -1371,6 +1424,7 @@
 									option.text = dummyWardrobe[i+3];
 									x.add(option);
 									HeadwearItem.push(dummyWardrobe[i+3]);
+									itemCount ++;
 									//console.log('Added Headwear');
 									break;
 								case 'FootwearItem' :
@@ -1379,6 +1433,7 @@
 									option.text = dummyWardrobe[i+3];
 									x.add(option);
 									FootwearItem.push(dummyWardrobe[i+3]);
+									itemCount ++;
 									//console.log('Added Footwear');
 									break;
 								case 'AccessoryItem' :
@@ -1387,9 +1442,12 @@
 									option.text = dummyWardrobe[i+3];
 									x.add(option);
 									AccessoryItem.push(dummyWardrobe[i+3]);
+									itemCount ++;
 									//console.log('Added Accessory');
 									break;
 							}
+							document.getElementById ("wardrobe_info").value = dummyWardrobe[i]+ ' created by ' + dummyWardrobe[i+1];
+							document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + dummyWardrobe[i] + '<br>Number of items: ' + itemCount;
 							break;
 					}
 					i++;
@@ -1400,26 +1458,34 @@
 	}
 	
 	function createGlobalWardrobe() {
+		itemCount = 0;
 		
 		UpperItem.forEach((clothingItem) => {
 			globalWardrobe.push(wardrobeName,designerName,'UpperItem',clothingItem);
+			itemCount++;
 		})
 		LowerItem.forEach((clothingItem) => {
 			globalWardrobe.push(wardrobeName,designerName,'LowerItem',clothingItem);
+			itemCount++;
 		})
 		HeadwearItem.forEach((clothingItem) => {
 			globalWardrobe.push(wardrobeName,designerName,'HeadwearItem',clothingItem);
+			itemCount++;
 		})
 		FootwearItem.forEach((clothingItem) => {
 			globalWardrobe.push(wardrobeName,designerName,'FootwearItem',clothingItem);
+			itemCount++;
 		})
 		AccessoryItem.forEach((clothingItem) => {
 			globalWardrobe.push(wardrobeName,designerName,'AccessoryItem',clothingItem);
+			itemCount++;
 		})
 		currWardrobe = wardrobeName;
 		document.getElementById ("selectedWardobe").value = currWardrobe;
-		console.log('Dropdown: ' + selectedWardobe.value );
-		console.log(globalWardrobe);
+		document.getElementById ("wardrobe_info").value = wardrobeName + ' created by ' + designerName;
+		document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + wardrobeName + '<br>Number of items: ' + itemCount;
+		//console.log('Dropdown: ' + selectedWardobe.value );
+		//console.log(globalWardrobe);
 
     }
 	
@@ -1654,8 +1720,9 @@
 		createAccessoryItems();
 		
 		resetLocks();
+		itemCount = 0;
 		
-		document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + wardrobeName;
+		document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + wardrobeName + '<br>Number of items: ' + itemCount;
 	
 		UpperItem.forEach((clothingItem) => {
 			var x = document.getElementById("upperBody_input"); 
@@ -1908,7 +1975,12 @@
 	function getWardrobe() {
 		console.log('Getting Wardrobe');
 		importWardrobe();
+		document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + wardrobeName + '<br>Number of items: ' + itemCount;
 	}
+	
+
+	
+	
 	
 	
 	function importWardrobe() {
@@ -1917,12 +1989,14 @@
 		if (files.length <= 0) {
 			return false;
 		}
+		itemCount = 0;
+		itemExists = false;
 		var fr = new FileReader();
   
 		fr.onload = function(e) { 
 			var result = JSON.parse(e.target.result);
 			var formatted = JSON.stringify(result, null, 2);
-			document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + result.wardrobeID;
+			document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + result.wardrobeID + '<br>Number of items: ' + itemCount;
 			wardrobeName = result.wardrobeID;
 			designerName = result.creatorID;
 			
@@ -1930,7 +2004,7 @@
 				case true:
 					document.getElementById ("wardrobe_info").value = result.wardrobeID + ' created by ' + result.creatorID;
 					document.getElementById("selectedWardobe").value = result.wardrobeID;
-					alertMessage = "Please Note that a Wardrobe with this name has already been imported and will be replaced";
+					alertMessage = "Please Note that a Wardrobe with this name has already been imported and may duplicate items";
 					alert(alertMessage);
 					break;
 				case false:
@@ -1942,9 +2016,10 @@
 					WardrobeDescr.push = [result.wardrobeID + ' created by ' + result.creatorID];
 					document.getElementById ("wardrobe_info").value = result.wardrobeID + ' created by ' + result.creatorID;
 					document.getElementById("selectedWardobe").value = result.wardrobeID;
+					document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + wardrobeName + '<br>Number of items: ' + itemCount;
 					break;
 			}
-			
+
 			switch (formatted.includes("UpperBodyItems")) {
 				case true:
 					createNewUpper();
@@ -1963,6 +2038,8 @@
 						var option = document.createElement("option");
 						option.text = clothingItem;
 						x.add(option);
+						itemCount++;
+						document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + wardrobeName + '<br>Number of items: ' + itemCount;
 					})
 					break;
 				case false:
@@ -1980,6 +2057,8 @@
 						var option = document.createElement("option");
 						option.text = clothingItem;
 						x.add(option);
+						itemCount++;
+						document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + wardrobeName + '<br>Number of items: ' + itemCount;
 					})
 					break;
 				case false:
@@ -1997,6 +2076,8 @@
 						var option = document.createElement("option");
 						option.text = clothingItem;
 						x.add(option);
+						itemCount++;
+						document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + wardrobeName + '<br>Number of items: ' + itemCount;
 					})
 					break;
 				case false:
@@ -2014,6 +2095,8 @@
 						var option = document.createElement("option");
 						option.text = clothingItem;
 						x.add(option);
+						itemCount++;
+						document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + wardrobeName + '<br>Number of items: ' + itemCount;
 					})
 					break;
 				case false:
@@ -2031,6 +2114,8 @@
 						var option = document.createElement("option");
 						option.text = clothingItem;
 						x.add(option);
+						itemCount++;
+						document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + wardrobeName + '<br>Number of items: ' + itemCount;
 					})
 					break;
 				case false:
@@ -2040,6 +2125,8 @@
 		fr.readAsText(files.item(0));
 		wardrobeFlag = true;
 		currWardrobe = document.getElementById ("selectedWardobe").value;
+		document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + wardrobeName + '<br>Number of items: ' + itemCount;
+		
 	}
 	
 	
