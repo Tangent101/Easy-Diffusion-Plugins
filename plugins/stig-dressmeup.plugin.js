@@ -1,6 +1,6 @@
 /**
  * Dress Me Up
- * v.1.1, last updated: 18/09/2023
+ * v.1.1, last updated: 19/09/2023
  * By The Stig
  * 
  * Thanks for the additional input by the following:
@@ -9,6 +9,7 @@
  * Your help has been really appreciated
  *
  * Change Log
+ * 19/09/2023 Added Prompt buttons and display
  * 18/09/2023 Added item count
  * 18/09/2023 Added Option to switch between loaded wardrobes
  * 15/09/2023 Added Extra Materials
@@ -40,6 +41,8 @@
 	var currWardrobe = null;
 	var itemExists = false;
 	var itemCount = 0;
+	
+	var promptReplace = false;
 	
 	
 	
@@ -89,6 +92,7 @@
 	addDressMeUpSettings();
 	
 	createGlobalWardrobe();
+	populatePrompt();
 	
 	
 	function injectLoaderCSS() {
@@ -115,6 +119,10 @@
 			}
 			.txtBox {
 				resize: none;
+			}
+			.txtBox2 {
+				resize: both;
+				 overflow: auto;
 			}
 		`;
 		document.head.appendChild(style);
@@ -428,7 +436,7 @@
 			"Faux fur",
 			"Faux leather",
 			"Felt",
-			"Filet/Lacis lace",
+			"Filet Lacis lace",
 			"Fishnet",
 			"Flannel",
 			"Flannelette",
@@ -1076,10 +1084,15 @@
 					</tbody></table>
 					
 					<p></P>
+					<button type="button" id="clearPrompt">Clear the current Prompt</button>
+					<p></P>
 					<button type="button" id="setRandomItems">Choose a Random Outfit</button>
 					<p></P>
-					<button type="button" id="setWardrobe">Wear these items of clothes</button>
+					<button type="button" id="setWardrobe">Add selected items to existing Prompt</button>
 					<p></p>
+					<button type="button" id="setPrompt">Replace Prompt with selected items</button>
+					<p></p>
+					<textarea readonly class="txtBox2" id="currPrompt" name="currPrompt" rows="6" cols="60"></textarea>
 					</div>`;
 		DressMeUpSettings.innerHTML = tempHTML;
 		var editorSettings = document.getElementById('editor-settings');
@@ -1211,6 +1224,8 @@
 		document.getElementById ("lockLower").addEventListener ("click", lockLower, false);
 		document.getElementById ("lockFootwear").addEventListener ("click", lockFootwear, false);
 		document.getElementById ("lockAccessory").addEventListener ("click", lockAccessory, false);
+		document.getElementById ("clearPrompt").addEventListener ("click", clearPrompt, false);
+		document.getElementById ("setPrompt").addEventListener ("click", setPrompt, false);
 		
 		
 		//document.getElementById ("selectedWardobe").addEventListener ("onchange", selectWardrobe,false);
@@ -1221,6 +1236,25 @@
 		//document.getElementById ("wardrobe_info").innerHTML = WardrobeDescr[1];
 
 	}
+	
+	function clearPrompt() {
+		promptField.value = null;
+		document.getElementById ("currPrompt").value =null;
+	}
+	
+	
+	function populatePrompt() {
+		var CurrentPrompt = promptField.value;
+		document.getElementById ("currPrompt").value = CurrentPrompt;
+	}
+	
+	function setPrompt() {
+		promptReplace=true;
+		setItems();
+		promptReplace=false;
+		
+	}
+	
 	function createWardrobeList() {
 		//WardrobeList.push("All Wardobes");
 		WardrobeDescr.push = ["All Loaded Wardrobes"];
@@ -1277,6 +1311,7 @@
 			i++; // creatorID
 			i++; // Item type
 			i++; // Item Name
+			if (i > globalWardrobe.length) { break; }
 		}
 		//console.log(dummyWardrobe);
 		switch (writeFlag) {
@@ -1312,6 +1347,7 @@
 						i++;
 						i++;
 						i++;
+						if (i > dummyWardrobe.length) { break; }
 						}
 						switch (UpperItem.length) {
 							case 0:
@@ -1453,6 +1489,8 @@
 					i++;
 					i++;
 					i++;
+					if (i > dummyWardrobe.length) { break; }
+					
 				}
 		}	
 	}
@@ -1666,7 +1704,15 @@
 			case false:
 				break;
 			default:
-				promptField.value = promptField.value + additionalPrompt;
+				switch (promptReplace) {
+					case false:
+						promptField.value = promptField.value + additionalPrompt;
+						break;
+					case true:
+						promptField.value = additionalPrompt;
+						break;
+				}
+				document.getElementById ("currPrompt").value = promptField.value;
 				break;
 		}
 		
