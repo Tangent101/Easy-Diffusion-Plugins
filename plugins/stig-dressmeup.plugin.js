@@ -1,6 +1,6 @@
 /**
  * Dress Me Up
- * v.1.1, last updated: 19/09/2023
+ * v.1.1, last updated: 20/09/2023
  * By The Stig
  * 
  * Thanks for the additional input by the following:
@@ -9,6 +9,7 @@
  * Your help has been really appreciated
  *
  * Change Log
+ * 20/09/2023 Added Pre and Post Prompt Text Boxes
  * 19/09/2023 Added Prompt buttons and display
  * 18/09/2023 Added item count
  * 18/09/2023 Added Option to switch between loaded wardrobes
@@ -76,6 +77,12 @@
 	var AccessoryItemColor = [];
 	var AccessoryItemMaterial = [];
 	var statusAccessory = false;
+	
+	var prePrompt = [];
+	var postPrompt = [];
+	var prePromptField = null;
+	var postPromptField = null;	
+	
 		
 	injectLoaderCSS();
 	createColors();
@@ -1081,20 +1088,30 @@
 					
 					
 		
-					</tbody></table>
+				</tbody></table>
 					
-					<p></P>
-					<button type="button" id="clearPrompt">Clear the current Prompt</button>
-					<p></P>
-					<button type="button" id="setRandomItems">Choose a Random Outfit</button>
-					<p></P>
-					<button type="button" id="setWardrobe">Add selected items to existing Prompt</button>
-					<p></p>
-					<button type="button" id="setPrompt">Replace Prompt with selected items</button>
-					<p></p>
-					<textarea readonly class="txtBox2" id="currPrompt" name="currPrompt" rows="6" cols="60"></textarea>
-					</div>`;
+				<p></P>
+				<label for="prePromptText">Pre Prompt:</label>
+				<textarea class="txtBox2" id="prePromptText" name="prePromptText" rows="2" cols="60"></textarea>
+				<!--<p></p>-->
+				<label for="currPrompt">Main Prompt:</label>
+				<textarea readonly class="txtBox2" id="currPrompt" name="currPrompt" rows="6" cols="60"></textarea>
+				<!--<p></P>-->
+				<label for="postPromptText">Post Prompt:</label>
+				<textarea class="txtBox2" id="postPromptText" name="postPromptText" rows="2" cols="60"></textarea>
+				<p></p>
+				<button type="button" id="clearPrompt">Clear the current Prompt</button>
+				<p></P>
+				<button type="button" id="setRandomItems">Choose a Random Outfit</button>
+				<p></P>
+				<button type="button" id="setWardrobe">Add selected items to existing Prompt</button>
+				<p></p>
+				<button type="button" id="setPrompt">Replace Prompt with selected items</button>
+				<p></p>
+				</div>`;
+				
 		DressMeUpSettings.innerHTML = tempHTML;
+		
 		var editorSettings = document.getElementById('editor-settings');
 		editorSettings.parentNode.insertBefore(DressMeUpSettings, editorSettings.nextSibling);
 		createCollapsibles(DressMeUpSettings);
@@ -1704,12 +1721,15 @@
 			case false:
 				break;
 			default:
+				prePromptField = document.getElementById ("prePromptText").value;
+				postPromptField = document.getElementById ("postPromptText").value;
+				
 				switch (promptReplace) {
 					case false:
-						promptField.value = promptField.value + additionalPrompt;
+						promptField.value = prePromptField + promptField.value + additionalPrompt + postPromptField;
 						break;
 					case true:
-						promptField.value = additionalPrompt;
+						promptField.value = prePromptField + additionalPrompt + postPromptField;;
 						break;
 				}
 				document.getElementById ("currPrompt").value = promptField.value;
