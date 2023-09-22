@@ -1,6 +1,6 @@
 /**
  * Dress Me Up
- * v.1.1, last updated: 20/09/2023
+ * v.1.1, last updated: 22/09/2023
  * By The Stig
  * 
  * Thanks for the additional input by the following:
@@ -9,6 +9,7 @@
  * Your help has been really appreciated
  *
  * Change Log
+ * 22/09/2023 Added Batch run option
  * 20/09/2023 Added Pre and Post Prompt Text Boxes
  * 19/09/2023 Added Prompt buttons and display
  * 18/09/2023 Added item count
@@ -27,6 +28,8 @@
     const VERSION = "1.1";
     const ID_PREFIX = "TheStig-DressMeUp-plugin";
     console.log('%s Embed Metadata Version: %s', ID_PREFIX, VERSION);
+	
+	var defaultBatchCount = 4;
 		
 	var alertMessage = 'Some Text';
 	
@@ -42,6 +45,7 @@
 	var currWardrobe = null;
 	var itemExists = false;
 	var itemCount = 0;
+	var skipCount = 0;
 	
 	var promptReplace = false;
 	
@@ -50,6 +54,8 @@
 	var wardrobeName = "Default Wardrobe";
 	var designerName = "The Stig";
 	
+	var globalColors = [];
+	var globalMaterials = [];
 	var defaultColors = [];
 	var defaultMaterials = [];
 	
@@ -357,11 +363,11 @@
 			"Yellow",
 			"Zinc Grey"		
 		]
+		globalColors = defaultColors;
 	}
 	
 	function createMaterials() {
 		defaultMaterials = [
-			"Aertex",
 			"Aertex",
 			"Alençon lace",
 			"Antique satin",
@@ -607,6 +613,7 @@
 			"Zibeline",
 			"Zorbeez"
 		]
+		globalMaterials = defaultMaterials;
 	}
 	
 	function createUpperItems() {
@@ -1108,6 +1115,9 @@
 				<p></p>
 				<button type="button" id="setPrompt">Replace Prompt with selected items</button>
 				<p></p>
+				<button type="button" id="batchRun">Random Batch</button>
+				<input type="number" id="batchCount" value="4" min="1">
+				<p></p>
 				</div>`;
 				
 		DressMeUpSettings.innerHTML = tempHTML;
@@ -1229,13 +1239,10 @@
 		})
 		
 		
-		//document.querySelector('#reset-dmu-settings').addEventListener('click', resetWardrobe);
 		document.getElementById ("selectedWardobe").addEventListener ("click", selectWardrobe, false);
-		//document.getElementById ("setDefaultWardrobe").addEventListener ("click", resetWardrobe, false); No Longer required
 		document.getElementById ("setWardrobe").addEventListener ("click", setItems, false);
 		document.getElementById ("setRandomItems").addEventListener ("click", setRandomItems, false);
 		document.getElementById ("importWardrobe").addEventListener ("click", getWardrobe, false);
-		//document.getElementById ("importWardrobe").addEventListener ("click", importWardrobe, false);
 		document.getElementById ("lockHeadwear").addEventListener ("click", lockHeadwear, false);
 		document.getElementById ("lockUpper").addEventListener ("click", lockUpper, false);
 		document.getElementById ("lockLower").addEventListener ("click", lockLower, false);
@@ -1243,14 +1250,12 @@
 		document.getElementById ("lockAccessory").addEventListener ("click", lockAccessory, false);
 		document.getElementById ("clearPrompt").addEventListener ("click", clearPrompt, false);
 		document.getElementById ("setPrompt").addEventListener ("click", setPrompt, false);
-		
-		
-		//document.getElementById ("selectedWardobe").addEventListener ("onchange", selectWardrobe,false);
-		//document.getElementById ("selectFiles").addEventListener ("onchange", importWardrobe,false);
+		document.getElementById ("batchRun").addEventListener ("click", runBatch, false);
+
 		document.getElementById ("selectFiles").addEventListener ("onchange", getWardrobe,false);
 		
 		document.getElementById ("wardrobeHeader").innerHTML = wardrobeName;
-		//document.getElementById ("wardrobe_info").innerHTML = WardrobeDescr[1];
+		document.getElementById("batchCount").defaultValue = defaultBatchCount;
 
 	}
 	
@@ -1436,13 +1441,36 @@
 								})
 						}
 						
+						
+						console.log('Creating Global Mats');
+						createNewMaterials();
+						createNewColors();
+						getGlobalMaterials();
+						getGlobalColors();
 							
 						document.getElementById ("wardrobe_info").value = 'All Available Wardrobes';
 						document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: All Available Wardrobes<br>Number of items: ' + itemCount;
 						return;
 					default:
+						
 						break;
 				}
+				console.log('Cur: ' + currWardrobe);
+				createNewMaterials();
+				createNewColors();
+				switch (currWardrobe) {
+					case ("Default Wardrobe"):
+						//console.log('Creating Default Mats');
+						getDefaultMaterials();
+						getDefaultColors();
+						break;
+					default:
+						console.log('Creating Imported Wardrobe Mats');
+						getGlobalMaterials();
+						getGlobalColors();
+						break;
+				}
+					
 				
 				itemCount = 0;
 
@@ -1579,7 +1607,7 @@
 					case 'None':
 						break;
 					default:
-						additionalPrompt = additionalPrompt + ' ' + upperItemofClothingColor;
+						additionalPrompt = additionalPrompt + ' ' + upperItemofClothingColor + ' colored';
 						break;
 				}
 				additionalPrompt = additionalPrompt + ' ' + upperItemofClothing;
@@ -1587,7 +1615,7 @@
 					case 'None':
 						break;
 					default:
-						additionalPrompt = additionalPrompt + ' made of ' + upperItemofClothingMaterial;
+						additionalPrompt = additionalPrompt + ' (made of ' + upperItemofClothingMaterial + ')';
 						break;
 				}
 				additionalPrompt = additionalPrompt + ',';
@@ -1603,7 +1631,7 @@
 					case 'None':
 						break;
 					default:
-						additionalPrompt = additionalPrompt + ' ' + lowerItemofClothingColor;
+						additionalPrompt = additionalPrompt + ' ' + lowerItemofClothingColor + ' colored';
 						break;
 				}
 				additionalPrompt = additionalPrompt + ' ' + lowerItemofClothing;
@@ -1611,7 +1639,7 @@
 					case 'None':
 						break;
 					default:
-						additionalPrompt = additionalPrompt + ' made of ' + lowerItemofClothingMaterial;
+						additionalPrompt = additionalPrompt + ' (made of ' + lowerItemofClothingMaterial + ')';
 						break;
 				}
 			
@@ -1628,7 +1656,7 @@
 						case 'None':
 							break;
 						default:
-							additionalPrompt = additionalPrompt + ' ' + footwearClothingColor;
+							additionalPrompt = additionalPrompt + ' ' + footwearClothingColor + ' colored';
 							break;
 				}
 				additionalPrompt = additionalPrompt + ' ' + footwearClothing;
@@ -1636,7 +1664,7 @@
 					case 'None':
 						break;
 					default:
-						additionalPrompt = additionalPrompt + ' made of ' + footwearClothingMaterial;
+						additionalPrompt = additionalPrompt + ' (made of ' + footwearClothingMaterial + ')';
 						break;
 				}
 				additionalPrompt = additionalPrompt + ',';
@@ -1652,7 +1680,7 @@
 						case 'None':
 							break;
 						default:
-							additionalPrompt = additionalPrompt + ' ' + headwearClothingColor;
+							additionalPrompt = additionalPrompt + ' ' + headwearClothingColor + ' colored';
 							break;
 				}
 				additionalPrompt = additionalPrompt + ' ' + headwearClothing;
@@ -1660,7 +1688,7 @@
 					case 'None':
 						break;
 					default:
-						additionalPrompt = additionalPrompt + ' made of ' + headwearClothingMaterial;
+						additionalPrompt = additionalPrompt + ' (made of ' + headwearClothingMaterial + ')';
 						break;
 				}
 				additionalPrompt = additionalPrompt + ',';
@@ -1679,7 +1707,7 @@
 							case 'None':
 								break;
 							default:
-								additionalPrompt = additionalPrompt + ' ' + AccessoryClothingColor;
+								additionalPrompt = additionalPrompt + ' ' + AccessoryClothingColor + ' colored';
 								break;
 						}
 						additionalPrompt = additionalPrompt + ' ' + AccessoryClothing;
@@ -1687,7 +1715,7 @@
 							case 'None':
 								break;
 							default:
-								additionalPrompt = additionalPrompt + ' made of ' + AccessoryClothingMaterial;
+								additionalPrompt = additionalPrompt + ' (made of ' + AccessoryClothingMaterial + ')';
 								break;
 						}
 						additionalPrompt = additionalPrompt + ',';
@@ -1699,7 +1727,7 @@
 							case 'None':
 								break;
 							default:
-								additionalPrompt = additionalPrompt + ' ' + AccessoryClothingColor;
+								additionalPrompt = additionalPrompt + ' ' + AccessoryClothingColor + ' colored';
 								break;
 						}
 						additionalPrompt = additionalPrompt + ' ' + AccessoryClothing;
@@ -1707,7 +1735,7 @@
 							case 'None':
 								break;
 							default:
-								additionalPrompt = additionalPrompt + ' made of ' + AccessoryClothingMaterial;
+								additionalPrompt = additionalPrompt + ' (made of ' + AccessoryClothingMaterial + ')';
 								break;
 						}
 						additionalPrompt = additionalPrompt + ',';
@@ -2056,6 +2084,7 @@
 			return false;
 		}
 		itemCount = 0;
+		skipCount = 0;
 		itemExists = false;
 		var fr = new FileReader();
   
@@ -2093,7 +2122,8 @@
 					result.UpperBodyItems.forEach((clothingItem) => {
 						switch (globalWardrobe[3].includes(clothingItem)) {
 							case true:
-								console.log('Skipping ' + clothingItem);
+								skipCount ++;
+								//console.log('Skipping ' + clothingItem + ' in ImportUpper');
 								break;
 							case false:
 								globalWardrobe.push(wardrobeName,designerName,'UpperItem',clothingItem);
@@ -2105,7 +2135,7 @@
 						option.text = clothingItem;
 						x.add(option);
 						itemCount++;
-						document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + wardrobeName + '<br>Number of items: ' + itemCount;
+						document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + wardrobeName + '<br>Number of items: ' + itemCount + '<br>Duplicates ignored: ' +skipCount;
 					})
 					break;
 				case false:
@@ -2117,14 +2147,22 @@
 					createNewLower();
 					resetLocks();
 					result.LowerBodyItems.forEach((clothingItem) => {
-						globalWardrobe.push(wardrobeName,designerName,'LowerItem',clothingItem);
+						switch (globalWardrobe[3].includes(clothingItem)) {
+							case true:
+								skipCount ++;
+								//console.log('Skipping ' + clothingItem + ' in ImportLower');
+								break;
+							case false:
+								globalWardrobe.push(wardrobeName,designerName,'LowerItem',clothingItem);
+								break;
+						}
 						LowerItem.push(clothingItem);
 						var x = document.getElementById("lowerBody_input");
 						var option = document.createElement("option");
 						option.text = clothingItem;
 						x.add(option);
 						itemCount++;
-						document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + wardrobeName + '<br>Number of items: ' + itemCount;
+						document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + wardrobeName + '<br>Number of items: ' + itemCount + '<br>Duplicates ignored: ' +skipCount;
 					})
 					break;
 				case false:
@@ -2136,14 +2174,22 @@
 					createNewHeadwear();
 					resetLocks();
 					result.HeadwearItems.forEach((clothingItem) => {
-						globalWardrobe.push(wardrobeName,designerName,'HeadwearItem',clothingItem);
+						switch (globalWardrobe[3].includes(clothingItem)) {
+							case true:
+								skipCount ++;
+								//console.log('Skipping ' + clothingItem + ' in ImportHead');
+								break;
+							case false:
+								globalWardrobe.push(wardrobeName,designerName,'HeadwearItem',clothingItem);
+								break;
+						}
 						LowerItem.push(clothingItem);
 						var x = document.getElementById("Headwear_input");
 						var option = document.createElement("option");
 						option.text = clothingItem;
 						x.add(option);
 						itemCount++;
-						document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + wardrobeName + '<br>Number of items: ' + itemCount;
+						document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + wardrobeName + '<br>Number of items: ' + itemCount + '<br>Duplicates ignored: ' +skipCount;
 					})
 					break;
 				case false:
@@ -2152,17 +2198,25 @@
 			
 			switch (formatted.includes("FootwearItems")) {
 				case true:
-					createNewHeadwear();
+					createNewFootwear();
 					resetLocks();
 					result.FootwearItems.forEach((clothingItem) => {
-						globalWardrobe.push(wardrobeName,designerName,'FootwearItem',clothingItem);
+						switch (globalWardrobe[3].includes(clothingItem)) {
+							case true:
+								skipCount ++;
+								//console.log('Skipping ' + clothingItem + ' in ImportFoot');
+								break;
+							case false:
+								globalWardrobe.push(wardrobeName,designerName,'FootwearItem',clothingItem);
+								break;
+						}
 						FootwearItem.push(clothingItem);
 						var x = document.getElementById("Footwear_input");
 						var option = document.createElement("option");
 						option.text = clothingItem;
 						x.add(option);
 						itemCount++;
-						document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + wardrobeName + '<br>Number of items: ' + itemCount;
+						document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + wardrobeName + '<br>Number of items: ' + itemCount + '<br>Duplicates ignored: ' +skipCount;
 					})
 					break;
 				case false:
@@ -2174,24 +2228,129 @@
 					createNewAccessories();
 					resetLocks();
 					result.AccesoryItems.forEach((clothingItem) => {
-						globalWardrobe.push(wardrobeName,designerName,'AccessoryItem',clothingItem);
+						switch (globalWardrobe[3].includes(clothingItem)) {
+							case true:
+								skipCount ++;
+								//console.log('Skipping ' + clothingItem + ' in ImportAccs');
+								break;
+							case false:
+								globalWardrobe.push(wardrobeName,designerName,'AccessoryItem',clothingItem);
+								break;
+						}
 						AccessoryItem.push(clothingItem);
 						var x = document.getElementById("Accessory_input");
 						var option = document.createElement("option");
 						option.text = clothingItem;
 						x.add(option);
 						itemCount++;
-						document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + wardrobeName + '<br>Number of items: ' + itemCount;
+						document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + wardrobeName + '<br>Number of items: ' + itemCount + '<br>Duplicates ignored: ' +skipCount;
 					})
 					break;
 				case false:
 					break;
 			}
+			
+			switch (formatted.includes("MaterialItems")) {
+				case true:
+					createNewMaterials();
+					resetLocks();
+					result.MaterialItems.forEach((clothingItem) => {
+						switch (globalMaterials.includes(clothingItem)) {
+							case true:
+								skipCount ++;
+								//console.log('Skipping ' + clothingItem + ' in ImportMats');
+								break;
+							case false:
+								//console.log('Pushed ' + clothingItem);
+								globalMaterials.push(clothingItem);
+								//console.log('Added material');
+								break;
+						}
+						var x = document.getElementById("upperBody_material");
+						var option = document.createElement("option");
+						option.text = clothingItem;
+						x.add(option);
+						var x = document.getElementById("lowerBody_material");
+						var option = document.createElement("option");
+						option.text = clothingItem;
+						x.add(option);
+						var x = document.getElementById("Headwear_material");
+						var option = document.createElement("option");
+						option.text = clothingItem;
+						x.add(option);
+						var x = document.getElementById("Footwear_material");
+						var option = document.createElement("option");
+						option.text = clothingItem;
+						x.add(option);
+						var x = document.getElementById("Accessory_material");
+						var option = document.createElement("option");
+						option.text = clothingItem;
+						x.add(option);
+						itemCount++;
+						document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + wardrobeName + '<br>Number of items: ' + itemCount + '<br>Duplicates ignored: ' +skipCount;
+
+					})
+					break;
+				case false:
+					break;
+			}
+			
+			switch (formatted.includes("ColorItems")) {
+				case true:
+					console.log('Importing colors');
+					createNewColors();
+					resetLocks();
+					result.ColorItems.forEach((clothingItem) => {
+						switch (globalColors.includes(clothingItem)) {
+							case true:
+								skipCount ++;
+								//console.log('Skipping ' + clothingItem + ' in ImportCols');
+								break;
+							case false:
+								//console.log('Pushed ' + clothingItem);
+								globalColors.push(clothingItem);
+								//console.log('Added Color: ' + clothingItem);
+								break;
+						}
+						var x = document.getElementById("upperBody_color");
+						var option = document.createElement("option");
+						option.text = clothingItem;
+						x.add(option);
+						var x = document.getElementById("lowerBody_color");
+						var option = document.createElement("option");
+						option.text = clothingItem;
+						x.add(option);
+						var x = document.getElementById("Headwear_color");
+						var option = document.createElement("option");
+						option.text = clothingItem;
+						x.add(option);
+						var x = document.getElementById("Footwear_color");
+						var option = document.createElement("option");
+						option.text = clothingItem;
+						x.add(option);
+						var x = document.getElementById("Accessory_color");
+						var option = document.createElement("option");
+						option.text = clothingItem;
+						x.add(option);
+						itemCount++;
+						document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + wardrobeName + '<br>Number of items: ' + itemCount + '<br>Duplicates ignored: ' +skipCount;
+
+					})
+					break;
+				case false:
+					break;
+			}
+			
+			
+			
+			
+			
+			
 		}
 		fr.readAsText(files.item(0));
 		wardrobeFlag = true;
 		currWardrobe = document.getElementById ("selectedWardobe").value;
-		document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + wardrobeName + '<br>Number of items: ' + itemCount;
+		document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + wardrobeName + '<br>Number of items: ' + itemCount + '<br>Duplicates ignored: ' +skipCount;
 		
 	}
 	
@@ -2240,6 +2399,348 @@
 		option.text = "None";
 		x.add(option);
 	}
+	
+	function createNewMaterials() {
+		console.log('Creating new mat');
+		UpperItemMaterial = [];
+		LowerItemMaterial = [];
+		FootwearItemMaterial = [];
+		HeadwearItemMaterial = [];
+		AccessoryItemMaterial = [];
+		document.getElementById('upperBody_material').innerText = null;
+		document.getElementById('lowerBody_material').innerText = null;
+		document.getElementById('Headwear_material').innerText = null;
+		document.getElementById('Footwear_material').innerText = null;
+		document.getElementById('Accessory_material').innerText = null;
+		var x = document.getElementById("upperBody_material");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+		var x = document.getElementById("lowerBody_material");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+		var x = document.getElementById("Headwear_material");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+		var x = document.getElementById("Footwear_material");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+		var x = document.getElementById("Accessory_material");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+	}
+	
+	function getGlobalMaterials() {
+		globalMaterials.sort();
+		UpperItemMaterial = globalMaterials;
+		LowerItemMaterial = globalMaterials;
+		FootwearItemMaterial = globalMaterials;
+		HeadwearItemMaterial = globalMaterials;
+		AccessoryItemMaterial = globalMaterials;
+		document.getElementById('upperBody_material').innerText = null;
+		document.getElementById('lowerBody_material').innerText = null;
+		document.getElementById('Headwear_material').innerText = null;
+		document.getElementById('Footwear_material').innerText = null;
+		document.getElementById('Accessory_material').innerText = null;
+		var x = document.getElementById("upperBody_material");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+		var x = document.getElementById("lowerBody_material");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+		var x = document.getElementById("Headwear_material");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+		var x = document.getElementById("Footwear_material");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+		var x = document.getElementById("Accessory_material");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+		
+		UpperItemMaterial.forEach((clothingItem) => {
+			var x = document.getElementById("upperBody_material"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
+		LowerItemMaterial.forEach((clothingItem) => {
+			var x = document.getElementById("lowerBody_material"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
+		FootwearItemMaterial.forEach((clothingItem) => {
+			var x = document.getElementById("Footwear_material"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
+		HeadwearItemMaterial.forEach((clothingItem) => {
+			var x = document.getElementById("Headwear_material"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
+		AccessoryItemMaterial.forEach((clothingItem) => {
+			var x = document.getElementById("Accessory_material"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
+
+		console.log('Global Mats imported');
+		
+	}
+	
+	function getDefaultMaterials() {
+		defaultMaterials.sort();
+		UpperItemMaterial = defaultMaterials;
+		LowerItemMaterial = defaultMaterials;
+		FootwearItemMaterial = defaultMaterials;
+		HeadwearItemMaterial = defaultMaterials;
+		AccessoryItemMaterial = defaultMaterials;
+		document.getElementById('upperBody_material').innerText = null;
+		document.getElementById('lowerBody_material').innerText = null;
+		document.getElementById('Headwear_material').innerText = null;
+		document.getElementById('Footwear_material').innerText = null;
+		document.getElementById('Accessory_material').innerText = null;
+		var x = document.getElementById("upperBody_material");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+		var x = document.getElementById("lowerBody_material");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+		var x = document.getElementById("Headwear_material");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+		var x = document.getElementById("Footwear_material");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+		var x = document.getElementById("Accessory_material");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+		
+		UpperItemMaterial.forEach((clothingItem) => {
+			var x = document.getElementById("upperBody_material"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
+		LowerItemMaterial.forEach((clothingItem) => {
+			var x = document.getElementById("lowerBody_material"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
+		FootwearItemMaterial.forEach((clothingItem) => {
+			var x = document.getElementById("Footwear_material"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
+		HeadwearItemMaterial.forEach((clothingItem) => {
+			var x = document.getElementById("Headwear_material"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
+		AccessoryItemMaterial.forEach((clothingItem) => {
+			var x = document.getElementById("Accessory_material"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
+
+		console.log('Default Mats imported');
+		
+	}
+	
+	function getGlobalColors() {
+		globalColors.sort();
+		UpperItemColor = globalColors;
+		LowerItemColor = globalColors;
+		FootwearItemColor = globalColors;
+		HeadwearItemColor = globalColors;
+		AccessoryItemColor = globalColors;
+		document.getElementById('upperBody_color').innerText = null;
+		document.getElementById('lowerBody_color').innerText = null;
+		document.getElementById('Headwear_color').innerText = null;
+		document.getElementById('Footwear_color').innerText = null;
+		document.getElementById('Accessory_color').innerText = null;
+		var x = document.getElementById("upperBody_color");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+		var x = document.getElementById("lowerBody_color");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+		var x = document.getElementById("Headwear_color");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+		var x = document.getElementById("Footwear_color");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+		var x = document.getElementById("Accessory_color");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+		
+		UpperItemColor.forEach((clothingItem) => {
+			var x = document.getElementById("upperBody_color"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
+		LowerItemColor.forEach((clothingItem) => {
+			var x = document.getElementById("lowerBody_color"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
+		FootwearItemColor.forEach((clothingItem) => {
+			var x = document.getElementById("Headwear_color"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
+		HeadwearItemColor.forEach((clothingItem) => {
+			var x = document.getElementById("Footwear_color"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
+		AccessoryItemColor.forEach((clothingItem) => {
+			var x = document.getElementById("Accessory_color"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
+
+		console.log('Global Cols imported');
+		
+	}
+	
+	function getDefaultColors() {
+		defaultColors.sort();
+		UpperItemColor = defaultColors;
+		LowerItemColor = defaultColors;
+		FootwearItemColor = defaultColors;
+		HeadwearItemColor = defaultColors;
+		AccessoryItemColor = defaultColors;
+		document.getElementById('upperBody_color').innerText = null;
+		document.getElementById('lowerBody_color').innerText = null;
+		document.getElementById('Headwear_color').innerText = null;
+		document.getElementById('Footwear_color').innerText = null;
+		document.getElementById('Accessory_color').innerText = null;
+		var x = document.getElementById("upperBody_color");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+		var x = document.getElementById("lowerBody_color");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+		var x = document.getElementById("Headwear_color");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+		var x = document.getElementById("Footwear_color");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+		var x = document.getElementById("Accessory_color");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+		
+		UpperItemColor.forEach((clothingItem) => {
+			var x = document.getElementById("upperBody_color"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
+		LowerItemColor.forEach((clothingItem) => {
+			var x = document.getElementById("lowerBody_color"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
+		FootwearItemColor.forEach((clothingItem) => {
+			var x = document.getElementById("Headwear_color"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
+		HeadwearItemColor.forEach((clothingItem) => {
+			var x = document.getElementById("Footwear_color"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
+		AccessoryItemColor.forEach((clothingItem) => {
+			var x = document.getElementById("Accessory_color"); 
+			var option = document.createElement("option");
+			option.text = clothingItem;
+			x.add(option);
+		})
+
+		console.log('Default Cols imported');
+		
+	}
+	
+	
+	function createNewColors() {
+		UpperItemColor = [];
+		LowerItemColor = [];
+		FootwearItemColor = [];
+		HeadwearItemColor = [];
+		AccessoryItemColor = [];
+		document.getElementById('upperBody_color').innerText = null;
+		document.getElementById('lowerBody_color').innerText = null;
+		document.getElementById('Headwear_color').innerText = null;
+		document.getElementById('Footwear_color').innerText = null;
+		document.getElementById('Accessory_color').innerText = null;
+		var x = document.getElementById("upperBody_color");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+		var x = document.getElementById("lowerBody_color");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+		var x = document.getElementById("Headwear_color");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+		var x = document.getElementById("Footwear_color");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+		var x = document.getElementById("Accessory_color");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+	}
+		
+	
 
 	function lockHeadwear() {
 		switch (statusHeadwear) {
@@ -2351,7 +2852,15 @@
 		lockAccessory()		
 	}
 	
-	
+	function runBatch() {
+		console.log('Running Batch');
+		var batchCount = document.getElementById("batchCount").value;
+		for (let i = 0; i < batchCount; i++) {
+			setRandomItems();
+			setPrompt();
+			document.getElementById("makeImage").click();
+		}
+	}
 	
 	
 
