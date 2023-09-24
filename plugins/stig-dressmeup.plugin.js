@@ -1,6 +1,6 @@
 /**
  * Dress Me Up
- * v.1.1, last updated: 22/09/2023
+ * v.1.1, last updated: 24/09/2023
  * By The Stig
  * 
  * Thanks for the additional input by the following:
@@ -9,6 +9,7 @@
  * Your help has been really appreciated
  *
  * Change Log
+ * 24/09/2023 Added ability to import all Wardrobe files in a given folder and sub folder
  * 22/09/2023 Added Batch run option
  * 20/09/2023 Added Pre and Post Prompt Text Boxes
  * 19/09/2023 Added Prompt buttons and display
@@ -104,6 +105,8 @@
 	
 	addDressMeUpSettings();
 	
+	var confirmDiv = document.getElementById("confirm");
+	
 	createGlobalWardrobe();
 	populatePrompt();
 	
@@ -136,6 +139,26 @@
 			.txtBox2 {
 				resize: both;
 				 overflow: auto;
+			}
+			#confirm {
+				display: none;
+				background-color: white;
+				font-size: 16px;
+				color: black;
+				border: 2px solid;
+				position: fixed;
+				height: 80px;
+				width: 250px;
+				left: 50%;
+				top: 50%;
+				padding: 6px 8px 8px;
+				text-align: center;
+			}
+			.close {
+				display: flex;
+				position: absolute;
+				right: 20px;
+				bottom: 0px;
 			}
 		`;
 		document.head.appendChild(style);
@@ -985,8 +1008,12 @@
 		let tempHTML = `
 			<h4 class="collapsible `+ openCheck +`">Dress Me Up Settings</h4>
 			<div id="dmu-settings-entries" class="collapsible-content" style="display: block;margin-top:15px;">
-				<button style="display:block;width:120px; height:30px;" onclick="document.getElementById('selectFiles').click()">Import Wardrobe</button>
+				<button style="display:block;width:240px; height:30px;" onclick="document.getElementById('filepicker').click()">Import Wardrobe Directory</button>
+				<p></p>
+				<button style="display:block;width:240px; height:30px;" onclick="document.getElementById('selectFiles').click()">Import Single Wardrobe</button>
 				<input type='file' id="selectFiles" style="display:none" onchange="document.getElementById('importWardrobe').click()">
+				<input type="file" id="filepicker" name="fileList" style="display:none" webkitdirectory multiple />
+				<button style="display:none" type="button" id="locateWardrobe">Locate Wardrobe Files</button>
 				<button style="display:none" type="button" id="importWardrobe">Import Wardrobe</button>
 				<!--<button type="button" id="setDefaultWardrobe">Reset to Default Wardrobe</button>-->
 				<p></p>
@@ -1099,13 +1126,13 @@
 					
 				<p></P>
 				<label for="prePromptText">Pre Prompt:</label>
-				<textarea class="txtBox2" id="prePromptText" name="prePromptText" rows="2" cols="60"></textarea>
+				<textarea title="Text before the main prompt (editable)" class="txtBox2" id="prePromptText" name="prePromptText" rows="2" cols="60"></textarea>
 				<!--<p></p>-->
 				<label for="currPrompt">Main Prompt:</label>
 				<textarea readonly class="txtBox2" id="currPrompt" name="currPrompt" rows="6" cols="60"></textarea>
 				<!--<p></P>-->
 				<label for="postPromptText">Post Prompt:</label>
-				<textarea class="txtBox2" id="postPromptText" name="postPromptText" rows="2" cols="60"></textarea>
+				<textarea title="Text after the main prompt (editable)" class="txtBox2" id="postPromptText" name="postPromptText" rows="2" cols="60"></textarea>
 				<p></p>
 				<button type="button" id="clearPrompt">Clear the current Prompt</button>
 				<p></P>
@@ -1115,10 +1142,18 @@
 				<p></p>
 				<button type="button" id="setPrompt">Replace Prompt with selected items</button>
 				<p></p>
-				<button type="button" id="batchRun">Random Batch</button>
-				<input type="number" id="batchCount" value="4" min="1">
+				<button title="Generate image(s)" type="button" id="batchRun">Generate Random Batch</button>
+				<input title="Batch Quantity" type="number" id="batchCount" value="4" min="1">
 				<p></p>
-				</div>`;
+				</div>
+				<div id="confirm">
+					<p> Clear the current Prompt? </p>
+					<div class = "close">
+						<button id="confirmYes">Yes</button>
+						<button id="confirmNo">No</button>
+					</div>
+				</div>
+				`;
 				
 		DressMeUpSettings.innerHTML = tempHTML;
 		
@@ -1251,17 +1286,75 @@
 		document.getElementById ("clearPrompt").addEventListener ("click", clearPrompt, false);
 		document.getElementById ("setPrompt").addEventListener ("click", setPrompt, false);
 		document.getElementById ("batchRun").addEventListener ("click", runBatch, false);
+		document.getElementById ("confirmYes").addEventListener ("click", closeConfirmYes, false);
+		document.getElementById ("confirmNo").addEventListener ("click", closeConfirmNo, false);
 
 		document.getElementById ("selectFiles").addEventListener ("onchange", getWardrobe,false);
 		
 		document.getElementById ("wardrobeHeader").innerHTML = wardrobeName;
 		document.getElementById("batchCount").defaultValue = defaultBatchCount;
+		
+		document.getElementById("filepicker").addEventListener("change",(event) => {
+			getDirectoryContents();
+			},
+			false,
+		);
 
 	}
 	
-	function clearPrompt() {
+	function getDirectoryContents() {
+		var jsonFlag = false;
+		for (const file of event.target.files) {
+			var fr = new FileReader();
+			fr.onload = function(e) {
+				var isJson =  file.webkitRelativePath.endsWith(".json");
+				switch (isJson) {
+					case true:
+						try {
+							var result = JSON.parse(e.target.result);
+							jsonFlag = true;
+						}
+						catch(err) {
+							jsonFlag = false;
+						}
+						break;
+					default:
+					jsonFlag = false;
+				}
+					
+				switch (jsonFlag) {
+					case true:
+						var formatted = JSON.stringify(result, null, 2);
+						processWardrobe(formatted);
+						jsonFlag = false;
+						break;
+					default:
+						console.log('Ignoring ' + file.webkitRelativePath);
+						break;
+				}
+			}
+			fr.readAsText(file);
+			
+		}
+	}
+	
+	function showConfirm() {
+		confirmDiv.style.display = "block";
+	}
+	
+	function closeConfirmNo() {
+		confirmDiv.style.display = "none";
+	}
+	function closeConfirmYes() {
+		confirmDiv.style.display = "none";
 		promptField.value = null;
 		document.getElementById ("currPrompt").value =null;
+	}
+	
+	function clearPrompt() {
+		confirmDiv = document.getElementById("confirm");
+		confirmDiv.style.display = "block";
+		showConfirm();
 	}
 	
 	
@@ -1615,7 +1708,7 @@
 					case 'None':
 						break;
 					default:
-						additionalPrompt = additionalPrompt + ' (made of ' + upperItemofClothingMaterial + ')';
+						additionalPrompt = additionalPrompt + ' made of ' + upperItemofClothingMaterial + '';
 						break;
 				}
 				additionalPrompt = additionalPrompt + ',';
@@ -1639,7 +1732,7 @@
 					case 'None':
 						break;
 					default:
-						additionalPrompt = additionalPrompt + ' (made of ' + lowerItemofClothingMaterial + ')';
+						additionalPrompt = additionalPrompt + ' made of ' + lowerItemofClothingMaterial + '';
 						break;
 				}
 			
@@ -1664,7 +1757,7 @@
 					case 'None':
 						break;
 					default:
-						additionalPrompt = additionalPrompt + ' (made of ' + footwearClothingMaterial + ')';
+						additionalPrompt = additionalPrompt + ' made of ' + footwearClothingMaterial + '';
 						break;
 				}
 				additionalPrompt = additionalPrompt + ',';
@@ -1688,7 +1781,7 @@
 					case 'None':
 						break;
 					default:
-						additionalPrompt = additionalPrompt + ' (made of ' + headwearClothingMaterial + ')';
+						additionalPrompt = additionalPrompt + ' made of ' + headwearClothingMaterial + '';
 						break;
 				}
 				additionalPrompt = additionalPrompt + ',';
@@ -1735,7 +1828,7 @@
 							case 'None':
 								break;
 							default:
-								additionalPrompt = additionalPrompt + ' (made of ' + AccessoryClothingMaterial + ')';
+								additionalPrompt = additionalPrompt + ' made of ' + AccessoryClothingMaterial + '';
 								break;
 						}
 						additionalPrompt = additionalPrompt + ',';
@@ -2073,6 +2166,217 @@
 	}
 	
 
+	function processWardrobe(formatted) {
+		//console.log(formatted);
+		switch (formatted.includes("wardrobeID")) {
+			case false:
+				//console.log('Not a valid Wardrobe file');
+				return;
+				break;
+			case true:
+				//console.log('A valid Wardrobe file');
+				break;
+		}
+		var tempArray = JSON.parse(formatted);
+		//console.log(tempArray);
+		wardrobeName = tempArray.wardrobeID;
+		designerName = tempArray.creatorID;
+		switch (WardrobeList.includes(wardrobeName)) {
+			case true:
+				console.log('Already Imported ' + wardrobeName);
+				return;
+				break;
+			default:
+				console.log('Importing ' + wardrobeName);
+				break;
+		}
+		
+		console.log('Wardrobe: ' + wardrobeName);
+		console.log('Designer: ' + designerName);
+		WardrobeList.push(tempArray.wardrobeID);
+		var x = document.getElementById("selectedWardobe");
+		var option = document.createElement("option");
+		option.text = tempArray.wardrobeID;
+		x.add(option);
+		
+		switch (formatted.includes("UpperBodyItems")) {
+			case true:
+				tempArray.UpperBodyItems.forEach((clothingItem) => {
+					switch (globalWardrobe[3].includes(clothingItem)) {
+						case true:
+							console.log('Item already exists: ' + clothingItem);
+							break;
+						case false:
+							globalWardrobe.push(wardrobeName,designerName,'UpperItem',clothingItem);
+							UpperItem.push(clothingItem);
+							var x = document.getElementById("upperBody_input");
+							var option = document.createElement("option");
+							option.text = clothingItem;
+							x.add(option);
+							break;
+					}
+				})
+			case false:
+				break;
+		}
+		switch (formatted.includes("LowerBodyItems")) {
+			case true:
+				tempArray.LowerBodyItems.forEach((clothingItem) => {
+					switch (globalWardrobe[3].includes(clothingItem)) {
+						case true:
+							console.log('Item already exists: ' + clothingItem);
+							break;
+						case false:
+							globalWardrobe.push(wardrobeName,designerName,'LowerItem',clothingItem);
+							LowerItem.push(clothingItem);
+							var x = document.getElementById("lowerBody_input");
+							var option = document.createElement("option");
+							option.text = clothingItem;
+							x.add(option);
+							break;
+					}
+				})
+			case false:
+				break;
+		}
+		switch (formatted.includes("HeadwearItems")) {
+			case true:
+				tempArray.HeadwearItems.forEach((clothingItem) => {
+					switch (globalWardrobe[3].includes(clothingItem)) {
+						case true:
+							console.log('Item already exists: ' + clothingItem);
+							break;
+						case false:
+							globalWardrobe.push(wardrobeName,designerName,'HeadwearItem',clothingItem);
+							HeadwearItem.push(clothingItem);
+							var x = document.getElementById("Headwear_input");
+							var option = document.createElement("option");
+							option.text = clothingItem;
+							x.add(option);
+							break;
+					}
+				})
+			case false:
+				break;
+		}
+		switch (formatted.includes("FootwearItems")) {
+			case true:
+				tempArray.FootwearItems.forEach((clothingItem) => {
+					switch (globalWardrobe[3].includes(clothingItem)) {
+						case true:
+							console.log('Item already exists: ' + clothingItem);
+							break;
+						case false:
+							globalWardrobe.push(wardrobeName,designerName,'FootwearItem',clothingItem);
+							HeadwearItem.push(clothingItem);
+							var x = document.getElementById("Footwear_input");
+							var option = document.createElement("option");
+							option.text = clothingItem;
+							x.add(option);
+							break;
+					}
+				})
+			case false:
+				break;
+		}
+		switch (formatted.includes("AccessoryItems")) {
+			case true:
+				tempArray.AccessoryItems.forEach((clothingItem) => {
+					switch (globalWardrobe[3].includes(clothingItem)) {
+						case true:
+							console.log('Item already exists: ' + clothingItem);
+							break;
+						case false:
+							globalWardrobe.push(wardrobeName,designerName,'AccessoryItem',clothingItem);
+							AccessoryItem.push(clothingItem);
+							var x = document.getElementById("Accessory_input");
+							var option = document.createElement("option");
+							option.text = clothingItem;
+							x.add(option);
+							break;
+					}
+				})
+			case false:
+				break;
+		}
+		switch (formatted.includes("MaterialItems")) {
+				case true:
+					tempArray.MaterialItems.forEach((clothingItem) => {
+						switch (globalMaterials.includes(clothingItem)) {
+							case true:
+								console.log('Item already exists: ' + clothingItem);
+								break;
+							case false:
+								globalMaterials.push(clothingItem);
+								break;
+						}
+						var x = document.getElementById("upperBody_material");
+						var option = document.createElement("option");
+						option.text = clothingItem;
+						x.add(option);
+						var x = document.getElementById("lowerBody_material");
+						var option = document.createElement("option");
+						option.text = clothingItem;
+						x.add(option);
+						var x = document.getElementById("Headwear_material");
+						var option = document.createElement("option");
+						option.text = clothingItem;
+						x.add(option);
+						var x = document.getElementById("Footwear_material");
+						var option = document.createElement("option");
+						option.text = clothingItem;
+						x.add(option);
+						var x = document.getElementById("Accessory_material");
+						var option = document.createElement("option");
+						option.text = clothingItem;
+						x.add(option);
+					})
+					break;
+				case false:
+					break;
+			}
+		
+		switch (formatted.includes("ColorItems")) {
+				case true:
+					tempArray.ColorItems.forEach((clothingItem) => {
+						switch (globalColors.includes(clothingItem)) {
+							case true:
+								break;
+							case false:
+								globalColors.push(clothingItem);
+								break;
+						}
+						var x = document.getElementById("upperBody_color");
+						var option = document.createElement("option");
+						option.text = clothingItem;
+						x.add(option);
+						var x = document.getElementById("lowerBody_color");
+						var option = document.createElement("option");
+						option.text = clothingItem;
+						x.add(option);
+						var x = document.getElementById("Headwear_color");
+						var option = document.createElement("option");
+						option.text = clothingItem;
+						x.add(option);
+						var x = document.getElementById("Footwear_color");
+						var option = document.createElement("option");
+						option.text = clothingItem;
+						x.add(option);
+						var x = document.getElementById("Accessory_color");
+						var option = document.createElement("option");
+						option.text = clothingItem;
+						x.add(option);
+
+					})
+					break;
+				case false:
+					break;
+			}
+		
+			
+		
+	}
+	
 	
 	
 	
