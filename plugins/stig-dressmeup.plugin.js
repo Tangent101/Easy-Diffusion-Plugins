@@ -1,6 +1,6 @@
 /**
  * Dress Me Up
- * v.1.1, last updated: 24/09/2023
+ * v.1.1, last updated: 27/09/2023
  * By The Stig
  * 
  * Thanks for the additional input by the following:
@@ -9,6 +9,7 @@
  * Your help has been really appreciated
  *
  * Change Log
+ * 27/09/2023 Bug Fix and Log info to console
  * 24/09/2023 Added ability to import all Wardrobe files in a given folder and sub folder
  * 22/09/2023 Added Batch run option
  * 20/09/2023 Added Pre and Post Prompt Text Boxes
