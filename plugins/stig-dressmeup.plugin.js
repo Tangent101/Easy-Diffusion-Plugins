@@ -143,12 +143,14 @@
 			#confirm {
 				display: none;
 				background-color: white;
-				font-size: 16px;
-				color: black;
-				border: 2px solid;
+				font-size: 20px;
+				color: blue;
+				border: 4px solid;
+				border-radius: 12px;
+				padding: 5px;
 				position: fixed;
-				height: 80px;
-				width: 250px;
+				height: 120px;
+				width: 240px;
 				left: 50%;
 				top: 50%;
 				padding: 6px 8px 8px;
@@ -158,7 +160,8 @@
 				display: flex;
 				position: absolute;
 				right: 20px;
-				bottom: 0px;
+				bottom: 8px;
+
 			}
 		`;
 		document.head.appendChild(style);
@@ -1015,6 +1018,8 @@
 				<input type="file" id="filepicker" name="fileList" style="display:none" webkitdirectory multiple />
 				<button style="display:none" type="button" id="locateWardrobe">Locate Wardrobe Files</button>
 				<button style="display:none" type="button" id="importWardrobe">Import Wardrobe</button>
+				<p></p>
+				<!--<button style="display:block;width:240px; height:30px;" id="removeWardrobe">Remove Selected Wardrobe</button>-->
 				<!--<button type="button" id="setDefaultWardrobe">Reset to Default Wardrobe</button>-->
 				<p></p>
 				<!--
@@ -1288,6 +1293,7 @@
 		document.getElementById ("batchRun").addEventListener ("click", runBatch, false);
 		document.getElementById ("confirmYes").addEventListener ("click", closeConfirmYes, false);
 		document.getElementById ("confirmNo").addEventListener ("click", closeConfirmNo, false);
+		//document.getElementById ("removeWardrobe").addEventListener ("click", removeWardrobe, false);
 
 		document.getElementById ("selectFiles").addEventListener ("onchange", getWardrobe,false);
 		
@@ -1370,6 +1376,14 @@
 		
 	}
 	
+	function removeWardrobe() {
+		console.log("Removing Wardrobe");
+		//showConfirm();
+	}
+	
+	
+	
+	
 	function createWardrobeList() {
 		//WardrobeList.push("All Wardobes");
 		WardrobeDescr.push = ["All Loaded Wardrobes"];
@@ -1431,8 +1445,10 @@
 		//console.log(dummyWardrobe);
 		switch (writeFlag) {
 			case false:
+				//console.log('Write Flag is false');
 				break;
 			case true:
+				//console.log('Write Flag is true');
 				createNewUpper();
 				createNewLower();
 				createNewHeadwear();
@@ -1476,6 +1492,7 @@
 								x.add(option);
 								itemCount ++;
 								})
+								break;
 						}
 						
 						switch (LowerItem.length) {
@@ -1490,6 +1507,7 @@
 								x.add(option);
 								itemCount ++;
 								})
+								break;
 						}
 						
 						switch (HeadwearItem.length) {
@@ -1504,6 +1522,7 @@
 								x.add(option);
 								itemCount ++;
 								})
+								break;
 						}
 						
 						switch (FootwearItem.length) {
@@ -1518,6 +1537,7 @@
 								x.add(option);
 								itemCount ++;
 								})
+								break;
 						}
 						
 						switch (AccessoryItem.length) {
@@ -1532,10 +1552,11 @@
 								x.add(option);
 								itemCount ++;
 								})
+								break;
 						}
 						
 						
-						console.log('Creating Global Mats');
+						//console.log('Creating Global Mats');
 						createNewMaterials();
 						createNewColors();
 						getGlobalMaterials();
@@ -1543,12 +1564,14 @@
 							
 						document.getElementById ("wardrobe_info").value = 'All Available Wardrobes';
 						document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: All Available Wardrobes<br>Number of items: ' + itemCount;
+						console.log('Selected: ' + currWardrobe);
 						return;
+						break;
 					default:
 						
 						break;
 				}
-				console.log('Cur: ' + currWardrobe);
+				console.log('Selected: ' + currWardrobe);
 				createNewMaterials();
 				createNewColors();
 				switch (currWardrobe) {
@@ -1558,7 +1581,7 @@
 						getDefaultColors();
 						break;
 					default:
-						console.log('Creating Imported Wardrobe Mats');
+						//console.log('Creating Imported Wardrobe Mats');
 						getGlobalMaterials();
 						getGlobalColors();
 						break;
@@ -2160,7 +2183,7 @@
 	}
 	
 	function getWardrobe() {
-		console.log('Getting Wardrobe');
+		//console.log('Getting Wardrobe');
 		importWardrobe();
 		document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + wardrobeName + '<br>Number of items: ' + itemCount;
 	}
@@ -2191,7 +2214,7 @@
 				break;
 		}
 		
-		console.log('Wardrobe: ' + wardrobeName);
+		//console.log('Wardrobe: ' + wardrobeName);
 		console.log('Designer: ' + designerName);
 		WardrobeList.push(tempArray.wardrobeID);
 		var x = document.getElementById("selectedWardobe");
@@ -2398,7 +2421,7 @@
 			document.getElementById ("wardrobeHeader").innerHTML = 'Wardrobe: ' + result.wardrobeID + '<br>Number of items: ' + itemCount;
 			wardrobeName = result.wardrobeID;
 			designerName = result.creatorID;
-			
+			console.log('Importing ' + wardrobeName);
 			switch (WardrobeList.includes(result.wardrobeID)) {
 				case true:
 					document.getElementById ("wardrobe_info").value = result.wardrobeID + ' created by ' + result.creatorID;
@@ -2527,11 +2550,11 @@
 					break;
 			}
 			
-			switch (formatted.includes("AccesoryItems")) {
+			switch (formatted.includes("AccessoryItems")) {
 				case true:
 					createNewAccessories();
 					resetLocks();
-					result.AccesoryItems.forEach((clothingItem) => {
+					result.AccessoryItems.forEach((clothingItem) => {
 						switch (globalWardrobe[3].includes(clothingItem)) {
 							case true:
 								skipCount ++;
@@ -2601,7 +2624,7 @@
 			
 			switch (formatted.includes("ColorItems")) {
 				case true:
-					console.log('Importing colors');
+					//console.log('Importing colors');
 					createNewColors();
 					resetLocks();
 					result.ColorItems.forEach((clothingItem) => {
@@ -2705,7 +2728,7 @@
 	}
 	
 	function createNewMaterials() {
-		console.log('Creating new mat');
+		//console.log('Creating new mat');
 		UpperItemMaterial = [];
 		LowerItemMaterial = [];
 		FootwearItemMaterial = [];
@@ -2802,7 +2825,7 @@
 			x.add(option);
 		})
 
-		console.log('Global Mats imported');
+		//console.log('Global Mats imported');
 		
 	}
 	
@@ -2870,7 +2893,7 @@
 			x.add(option);
 		})
 
-		console.log('Default Mats imported');
+		//console.log('Default Mats imported');
 		
 	}
 	
@@ -2938,7 +2961,7 @@
 			x.add(option);
 		})
 
-		console.log('Global Cols imported');
+		//console.log('Global Cols imported');
 		
 	}
 	
@@ -3006,7 +3029,7 @@
 			x.add(option);
 		})
 
-		console.log('Default Cols imported');
+		//console.log('Default Cols imported');
 		
 	}
 	
