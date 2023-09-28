@@ -1,6 +1,6 @@
 /**
  * Dress Me Up
- * v.1.1, last updated: 27/09/2023
+ * v.1.1, last updated: 28/09/2023
  * By The Stig
  * 
  * Thanks for the additional input by the following:
@@ -9,6 +9,7 @@
  * Your help has been really appreciated
  *
  * Change Log
+ * 28/09/2023 Added ability to remove a Wardrobe
  * 27/09/2023 Bug Fix and Log info to console
  * 24/09/2023 Added ability to import all Wardrobe files in a given folder and sub folder
  * 22/09/2023 Added Batch run option
@@ -107,6 +108,8 @@
 	addDressMeUpSettings();
 	
 	var confirmDiv = document.getElementById("confirm");
+	var removeDiv = document.getElementById("confirmRemove");
+	var removeWardrobeOption = false;
 	
 	createGlobalWardrobe();
 	populatePrompt();
@@ -158,6 +161,29 @@
 				text-align: center;
 			}
 			.close {
+				display: flex;
+				position: absolute;
+				right: 20px;
+				bottom: 8px;
+			}
+			
+			#confirmRemove {
+				display: none;
+				background-color: white;
+				font-size: 20px;
+				color: blue;
+				border: 4px solid;
+				border-radius: 12px;
+				padding: 5px;
+				position: fixed;
+				height: 120px;
+				width: 240px;
+				left: 50%;
+				top: 50%;
+				padding: 6px 8px 8px;
+				text-align: center;
+			}
+			.removeItems {
 				display: flex;
 				position: absolute;
 				right: 20px;
@@ -1020,7 +1046,7 @@
 				<button style="display:none" type="button" id="locateWardrobe">Locate Wardrobe Files</button>
 				<button style="display:none" type="button" id="importWardrobe">Import Wardrobe</button>
 				<p></p>
-				<!--<button style="display:block;width:240px; height:30px;" id="removeWardrobe">Remove Selected Wardrobe</button>-->
+				<button style="display:block;width:240px; height:30px;" id="removeWardrobe">Remove Selected Wardrobe</button>
 				<!--<button type="button" id="setDefaultWardrobe">Reset to Default Wardrobe</button>-->
 				<p></p>
 				<!--
@@ -1159,6 +1185,13 @@
 						<button id="confirmNo">No</button>
 					</div>
 				</div>
+				<div id="confirmRemove">
+					<p> Remove the current Wardrobe? </p>
+					<div class = "removeItems">
+						<button id="removeYes">Yes</button>
+						<button id="removeNo">No</button>
+					</div>
+				</div>
 				`;
 				
 		DressMeUpSettings.innerHTML = tempHTML;
@@ -1294,7 +1327,9 @@
 		document.getElementById ("batchRun").addEventListener ("click", runBatch, false);
 		document.getElementById ("confirmYes").addEventListener ("click", closeConfirmYes, false);
 		document.getElementById ("confirmNo").addEventListener ("click", closeConfirmNo, false);
-		//document.getElementById ("removeWardrobe").addEventListener ("click", removeWardrobe, false);
+		document.getElementById ("removeWardrobe").addEventListener ("click", removeWardrobe, false);
+		document.getElementById ("removeYes").addEventListener ("click", removeConfirmYes, false);
+		document.getElementById ("removeNo").addEventListener ("click", removeConfirmNo, false);
 
 		document.getElementById ("selectFiles").addEventListener ("onchange", getWardrobe,false);
 		
@@ -1358,6 +1393,21 @@
 		document.getElementById ("currPrompt").value =null;
 	}
 	
+	function showRemove() {
+		removeDiv.style.display = "block";
+	}
+	
+	function removeConfirmNo() {
+		removeWardrobeOption = false;
+		removeDiv.style.display = "none";
+	}
+	function removeConfirmYes() {
+		removeWardrobeOption = true;
+		removeDiv.style.display = "none";
+		removeSelectedWardrobe();
+	}
+	
+	
 	function clearPrompt() {
 		confirmDiv = document.getElementById("confirm");
 		confirmDiv.style.display = "block";
@@ -1378,10 +1428,73 @@
 	}
 	
 	function removeWardrobe() {
-		console.log("Removing Wardrobe");
-		//showConfirm();
+		removeWardrobeOption = false;
+		currWardrobe = document.getElementById ("selectedWardobe").value;
+		switch (currWardrobe) {
+			case "Default Wardrobe":
+				alert('You cannot remove the ' + currWardrobe);
+				return;
+				break;
+			case "All Wardrobes" :
+				alert('You cannot remove ' + currWardrobe);
+				return;
+				break;
+			default:
+				break;
+		}
+		removeDiv = document.getElementById("confirmRemove");
+		showRemove();
+		document.getElementById("confirmRemove").firstElementChild.innerHTML = 'Remove ' + currWardrobe + ' Wardrobe?';
 	}
 	
+	function removeSelectedWardrobe() {
+		currWardrobe = document.getElementById ("selectedWardobe").value;
+		var oldWardrobe = currWardrobe;
+		//console.log('Removing ' + currWardrobe + ' wardrobe');
+		dummyWardrobe = [];
+		for (let i = 0; i < globalWardrobe.length; i++) {
+			switch (globalWardrobe[i]) {
+				case currWardrobe:
+					break;
+				default:
+					dummyWardrobe.push(globalWardrobe[i]);
+					dummyWardrobe.push(globalWardrobe[i+1]);
+					dummyWardrobe.push(globalWardrobe[i+2]);
+					dummyWardrobe.push(globalWardrobe[i+3]);
+					break;
+			}
+			i++; // creatorID
+			i++; // Item type
+			i++; // Item Name
+			if (i > globalWardrobe.length) { break; }
+		}
+		globalWardrobe = [];
+		for (let i = 0; i < dummyWardrobe.length; i++) {
+			globalWardrobe.push(dummyWardrobe[i]);
+		}	
+		var x = document.getElementById("selectedWardobe");
+		x.remove(x.selectedIndex);
+		dummyWardrobe = [];
+		for (let i = 0; i < WardrobeList.length; i++) {
+			switch (WardrobeList[i]) {
+				case currWardrobe:
+					break;
+				default:
+					dummyWardrobe.push(WardrobeList[i]);
+					break;
+			}
+		}
+		WardrobeList =[];
+		for (let i = 0; i < dummyWardrobe.length; i++) {
+			WardrobeList.push(dummyWardrobe[i]);
+		}	
+		
+		document.getElementById ("selectedWardobe").value='Default Wardrobe';
+		console.log('Removed ' + oldWardrobe);
+		//console.log(WardrobeList);
+		selectWardrobe();
+	}
+		
 	
 	
 	
