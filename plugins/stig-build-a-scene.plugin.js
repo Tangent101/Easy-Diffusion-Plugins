@@ -4,6 +4,7 @@
  * By The Stig
  *
  * Change Log
+ * 25/10/2023 Added Import Scene routine
  * 25/10/2023 Added Option Locks
  * 25/10/2023 Coded re and Post Prompt routine 
  * 25/10/2023 Initial Build
@@ -17,6 +18,11 @@
     console.log('%s Embed Metadata Version: %s', ID_PREFIX, VERSION);
 	
 	var defaultBatchCount = 4;
+	
+	var sceneName = 'Default Scene';
+	var sceneDesignerName = 'The Stig';
+	
+	
 	var defStyles = [];
 	var defChars = [];
 	var defOutfits = [];
@@ -7247,6 +7253,26 @@
 		let tempHTML = `
 			<h4 class="collapsible `+ openCheck2 +`">Build A Scene</h4>
 			<div id="bas-settings-entries" class="collapsible-content" style="display: block;margin-top:15px;">
+				<!--<button style="display:block;width:240px; height:30px;" onclick="document.getElementById('scenepicker').click()">Import Scene Directory</button>
+				<p></p>-->
+				<button style="display:block;width:240px; height:30px;" onclick="document.getElementById('sceneselectFiles').click()">Import Scene File</button>
+				<input type='file' id="sceneselectFiles" style="display:none" onchange="document.getElementById('importScene').click()">
+				<input type="file" id="scenepicker" name="fileList" style="display:none" webkitdirectory multiple />
+				<button style="display:none" type="button" id="locateScene">Locate Scene Files</button>
+				<button style="display:none" type="button" id="importScene">Import Scene</button>
+				<p></p>
+				<!--<button style="display:block;width:240px; height:30px;" id="removeScene">Remove Selected Scene</button>-->
+				<!--<button type="button" id="setDefaultWardrobe">Reset to Default Wardrobe</button>-->
+				<!--<p></p>-->
+				<!--
+				-->
+				<!--<label for="selectedScene">Select Scene:</label>
+				<select id="selectedScene" name="selectedScene onchange = "selectOption()">
+				<option>All Scenes</option></select>
+				<br><br>-->
+				<label for="scene_info">Scene Description:</label>
+				<textarea readonly class="txtBox" id="scene_info" name="scene_info" rows="2" cols="50">Default Scene by The Stig</textarea>
+				<p></p>
 				<table><tbody>
 				<tr><td>
 					<button type="button" id="lockStyle" <i class="fas fa-unlock-alt"></i></button>
@@ -7411,6 +7437,8 @@
 		document.getElementById ("lockLighting").addEventListener ("click", lockLighting, false);
 		document.getElementById ("lockArtist").addEventListener ("click", lockArtist, false);
 		document.getElementById ("lockCamera").addEventListener ("click", lockCamera, false);
+		
+		document.getElementById ("importScene").addEventListener ("click", getScene, false);
 		
 	}
 	
@@ -7820,5 +7848,269 @@
 				break;
 		}
 	}
+	
+	function getScene() {
+		//console.log('Getting Scene Data');
+		importScene();
+		document.getElementById ("scene_info").value = sceneName + ' created by ' + sceneDesignerName;
+		//console.log(sceneName);
+		//console.log(sceneDesignerName);
+	}
+	
+	function importScene() {
+		//console.log('Import');
+		var files = document.getElementById('sceneselectFiles').files;
+		if (files.length <= 0) {
+			return false;
+		}
+		
+		var fr = new FileReader();
+		fr.onload = function(e) { 
+			var result = JSON.parse(e.target.result);
+			var formatted = JSON.stringify(result, null, 2);
+			//console.log('Formatted: ' + formatted);
+			switch (formatted.includes("sceneID")) {
+				case true:
+					//console.log('Changing SceneID to ' + result.sceneID);
+					sceneName = result.sceneID;
+					document.getElementById ("scene_info").value = sceneName + ' created by ' + sceneDesignerName;
+					break;
+				default:
+					//console.log('No Scene ID Round');
+					break;
+			}
+			sceneDesignerName
+			switch (formatted.includes("creatorID")) {
+				case true:
+					//console.log('Changing CreatorID to ' + result.creatorID);
+					sceneDesignerName = result.creatorID;
+					document.getElementById ("scene_info").value = sceneName + ' created by ' + sceneDesignerName;
+					break;
+				default:
+					//console.log('No Scene Designer ID Found');
+					break;
+			}
+			
+			switch (formatted.includes("Style")) {
+				case true:
+					createNewSceneStyle();
+					result.Style.forEach((sceneItem) => {
+						var x = document.getElementById("Style_Options");
+						var option = document.createElement("option");
+						option.text = sceneItem;
+						x.add(option);
+						defStyles.push(sceneItem);
+						//console.log('Adding ' + sceneItem);
+					})
+					break;
+				case false:
+					break;
+			}
+			switch (formatted.includes("Character")) {
+				case true:
+					createNewSceneCharacter();
+					result.Character.forEach((sceneItem) => {
+						var x = document.getElementById("Char_Options");
+						var option = document.createElement("option");
+						option.text = sceneItem;
+						x.add(option);
+						defChars.push(sceneItem);
+						//console.log('Adding ' + sceneItem);
+					})
+					break;
+				case false:
+					break;
+			}
+			switch (formatted.includes("Outfit")) {
+				case true:
+					createNewSceneOutfit();
+					result.Outfit.forEach((sceneItem) => {
+						var x = document.getElementById("Outfit_Options");
+						var option = document.createElement("option");
+						option.text = sceneItem;
+						x.add(option);
+						defOutfits.push(sceneItem);
+						//console.log('Adding ' + sceneItem);
+					})
+					break;
+				case false:
+					break;
+			}
+			switch (formatted.includes("Action")) {
+				case true:
+					createNewSceneAction();
+					result.Action.forEach((sceneItem) => {
+						var x = document.getElementById("Actions_Options");
+						var option = document.createElement("option");
+						option.text = sceneItem;
+						x.add(option);
+						defActions.push(sceneItem);
+						//console.log('Adding ' + sceneItem);
+					})
+					break;
+				case false:
+					break;
+			}
+			switch (formatted.includes("Location")) {
+				case true:
+					createNewSceneLocation();
+					result.Location.forEach((sceneItem) => {
+						var x = document.getElementById("Location_Options");
+						var option = document.createElement("option");
+						option.text = sceneItem;
+						x.add(option);
+						defLocations.push(sceneItem);
+						//console.log('Adding ' + sceneItem);
+					})
+					break;
+				case false:
+					break;
+			}			
+			switch (formatted.includes("Adjective")) {
+				case true:
+					createNewSceneAdjective();
+					result.Adjective.forEach((sceneItem) => {
+						var x = document.getElementById("Adjectives_Options");
+						var option = document.createElement("option");
+						option.text = sceneItem;
+						x.add(option);
+						defAdjectives.push(sceneItem);
+						//console.log('Adding ' + sceneItem);
+					})
+					break;
+				case false:
+					break;
+			}			
+			switch (formatted.includes("Lighting")) {
+				case true:
+					createNewSceneLighting();
+					result.Lighting.forEach((sceneItem) => {
+						var x = document.getElementById("Lighting_Options");
+						var option = document.createElement("option");
+						option.text = sceneItem;
+						x.add(option);
+						defLighting.push(sceneItem);
+						//console.log('Adding ' + sceneItem);
+					})
+					break;
+				case false:
+					break;
+			}			
+			switch (formatted.includes("Artist")) {
+				case true:
+					createNewSceneArtist();
+					result.Artist.forEach((sceneItem) => {
+						var x = document.getElementById("Artist_Options");
+						var option = document.createElement("option");
+						option.text = sceneItem;
+						x.add(option);
+						defArtists.push(sceneItem);
+						//console.log('Adding ' + sceneItem);
+					})
+					break;
+				case false:
+					break;
+			}			
+			switch (formatted.includes("Camera")) {
+				case true:
+					createNewSceneCamera();
+					result.Camera.forEach((sceneItem) => {
+						var x = document.getElementById("Camera_Options");
+						var option = document.createElement("option");
+						option.text = sceneItem;
+						x.add(option);
+						defCameraSettings.push(sceneItem);
+						//console.log('Adding ' + sceneItem);
+					})
+					break;
+				case false:
+					break;
+			}			
+			
+		}
+		fr.readAsText(files.item(0));		
+	}
+	
+	function createNewSceneStyle() {
+		defStyles = [];
+		document.getElementById('Style_Options').innerText = null;
+		var x = document.getElementById("Style_Options");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+	}
+	
+	function createNewSceneCharacter() {
+		defChars = [];
+		document.getElementById('Char_Options').innerText = null;
+		var x = document.getElementById("Char_Options");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+	}
+	
+	function createNewSceneOutfit() {
+		defOutfits = [];
+		document.getElementById('Outfit_Options').innerText = null;
+		var x = document.getElementById("Outfit_Options");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+	}
+	
+	function createNewSceneAction() {
+		defActions = [];
+		document.getElementById('Actions_Options').innerText = null;
+		var x = document.getElementById("Actions_Options");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+	}
+	
+	function createNewSceneLocation() {
+		defLocations = [];
+		document.getElementById('Location_Options').innerText = null;
+		var x = document.getElementById("Location_Options");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+	}
+	
+	function createNewSceneAdjective() {
+		defAdjectives = [];
+		document.getElementById('Adjectives_Options').innerText = null;
+		var x = document.getElementById("Adjectives_Options");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+	}
+	
+	function createNewSceneLighting() {
+		defLighting = [];
+		document.getElementById('Lighting_Options').innerText = null;
+		var x = document.getElementById("Lighting_Options");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+	}
+	
+	function createNewSceneArtist() {
+		defArtists = [];
+		document.getElementById('Artist_Options').innerText = null;
+		var x = document.getElementById("Artist_Options");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+	}
+	
+	function createNewSceneCamera() {
+		defCameraSettings = [];
+		document.getElementById('Camera_Options').innerText = null;
+		var x = document.getElementById("Camera_Options");
+		var option = document.createElement("option");
+		option.text = "None";
+		x.add(option);
+	}
+	
 	
 })();
