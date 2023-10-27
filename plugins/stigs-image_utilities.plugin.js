@@ -1,6 +1,6 @@
 /**
  * Image Utilities
- * v.1.12, last updated: 03/09/2023
+ * v.1.12, last updated: 27/10/2023
  * By The Stig
  * 
  * 
@@ -146,6 +146,7 @@
 				break;
 			default:
 				//console.log(fname);
+				var cnetImageName = "CNet" + fname;
 				const img = image;
 				const canvas = document.createElement("canvas");
 				const context = canvas.getContext("2d");
@@ -173,7 +174,7 @@
 				xhr.open('GET', canvasImage); // This is to download the canvas Image
 				xhr.send();
 				
-				console.log(origRequest);
+				//console.log(origRequest);
 				var tmpLoraModel = origRequest.use_lora_model;
 				var tmpLoraModelSwitch = [];
 				var tmpLoraAlpha = origRequest.lora_alpha;
@@ -198,6 +199,39 @@
 				//console.log(blob);
 				saveAs(blob, txtname);
 				
+				var cnetImage = origRequest.control_image;
+				switch (cnetImage) {
+					case undefined:
+						break;
+					default:
+						//console.log(cnetImage);
+						const cnetcollection = document.getElementsByClassName("task-fs-initimage");
+						const cnetimg = (cnetcollection[0].innerHTML);
+						var tempElement = document.createElement("div");
+						tempElement.innerHTML = cnetimg;
+						var images = tempElement.querySelectorAll("img");
+						var cnetsrc=null;
+						images.forEach(function (dummyimage) {
+							cnetsrc = dummyimage.getAttribute("src");
+						});
+						tempElement.remove();
+						let cnetcanvasImage = cnetsrc;
+						let cnetxhr = new XMLHttpRequest();
+						cnetxhr.responseType = 'blob';
+						cnetxhr.onload = function () {
+							let a = document.createElement('a');
+							a.href = window.URL.createObjectURL(cnetxhr.response);
+							a.download = cnetImageName;
+							a.style.display = 'none';
+							document.body.appendChild(a);
+							a.click();
+							a.remove();
+						}
+						cnetxhr.open('GET', cnetcanvasImage); // This is to download the canvas Image
+						//console.log('Writing image ' + cnetImageName);
+						cnetxhr.send();
+						break;
+				}
 				break;
 		}
 	}
