@@ -7637,8 +7637,8 @@
 		var randomArtist = document.getElementById ("Artist_Options").value;
 		var randomCameraSetting = document.getElementById ("Camera_Options").value;
 		
-		var prePromptField = document.getElementById ("prePromptText").value;
-		var postPromptField = document.getElementById ("postPromptText").value;
+		var prePromptField = document.getElementById ("preSceneText").value;
+		var postPromptField = document.getElementById ("postSceneText").value;
 		
 		var additionalPrompt = "";
 		switch (randomStyle) {
