@@ -1,9 +1,10 @@
 /**
  * Build a Scene
- * v.1.1, last updated: 25/10/2023
+ * v.1.1, last updated: 31/10/2023
  * By The Stig
  *
  * Change Log
+ * 31/10/2023 Bug Fix
  * 25/10/2023 Added Import Scene routine
  * 25/10/2023 Added Option Locks
  * 25/10/2023 Coded re and Post Prompt routine 
@@ -7339,13 +7340,13 @@
 				</tbody></table>
 				
 				<p></P>
-				<label for="prePromptText">Pre Prompt:</label>
+				<label for="preSceneText">Pre Prompt:</label>
 				<textarea title="Text before the main prompt (editable)" class="txtBox2" id="preSceneText" name="preSceneText" rows="2" cols="60"></textarea>
 				<!--<p></p>-->
 				<label for="currScenePrompt">Main Prompt:</label>
 				<textarea readonly class="txtBox2" id="currScenePrompt" name="currScenePrompt" rows="6" cols="60"></textarea>
 				<!--<p></P>-->
-				<label for="postPromptText">Post Prompt:</label>
+				<label for="postSceneText">Post Prompt:</label>
 				<textarea title="Text after the main prompt (editable)" class="txtBox2" id="postSceneText" name="postSceneText" rows="2" cols="60"></textarea>
 				<p></p>
 				<button type="button" id="clearScenePrompt">Clear the current Prompt</button>
