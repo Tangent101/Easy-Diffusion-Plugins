@@ -1,9 +1,12 @@
 /**
  * Text to Prompt
- * v.1.1, last updated: 13/11/2023
+ * v.1.1, last updated: 14/11/2023
  * By The Stig
  *
  * Change Log 
+ * 14/11/2023 Fixed bug to remove double spaces
+ * 14/11/2023 Added Get Previous Prompt button to get the Previous entry in the Wildcard file
+ * 14/11/2023 Added Get Last Prompt button to get the Last entry in the Wildcard file
  * 13/11/2023 Fixed bug to allow duplicate entries
  * 11/11/2023 Added Get First Prompt button to get the First entry in the Wildcard file
  * 11/11/2023 Added Get Next Prompt button to get the Next entry in the Wildcard file
@@ -152,6 +155,10 @@
 				<p></p>
 				<button type="button" class = "Text2Prompt2" id="setNextText2Prompt">Get the Next Prompt</button>
 				<p></p>
+				<button type="button" class = "Text2Prompt2" id="setPrevText2Prompt">Get the Previous Prompt</button>
+				<p></p>
+				<button type="button" class = "Text2Prompt2" id="setLastText2Prompt">Get the Last Prompt</button>
+				<p></p>
 				<button type="button" class = "Text2Prompt" id="setRandomText2Prompt">Choose a Random Prompt</button>
 				<p></P>
 				<button type="button" class = "Text2Prompt" id="setText2Prompt">Use this Prompt</button>
@@ -178,7 +185,9 @@
 		document.getElementById ("setText2SeqBatch").addEventListener ("click", setText2SeqBatch, false);
 		document.getElementById ("setFirstText2Prompt").addEventListener ("click", setFirstText2Prompt, false);
 		document.getElementById ("setNextText2Prompt").addEventListener ("click", setNextText2Prompt, false);
-		
+		document.getElementById ("setPrevText2Prompt").addEventListener ("click", setPrevText2Prompt, false);
+		document.getElementById ("setLastText2Prompt").addEventListener ("click", setLastText2Prompt, false);
+
 		document.getElementById("text2promptCount").disabled = true; 
 		
 	}
@@ -187,6 +196,8 @@
 		var lenArray = text2promptArray.length;
 		switch (lenArray) {
 			case 0:
+				console.log('No Wildcard file loaded');
+				return;
 				break;
 			default:
 				var randomText2Prompt = Math.floor(Math.random() * lenArray);
@@ -232,11 +243,30 @@
 		}
 	}
 	function Text2PromptSingleRun() {
+		console.log('Create Single Image');
+		var lenArray = text2promptArray.length;
+		switch (lenArray) {
+			case 0:
+				console.log('No Wildcard file loaded');
+				return;
+				break;
+			default:
+				break;
+		}
 		document.getElementById("makeImage").click();
 	}
 	
 	function Text2PromptBatchRun() {
 		console.log('Running Batch');
+		var lenArray = text2promptArray.length;
+		switch (lenArray) {
+			case 0:
+				console.log('No Wildcard file loaded');
+				return;
+				break;
+			default:
+				break;
+		}
 		var batchCount = document.getElementById("Text2PromptBatchCount").value;
 		for (let i = 0; i < batchCount; i++) {
 			setRandomText2Prompt();
@@ -267,10 +297,21 @@
 			inputs.forEach(input => {
 				//console.log('Text Line: ' + input);
 				myChar = input.charCodeAt(0);
-				console.log('Char: ' + input, myChar);
+				//console.log('Char: ' + input, myChar);
 				switch (myChar) {
 					case 10:
 						console.log(myString);
+						let position = myString.search("  ");
+						//console.log('Position: ' + position);
+						switch (position) {
+							case -1:
+								break;
+							default:
+								console.log('Replacing');
+								let result = myString.replace("  ", " ");
+								myString = result;
+								break;
+						}
 						text2promptArray.push(myString);
 						myString = "";
 						mytext2promptCount = mytext2promptCount + 1;
@@ -279,7 +320,7 @@
 						break;
 					default:
 						myString = myString + input;
-						break;
+						break;	
 				}
 			});
 			console.log(myString);
@@ -314,6 +355,7 @@
 		var lenArray = text2promptArray.length;
 		switch (lenArray) {
 			case 0:
+				console.log('No Wildcard file loaded');
 				return;
 				break;
 			default:
@@ -369,4 +411,44 @@
 		setText2Prompt();
 	}
 	
+	function setPrevText2Prompt() {
+		var lenArray = text2promptArray.length;
+		switch (lenArray) {
+			case 0:
+				console.log('No Wildcard file loaded');
+				return;
+				break;
+			default:
+				break;
+		}
+		console.log('Setting Previous Text2Prompt')
+		var newText2Prompt = null;
+		text2promptPosition = text2promptPosition - 1;
+		if (text2promptPosition < 0) {
+			text2promptPosition = 0;
+		}
+		console.log('Text2Prompt Index: ' + text2promptPosition);
+		newText2Prompt = text2promptArray[text2promptPosition];
+		document.getElementById ("text2prompt_Options").value = newText2Prompt;
+		setText2Prompt();
+	}
+	
+	function setLastText2Prompt() {
+		var lenArray = text2promptArray.length;
+		switch (lenArray) {
+			case 0:
+				console.log('No Wildcard file loaded');
+				return;
+				break;
+			default:
+				break;
+		}
+		console.log('Setting Last Text2Prompt')
+		var newText2Prompt = null;
+		text2promptPosition = lenArray - 1;
+		console.log('Text2Prompt Index: ' + text2promptPosition);
+		newText2Prompt = text2promptArray[text2promptPosition];
+		document.getElementById ("text2prompt_Options").value = newText2Prompt;
+		setText2Prompt();
+	}
 })();
