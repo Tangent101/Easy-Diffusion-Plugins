@@ -1,9 +1,10 @@
 /**
  * Text to Prompt
- * v.1.1, last updated: 14/11/2023
+ * v.1.1, last updated: 16/11/2023
  * By The Stig
  *
  * Change Log 
+ * 16/11/2023 Added Search Function (experimental)
  * 14/11/2023 Fixed bug to remove double spaces
  * 14/11/2023 Added Get Previous Prompt button to get the Previous entry in the Wildcard file
  * 14/11/2023 Added Get Last Prompt button to get the Last entry in the Wildcard file
@@ -28,6 +29,9 @@
 	var text2promptArray=[];
 	var text2promptPosition = 0;
 	
+	var text2PromptInput=null;
+	var myCheckFlag = false;
+	
 	
 	function injectLoaderCSS() {
 		console.log('** Inject CSS **');
@@ -45,8 +49,22 @@
 				max-width: 280px ;
 				overflow: hidden;
 			}
+			
+			.WildcardList {
+				width:280px;
+				min-width: 280px;
+				max-width: 280px ;
+				overflow: hidden;
+			}
+			
+			
 			.labelWidth {
 				width:64px  !important;
+				display: inline-block;
+				overflow: hidden;
+			}
+			.labelWidth2 {
+				width:160px  !important;
 				display: inline-block;
 				overflow: hidden;
 			}
@@ -115,10 +133,16 @@
 				bottom: 8px;
 
 			}
+			.valid {
+				border: 3px solid green;
+			}
+			.invalid {
+				border: 3px solid red;
+			}
 		`;
 		document.head.appendChild(style);
 	}
-		
+	
 	function addBuildOptions() {
 		console.log('Add Build a Scene Settings');
 		var openText2PromptCheck = '';
@@ -142,6 +166,16 @@
 				<select id="text2prompt_Options" class="inputWidth" name="text2prompt_Options onchange = "selectOption()">
 				<option>None</option></select>
 				<p></P>
+				<div>
+					<datalist id="WildcardList">
+						<option>No Wildcard file currently loaded</option>
+					</datalist>
+					<label for="text2prompt_Options2" class="labelWidth">Search</label>
+					<input  autoComplete="on" id="text2prompt_Options2" class="WildcardList" list="WildcardList"/> 
+				</div>
+				<p></p>
+				<button type="button" class = "Text2Prompt2" id="text2PromptUseSearch">Use Search Result</button>
+				<p></p>
 				<label for="preText2Prompt">Pre Prompt:</label>
 				<textarea title="Text before the main prompt (editable)" class="txtBox2" id="preText2Prompt" name="preText2Prompt" rows="2" cols="60"></textarea>
 				<p></p>
@@ -180,6 +214,7 @@
 		document.getElementById ("importText2File").addEventListener ("click", getText2Prompt, false);
 		document.getElementById ("setRandomText2Prompt").addEventListener ("click", setRandomText2Prompt, false);
 		document.getElementById ("setText2Prompt").addEventListener ("click", setText2Prompt, false);
+		document.getElementById ("text2PromptUseSearch").addEventListener ("click", text2PromptUseSearch, false);
 		document.getElementById ("Text2PromptSingleRun").addEventListener ("click", Text2PromptSingleRun, false);
 		document.getElementById ("Text2PromptBatchRun").addEventListener ("click", Text2PromptBatchRun, false);
 		document.getElementById ("setText2SeqBatch").addEventListener ("click", setText2SeqBatch, false);
@@ -187,8 +222,16 @@
 		document.getElementById ("setNextText2Prompt").addEventListener ("click", setNextText2Prompt, false);
 		document.getElementById ("setPrevText2Prompt").addEventListener ("click", setPrevText2Prompt, false);
 		document.getElementById ("setLastText2Prompt").addEventListener ("click", setLastText2Prompt, false);
-
+		
 		document.getElementById("text2promptCount").disabled = true; 
+		
+		document.getElementById("text2prompt_Options2").addEventListener("keyup", e => {
+			text2PromptInput = [...document.querySelectorAll('#WildcardList option')].map( option => option.value);
+			validateTextInput(e.target.value)
+		})
+		
+		document.querySelector('#text2prompt_Options2').classList.remove('valid');
+		document.querySelector('#text2prompt_Options2').classList.add('invalid');
 		
 	}
 	
@@ -216,8 +259,6 @@
 			case 'None':
 				break;
 			default:
-				//console.log('Pre: ' + preText2PromptField);
-				//console.log('Post: ' + postText2PromptField);
 				switch (preText2PromptField) {
 					case null:
 						break;
@@ -338,6 +379,10 @@
 			var option = document.createElement("option");
 			option.text = ItemFound;
 			x.add(option);
+			var myWildcardList = document.getElementById("WildcardList");
+			var option = document.createElement("option");
+			option.value = ItemFound;
+			myWildcardList.appendChild(option);
 		})
 	}
 	
@@ -348,6 +393,40 @@
 		var option = document.createElement("option");
 		option.text = "None";
 		x.add(option);
+		document.getElementById('WildcardList').innerText = null;	
+	}
+	
+	
+	function validateTextInput(myPassedVariable) {
+		text2PromptInput = document.querySelectorAll('#WildcardList option');
+		myCheckFlag = false;
+		for (var i = 0; i < text2PromptInput.length; i++) {
+			var obj = text2PromptInput[i].value;
+			if ((obj).includes(myPassedVariable)) {
+				myCheckFlag = true;
+			}
+		}
+		switch (myCheckFlag) {
+			case true:
+				document.querySelector('#text2prompt_Options2').classList.remove('invalid');
+				document.querySelector('#text2prompt_Options2').classList.add('valid');
+				break;
+			case false:
+				document.querySelector('#text2prompt_Options2').classList.remove('valid');
+				document.querySelector('#text2prompt_Options2').classList.add('invalid');
+				break;
+		}
+	}
+	
+	function text2PromptUseSearch() {
+		switch (myCheckFlag) {
+			case true:
+				document.getElementById ("text2prompt_Options").value = text2prompt_Options2.value;
+				setText2Prompt();
+				break;
+			case false:
+				break;
+		}
 	}
 	
 	function setText2SeqBatch() {
