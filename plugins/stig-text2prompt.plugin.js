@@ -1,9 +1,10 @@
 /**
  * Text to Prompt
- * v.1.1, last updated: 16/11/2023
+ * v.1.1, last updated: 17/11/2023
  * By The Stig
  *
  * Change Log 
+ * 17/11/2023 Added Clear Search Function
  * 16/11/2023 Added Search Function (experimental)
  * 14/11/2023 Fixed bug to remove double spaces
  * 14/11/2023 Added Get Previous Prompt button to get the Previous entry in the Wildcard file
@@ -42,6 +43,9 @@
 			}
 			.Text2Prompt2 {
 				background-color:#13750d;
+			}
+			.Text2Prompt3 {
+				background-color:#840800;
 			}
 			.inputWidth {
 				width:280px;
@@ -176,6 +180,8 @@
 				<p></p>
 				<button type="button" class = "Text2Prompt2" id="text2PromptUseSearch">Use Search Result</button>
 				<p></p>
+				<button type="button" class = "Text2Prompt3" id="text2PromptClearSearch">Clear Search Result</button>
+				<p></p>
 				<label for="preText2Prompt">Pre Prompt:</label>
 				<textarea title="Text before the main prompt (editable)" class="txtBox2" id="preText2Prompt" name="preText2Prompt" rows="2" cols="60"></textarea>
 				<p></p>
@@ -215,6 +221,7 @@
 		document.getElementById ("setRandomText2Prompt").addEventListener ("click", setRandomText2Prompt, false);
 		document.getElementById ("setText2Prompt").addEventListener ("click", setText2Prompt, false);
 		document.getElementById ("text2PromptUseSearch").addEventListener ("click", text2PromptUseSearch, false);
+		document.getElementById ("text2PromptClearSearch").addEventListener ("click", text2PromptClearSearch, false);
 		document.getElementById ("Text2PromptSingleRun").addEventListener ("click", Text2PromptSingleRun, false);
 		document.getElementById ("Text2PromptBatchRun").addEventListener ("click", Text2PromptBatchRun, false);
 		document.getElementById ("setText2SeqBatch").addEventListener ("click", setText2SeqBatch, false);
@@ -427,6 +434,13 @@
 			case false:
 				break;
 		}
+	}
+	
+	function text2PromptClearSearch() {
+		document.getElementById ("text2prompt_Options2").value = null;
+		myCheckFlag = false;
+		document.querySelector('#text2prompt_Options2').classList.remove('valid');
+		document.querySelector('#text2prompt_Options2').classList.add('invalid');
 	}
 	
 	function setText2SeqBatch() {
