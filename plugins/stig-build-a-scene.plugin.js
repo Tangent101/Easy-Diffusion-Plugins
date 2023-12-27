@@ -1,9 +1,10 @@
 /**
  * Build a Scene
- * v.1.1, last updated: 31/10/2023
+ * v.1.1, last updated: 27/12/2023
  * By The Stig
  *
  * Change Log
+ * 27/12/2023 Set Default State to Closed
  * 31/10/2023 Bug Fix
  * 25/10/2023 Added Import Scene routine
  * 25/10/2023 Added Option Locks
@@ -7247,7 +7248,7 @@
 	function addBuildOptions() {
 		console.log('Add Build a Scene Settings');
 		var openCheck2 = '';
-		openCheck2 = ' active';
+		//openCheck2 = ' active';
 		var BuildSettings = document.createElement('div');
 		BuildSettings.id = 'BuildAScene-settings';
 		BuildSettings.classList.add('panel-box');
@@ -7272,6 +7273,7 @@
 				<option>All Scenes</option></select>
 				<br><br>-->
 				<label for="scene_info">Scene Description:</label>
+				<br>
 				<textarea readonly class="txtBox" id="scene_info" name="scene_info" rows="2" cols="50">Default Scene by The Stig</textarea>
 				<p></p>
 				<table><tbody>
@@ -7342,10 +7344,10 @@
 				<p></P>
 				<label for="preSceneText">Pre Prompt:</label>
 				<textarea title="Text before the main prompt (editable)" class="txtBox2" id="preSceneText" name="preSceneText" rows="2" cols="60"></textarea>
-				<!--<p></p>-->
+				<p></p>
 				<label for="currScenePrompt">Main Prompt:</label>
 				<textarea readonly class="txtBox2" id="currScenePrompt" name="currScenePrompt" rows="6" cols="60"></textarea>
-				<!--<p></P>-->
+				<p></P>
 				<label for="postSceneText">Post Prompt:</label>
 				<textarea title="Text after the main prompt (editable)" class="txtBox2" id="postSceneText" name="postSceneText" rows="2" cols="60"></textarea>
 				<p></p>
