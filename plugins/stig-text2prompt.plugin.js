@@ -1,9 +1,10 @@
 /**
  * Text to Prompt
- * v.1.1, last updated: 17/11/2023
+ * v.1.1, last updated: 27/12/2023
  * By The Stig
  *
  * Change Log 
+ * 27/12/2023 Set Default State to Closed
  * 17/11/2023 Added Clear Search Function
  * 16/11/2023 Added Search Function (experimental)
  * 14/11/2023 Fixed bug to remove double spaces
@@ -150,7 +151,7 @@
 	function addBuildOptions() {
 		console.log('Add Build a Scene Settings');
 		var openText2PromptCheck = '';
-		openText2PromptCheck = ' active';
+		//openText2PromptCheck = ' active';
 		var BuildSettings = document.createElement('div');
 		BuildSettings.id = 'BuildAScene-settings';
 		BuildSettings.classList.add('panel-box');
