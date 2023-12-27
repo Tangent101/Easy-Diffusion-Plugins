@@ -57,14 +57,14 @@
 	
 	var firstWildcardPass = true;
 	
-	var defaultBatchCount = 4;
+	var defaultBatchCount = 20;
 	
 	var defaultGuideScaleAdjust = 0;
 	var defaultGuideScaleStep =  0;
 	var defaultGuideScalePreset =  0;
 	
-	var defaultPromptStrengthAdjust = 0;
-	var defaultPromptStrengthStep =  0;
+	var defaultPromptStrengthAdjust = 1;
+	var defaultPromptStrengthStep =  0.012;
 	var defaultPromptStrengthReset =  0;
 	
 	var defaultLoRaStrength = 0;
@@ -366,7 +366,7 @@
 	function addBuildOptions() {
 		console.log('Initialising img2img Settings');
 		var image2imgOpenCheck2 = '';
-		image2imgOpenCheck2 = ' active';
+		//image2imgOpenCheck2 = ' active';
 		var BuildSettings = document.createElement('div');
 		BuildSettings.id = 'image2img-settings';
 		BuildSettings.classList.add('panel-box');
@@ -1251,7 +1251,7 @@
 		
 		ctx.restore();
 		const image = cnv.toDataURL('image/png');
-
+		
 		document.getElementById("init_image_preview").setAttribute("src",image);
 	}
 	
@@ -2614,6 +2614,7 @@
 			default:
 				break;
 		}
+		console.log('Switch: ' + switchStatus);
 		//timeoutWait();
 		//checkReadyStatus();
 		
