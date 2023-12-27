@@ -1,6 +1,6 @@
 /**
  * Dress Me Up
- * v.1.1, last updated: 28/09/2023
+ * v.1.1, last updated: 27/12/2023
  * By The Stig
  * 
  * Thanks for the additional input by the following:
@@ -9,6 +9,7 @@
  * Your help has been really appreciated
  *
  * Change Log
+ * 27/12/2023 Set Default State to Closed
  * 28/09/2023 Added ability to remove a Wardrobe
  * 27/09/2023 Bug Fix and Log info to console
  * 24/09/2023 Added ability to import all Wardrobe files in a given folder and sub folder
@@ -1027,7 +1028,7 @@
 	function addDressMeUpSettings() {
 		console.log('Add DressMeUp Settings');
 		var openCheck = '';
-		openCheck = ' active';
+		//openCheck = ' active';
 		var DressMeUpSettings = document.createElement('div');
 		DressMeUpSettings.id = 'DressMeUp-settings';
 		DressMeUpSettings.classList.add('panel-box');
@@ -1159,10 +1160,10 @@
 				<p></P>
 				<label for="prePromptText">Pre Prompt:</label>
 				<textarea title="Text before the main prompt (editable)" class="txtBox2" id="prePromptText" name="prePromptText" rows="2" cols="60"></textarea>
-				<!--<p></p>-->
+				<p></p>
 				<label for="currPrompt">Main Prompt:</label>
 				<textarea readonly class="txtBox2" id="currPrompt" name="currPrompt" rows="6" cols="60"></textarea>
-				<!--<p></P>-->
+				<p></P>
 				<label for="postPromptText">Post Prompt:</label>
 				<textarea title="Text after the main prompt (editable)" class="txtBox2" id="postPromptText" name="postPromptText" rows="2" cols="60"></textarea>
 				<p></p>
