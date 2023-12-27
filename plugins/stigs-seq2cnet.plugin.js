@@ -1,8 +1,10 @@
 /**
  * Sequence to ControlNet Utility
- * v.1.1.1, last updated: 15/08/2023
+ * v.1.1.1, last updated: 27/12/2023
  * By The Stig
  * 
+ * Change Log
+ * 27/12/2023 Added toggle option to use Sequence image as img2img
  * 
  *
  * Free to use with the CMDR2 Stable Diffusion UI.
@@ -19,11 +21,17 @@
 	let reader = new FileReader()
 	
 	var baseImage = document.getElementById("control_image");
+	var img2imgToggle = document.getElementById("${ID_PREFIX}-img2imgToggle");
     const editorInputs = document.getElementById("editor-inputs");
 	document.getElementById('editor-inputs-init-image').insertAdjacentHTML('beforeend', `
         <label class="${ID_PREFIX}-sequence-label">Sequence to ControlNet</label>
         <button id="${ID_PREFIX}-upload-sequence-btn" type="button" class="${ID_PREFIX}-seq-btn-primary"><i class="fa fa-photo-film"></i> Select an image sequence<input type="file" id="sequence-file-selector" accept="image/*" multiple class="${ID_PREFIX}-seq-file-input"></button>
-		<button id="${ID_PREFIX}-upload-anim-btn" type="button" class="${ID_PREFIX}-seq-btn-primary"><i class="fa fa-photo-film"></i> Select an animation<input type="file" id="anim-file-selector" accept="image/gif" single class="${ID_PREFIX}-seq-file-input"></button>`
+		<button id="${ID_PREFIX}-upload-anim-btn" type="button" class="${ID_PREFIX}-seq-btn-primary"><i class="fa fa-photo-film"></i> Select an animation<input type="file" id="anim-file-selector" accept="image/gif" single class="${ID_PREFIX}-seq-file-input"></button>
+		<label for "${ID_PREFIX}-img2imgToggle">Use Sequence as img2img</label>
+		<label class="switch">
+			<input type="checkbox" id="${ID_PREFIX}-img2imgToggle" >
+			<span class="slider round"></span>
+		</label>`
 		);
 	
 	
@@ -110,6 +118,16 @@
 		const taskTemplate = getCurrentUserRequest();
 		console.log('Processing ' + fileCount + ' images.');
 		for (var i=0; i<fileCount; i++){
+			//console.log(taskTemplate.reqBody);
+			img2imgToggle = document.getElementById(`${ID_PREFIX}-img2imgToggle`).checked;
+			//console.log('Toggle: ' + img2imgToggle.checked);
+			switch (img2imgToggle) {
+				case true:
+					taskTemplate.reqBody.init_image = filesArray[i];
+					break;
+				case false:
+					break;
+			}
 			taskTemplate.reqBody.control_image = filesArray[i];
 			var newTaskRequests = getPrompts().map((prompt) => Object.assign({}, taskTemplate, {
 				reqBody: Object.assign({ prompt: prompt }, taskTemplate.reqBody)
@@ -123,6 +141,16 @@
 		const taskTemplate = getCurrentUserRequest();
 		console.log('Processing ' + fileCount + ' animation.');
 		for (var i=0; i<fileCount; i++){
+			//console.log(taskTemplate.reqBody);
+			img2imgToggle = document.getElementById(`${ID_PREFIX}-img2imgToggle`).checked;
+			//console.log('Toggle: ' + img2imgToggle.checked);
+			switch (img2imgToggle) {
+				case true:
+					taskTemplate.reqBody.init_image = filesArray[i];
+					break;
+				case false:
+					break;
+			}
 			taskTemplate.reqBody.control_image = filesArray[i];
 			var newTaskRequests = getPrompts().map((prompt) => Object.assign({}, taskTemplate, {
 				reqBody: Object.assign({ prompt: prompt }, taskTemplate.reqBody)
