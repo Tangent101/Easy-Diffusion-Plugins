@@ -156,7 +156,7 @@
 		BuildSettings.id = 'BuildAScene-settings';
 		BuildSettings.classList.add('panel-box');
 		let tempHTML = `
-			<h4 class="collapsible `+ openText2PromptCheck +`">Text to Prompt</h4>
+			<h4 class="collapsible `+ openText2PromptCheck +`">Wildcard Text to Prompt</h4>
 			<div id="t2p-settings-entries" class="collapsible-content" style="display: block;margin-top:15px;">
 				<button style="display:block;width:240px; height:30px;" class = "Text2Prompt" onclick="document.getElementById('Text2PromptSelectFiles').click()">Import Wildcard Text File</button>
 				<input type='file' id="Text2PromptSelectFiles" style="display:none" onchange="document.getElementById('importText2File').click()">
