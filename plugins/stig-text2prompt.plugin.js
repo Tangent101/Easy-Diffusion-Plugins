@@ -1,6 +1,6 @@
 /**
  * Text to Prompt
- * v.1.1, last updated: 27/12/2023
+ * v.1.1, last updated: 04/01/2024
  * By The Stig
  *
  * Change Log 
@@ -224,7 +224,7 @@
 		document.getElementById ("setText2Prompt").addEventListener ("click", setText2Prompt, false);
 		document.getElementById ("text2PromptUseSearch").addEventListener ("click", text2PromptUseSearch, false);
 		document.getElementById ("text2PromptClearSearch").addEventListener ("click", text2PromptClearSearch, false);
-		//document.getElementById ("Text2PromptSingleRun").addEventListener ("click", Text2PromptSingleRun, false);
+		document.getElementById ("Text2PromptSingleRun").addEventListener ("click", Text2PromptSingleRun, false);
 		document.getElementById ("Text2PromptBatchRun").addEventListener ("click", Text2PromptBatchRun, false);
 		document.getElementById ("setText2SeqBatch").addEventListener ("click", setText2SeqBatch, false);
 		document.getElementById ("setFirstText2Prompt").addEventListener ("click", setFirstText2Prompt, false);
@@ -242,7 +242,7 @@
 		document.querySelector('#text2prompt_Options2').classList.remove('valid');
 		document.querySelector('#text2prompt_Options2').classList.add('invalid');
 		
-		document.getElementById ("Text2PromptSingleRun").style.display="none";
+		document.getElementById ("setText2Prompt").style.display="none";
 		
 	}
 	
@@ -293,7 +293,6 @@
 				promptField.value = currText2Prompt.value;
 				break;
 		}
-		Text2PromptSingleRun();
 	}
 	function Text2PromptSingleRun() {
 		console.log('Create Single Image');
@@ -306,6 +305,7 @@
 			default:
 				break;
 		}
+		setText2Prompt();
 		document.getElementById("makeImage").click();
 	}
 	
