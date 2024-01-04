@@ -256,8 +256,10 @@
 			default:
 				var randomText2Prompt = Math.floor(Math.random() * lenArray);
 				document.getElementById ("text2prompt_Options").value = text2promptArray[randomText2Prompt];
+				setText2Prompt();
 				break;
 		}
+		
 	}
 	
 	function setText2Prompt() {
