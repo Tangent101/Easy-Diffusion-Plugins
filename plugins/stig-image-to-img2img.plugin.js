@@ -514,7 +514,7 @@
 					<span class="slider round"></span>
 					</label>
 				</div>
-				<div class="sliderToggle">
+				<div class="sliderwrapper">
 					<label style="display:inline" title="Set link to Wildcard (Sequential Prompt) plugin On/Off" class="switch">Sequential prompt from Wildcard plugin</label>
 					<label class="switch">
 					<input type="checkbox" id="image2imgSeqText2Prompt">
