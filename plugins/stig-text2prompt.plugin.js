@@ -1,9 +1,10 @@
 /**
  * Text to Prompt
- * v.1.1, last updated: 04/01/2024
+ * v.1.1, last updated: 26/09/2026
  * By The Stig
  *
- * Change Log 
+ * Change Log
+ * 26/09/2026 Fixed a couple of bugs that had been previously missed. 
  * 04/01/2024 Removed the Generate Single Image (user request)
  * 27/12/2023 Set Default State to Closed
  * 17/11/2023 Added Clear Search Function
@@ -165,6 +166,9 @@
 				<button style="display:none" type="button" id="locateText2File">Locate Text Files</button>
 				<button style="display:none" type="button" id="importText2File">Import Scene</button>
 				<p></p>
+				<label for="text2promptname1">Filename</label>
+				<input type="text" title="Filename" id="text2promptname1" value="none">
+				<p></p>
 				<label for="text2promptCount">Number of Prompts</label>
 				<input type="number" title="Number of Prompts" id="text2promptCount" value="0">
 				<p></p>
@@ -232,6 +236,9 @@
 		document.getElementById ("setPrevText2Prompt").addEventListener ("click", setPrevText2Prompt, false);
 		document.getElementById ("setLastText2Prompt").addEventListener ("click", setLastText2Prompt, false);
 		
+		document.getElementById ("text2prompt_Options").addEventListener ("change", updateBox, false);
+		
+		document.getElementById("text2promptname1").disabled = true; 
 		document.getElementById("text2promptCount").disabled = true; 
 		
 		document.getElementById("text2prompt_Options2").addEventListener("keyup", e => {
@@ -333,6 +340,7 @@
 	function getText2Prompt() {
 		console.log('Getting text from file');
 		getText2PromptFile();
+		console.log("Trimming Array");
 	}
 	
 	function getText2PromptFile() {
@@ -355,33 +363,105 @@
 				//console.log('Char: ' + input, myChar);
 				switch (myChar) {
 					case 10:
-						console.log(myString);
+						//console.log('End of line');
+						//console.log('Initial prompt: ' + myString);
 						let position = myString.search("  ");
 						//console.log('Position: ' + position);
 						switch (position) {
 							case -1:
 								break;
 							default:
-								console.log('Replacing');
+								console.log('Replacing double space');
 								let result = myString.replace("  ", " ");
+								console.log('Result: ' + result);
 								myString = result;
+								if (myString.includes("  ")) {
+									console.log("Flagged: This string contains a double space!");
+									while (myString.includes('  ')) {
+										myString = myString.replace('  ', ' ');
+									}
+								}
 								break;
 						}
-						text2promptArray.push(myString);
+						
+						let position1 = myString.search(" ");
+						//console.log('Position1: ' + position1);
+						switch (position1) {
+							case -1:
+								break;
+							case 0:
+								console.log('Replacing leading space');
+								let result = myString.replace(" ", "");
+								myString = result;
+								console.log('Result: ' + myString);
+								break;
+							default:
+								break;
+						}
+						
+						
+						
+						
+						text2promptArray.push(myString.trimEnd());
+						//console.log('Pushed: ' + myString);
+						console.log('Trimmed: ' + myString.trimEnd());
 						myString = "";
+						console.log('Prompt number: ' + mytext2promptCount);
 						mytext2promptCount = mytext2promptCount + 1;
 						break;
 					case 13:
+						//console.log('End of word');
 						break;
 					default:
 						myString = myString + input;
 						break;	
 				}
 			});
-			console.log(myString);
-			text2promptArray.push(myString);
+			
+			
+			
+			if (myString.includes("  ")) {
+				console.log("Double space found");
+			}
+			
+			
+			let firstChar = myString.startsWith(" ");
+			switch (firstChar) {
+				case true:
+					//console.log("Leading space found");
+					break;
+				default:
+					//console.log("No leading space");
+					break;
+			}
+			let lastChar = myString.endsWith(" ");
+			switch (lastChar) {
+				case true:
+					//console.log("Ending space found");
+					break;
+				default:
+					//console.log("No ending space");
+					break;
+			}
+			
+			
+			
+			//console.log("Full string: " + myString);
+			//console.log("Length: " + myString.length);
+			let stringLength = myString.length;
+			switch (stringLength) {
+				case 0:
+					//console.log("Empty string, not pushed");
+					break;
+				default:
+					text2promptArray.push(myString);
+					console.log("Pushed " + myString.trimStart());
+					break;
+			}
+			
 			populateMyText2PromptOptions();
 			setFirstText2Prompt();
+			document.getElementById("text2promptname1").value = files[0].name;
 			document.getElementById("text2promptCount").value = mytext2promptCount;
 		}
 		fr.readAsText(files.item(0));
@@ -481,7 +561,7 @@
 			default:
 				break;
 		}
-		console.log('Setting First Text2Prompt')
+		//console.log('Setting First Text2Prompt')
 		var newText2Prompt = null;
 		text2promptPosition = 0;
 		newText2Prompt = text2promptArray[text2promptPosition];
@@ -499,13 +579,14 @@
 			default:
 				break;
 		}
-		console.log('Setting Next Text2Prompt')
+		//console.log('Setting Next Text2Prompt')
 		var newText2Prompt = null;
 		text2promptPosition = text2promptPosition + 1;
 		if (text2promptPosition > lenArray-1) {
 			text2promptPosition = lenArray-1;
 		}
-		console.log('Text2Prompt Index: ' + text2promptPosition);
+		//console.log('Text2Prompt Index: ' + text2promptPosition);
+		//console.log('Text: ' + text2promptArray[text2promptPosition]);
 		newText2Prompt = text2promptArray[text2promptPosition];
 		document.getElementById ("text2prompt_Options").value = newText2Prompt;
 		setText2Prompt();
@@ -521,13 +602,13 @@
 			default:
 				break;
 		}
-		console.log('Setting Previous Text2Prompt')
+		//console.log('Setting Previous Text2Prompt')
 		var newText2Prompt = null;
 		text2promptPosition = text2promptPosition - 1;
 		if (text2promptPosition < 0) {
 			text2promptPosition = 0;
 		}
-		console.log('Text2Prompt Index: ' + text2promptPosition);
+		//console.log('Text2Prompt Index: ' + text2promptPosition);
 		newText2Prompt = text2promptArray[text2promptPosition];
 		document.getElementById ("text2prompt_Options").value = newText2Prompt;
 		setText2Prompt();
@@ -543,12 +624,34 @@
 			default:
 				break;
 		}
-		console.log('Setting Last Text2Prompt')
+		//console.log('Setting Last Text2Prompt')
 		var newText2Prompt = null;
 		text2promptPosition = lenArray - 1;
-		console.log('Text2Prompt Index: ' + text2promptPosition);
+		//console.log('Text2Prompt Index: ' + text2promptPosition);
+		newText2Prompt = text2promptArray[text2promptPosition];
+		//console.log('Text: ' + newText2Prompt);
+		document.getElementById ("text2prompt_Options").value = newText2Prompt;
+		setText2Prompt();
+	}
+	
+	function updateBox() {
+		var lenArray = text2promptArray.length;
+		switch (lenArray) {
+			case 0:
+				console.log('No Wildcard file loaded');
+				return;
+				break;
+			default:
+				break;
+		}
+		let myNewIndex = document.getElementById ("text2prompt_Options").selectedIndex;
+		//console.log('Setting new index')
+		var newText2Prompt = null;
+		text2promptPosition = myNewIndex - 1;
 		newText2Prompt = text2promptArray[text2promptPosition];
 		document.getElementById ("text2prompt_Options").value = newText2Prompt;
 		setText2Prompt();
 	}
+	
+	
 })();
