@@ -129,7 +129,7 @@
 				}
 				if (name.length > 40) name = name.slice(0, 40) + "...";
 
-				console.log("Hover Text: " + name);
+				//console.log("Hover Text: " + name);
 
 				// 1. TRY TEXT FIRST
 				if (name && !name.match(/^Task\s*#?\d+$/i)) {
